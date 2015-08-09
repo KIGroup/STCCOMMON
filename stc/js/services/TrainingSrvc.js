@@ -161,6 +161,9 @@ servicesModule.factory('TrainingSrvc', function(DALSrvc, $filter) {
         saveFeedBack: function(data, trId, code){
             return DALSrvc.getPromise('save', StcAppSetting.user + '/json/training/' + trId + '/feedback/' + code, data);
         },
+        getFeedBackTemplate:function(){
+            return DALSrvc.getPromise('get', StcAppSetting.user + '/json/feedback/template', null);
+        },
         /* All training feedbacks */
         getFeedBacksForGrid: function(pageCurr, pageSize, sqlName, isDown, searchSqlName, searchText, trainingId){
             var first = pageSize * (pageCurr - 1) + 1;
@@ -202,6 +205,9 @@ servicesModule.factory('TrainingSrvc', function(DALSrvc, $filter) {
         },
         getTeacherPayout: function(trainingId, teacherId){
             return DALSrvc.getPromise('get', StcAppSetting.admin + '/json/training/' + trainingId + '/teacher/' + teacherId + '/payout', null);
+        },
+        updateStudentAttendedStatus: function(accessCode, studentId, statusCode){
+            return DALSrvc.getPromise('save', StcAppSetting.user + '/json/training/' + accessCode + '/student/udpateStatus', {studentId : studentId, statusCode: statusCode});
         },
         getUrlForCreateGoogleCalendarEvent: function(text, dates, location, details){
                 return 'https://www.google.com/calendar/render?action=TEMPLATE&hl=ru' + 

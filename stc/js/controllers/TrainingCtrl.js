@@ -103,21 +103,16 @@ controllersModule.controller('TrainingCtrl', function($scope, $route, $location,
 
         //============================== ОТЗЫВЫ =======================================================================================
         $scope.feedBack.columns = [
-                          {name: 'Оценка', sqlName: 'Rating', isSorted: false, isSortable: true, isDown: true, isSearched: false, isSearchable: false, captionStyle: {textAlign: 'center', width: '50px'}},
-                          {name: 'Автор', sqlName: 'Author', isSorted: false, isSortable: true, isDown: true, isSearched: true, isSearchable: true},
-                          {name: 'Понравилось', sqlName: 'WhatLiked', isSorted: false, isSortable: true, isDown: true, isSearched: false, isSearchable: false},
-                          {name: 'Улучшения', sqlName: 'WhatImprovements', isSorted: false, isSortable: true, isDown: true, isSearched: false, isSearchable: false},
-                          {name: 'Дополнение', sqlName: 'WhatHear', isSorted: false, isSortable: true, isDown: true, isSearched: false, isSearchable: false},
-                          {name: 'О докладчике', sqlName: 'AboutTeacher', isSorted: false, isSortable: true, isDown: true, isSearched: false, isSearchable: true},
+                          {name: 'Автор', sqlName: 'Author', isSorted: false, isSortable: true, isDown: true, isSearched: true, isSearchable: false, captionStyle: {textAlign: 'center', width: '200px'}},
+                          {name: 'Avg. course rating', sqlName: 'AvgCourseRating', isSorted: false, isSortable: true, isDown: true, isSearched: false, isSearchable: false, captionStyle: {textAlign: 'center'}},
+                          {name: 'Avg. instructor rating', sqlName: 'AvgInstructorRating', isSorted: false, isSortable: true, isDown: true, isSearched: false, isSearchable: true, captionStyle: {textAlign: 'center'}},
                           {name: 'Дата создания', sqlName: 'CreatedTS', isSorted: true, isSortable: true, isDown: false, isSearched: false, isSearchable: false, filter: 'date', captionStyle: {width: '180px'}}];
  
-        $scope.feedBack.properties = [{name:'rating', cellStyle: {textAlign: 'center'}}, 
+        $scope.feedBack.properties = [
                                      {name: 'author'},
-                                     {name:'whatLikedStatus',        calculate: function(item){ item.whatLikedStatus       = item.whatLiked       =='' ? '' : $filter('localize')('Есть отзыв')}},
-                                     {name:'whatImprovementsStatus', calculate: function(item){ item.whatImprovementsStatus= item.whatImprovements=='' ? '' : $filter('localize')('Есть отзыв')}},
-                                     {name:'whatHearStatus',         calculate: function(item){ item.whatHearStatus        = item.whatHear        =='' ? '' : $filter('localize')('Есть отзыв')}},
-                                     {name:'aboutTeacherStatus',     calculate: function(item){ item.aboutTeacherStatus    = item.aboutTeacher    =='' ? '' : $filter('localize')('Есть отзыв')}},
-                                     {name:'createdTS', filter: 'date', filterParam: $filter('localize')('d MMMM y, HH:mm:ss')}];
+                                     {name: 'avgCourseRating', cellStyle: {textAlign: 'center'}}, 
+                                     {name: 'avgInstructorRating', cellStyle: {textAlign: 'center'}},
+                                     {name: 'createdTS', filter: 'date', filterParam: $filter('localize')('d MMMM y, HH:mm:ss')}];
 
         $scope.feedBack.pageSize = UtilsSrvc.getPropertyValue($scope.pageStore, 'feedBack.grid.pageSize', 10);
         $scope.feedBack.pageCurr = UtilsSrvc.getPropertyValue($scope.pageStore, 'feedBack.grid.pageCurr', 1);
@@ -168,15 +163,50 @@ controllersModule.controller('TrainingCtrl', function($scope, $route, $location,
 
         //============================== ВСЕ СТУДЕНТЫ ==========================================================================
         $scope.allstud.columns = [
-                          {name: 'Фамилия', sqlName: 'Students->LastName->Value', isSorted: false, isSortable: true, isDown: true, isSearched: true, isSearchable: true},
-                          {name: 'Имя', sqlName: 'Students->FirstName->Value', isSorted: false, isSortable: true, isDown: true, isSearched: false, isSearchable: false},
-                          {name: 'Отчество', sqlName: 'Students->MiddleName->Value', isSorted: false, isSortable: true, isDown: true, isSearched: false, isSearchable: false},
-                          {name: 'Организация', sqlName: 'Students->Company->ShortName->Value', isSorted: true, isSortable: true, isDown: true, isSearched: false, isSearchable: true},
-                          {name: 'Email', sqlName: 'Students->Email', isSorted: false, isSortable: true, isDown: true, isSearched: false, isSearchable: true},
-                          {name: 'Телефон', sqlName: 'Students->Phone', isSorted: false, isSortable: true, isDown: true, isSearched: false, isSearchable: true},
-                          {name: 'Skype', sqlName: 'Students->Skype', isSorted: false, isSortable: true, isDown: true, isSearched: false, isSearchable: false}];
+                          {name: 'ФИО', sqlName: 'FullName', isSorted: false, isSortable: true, isDown: true, isSearched: true, isSearchable: true},
+                          {name: 'Организация', sqlName: 'Student->Company->ShortName->Value', isSorted: true, isSortable: true, isDown: true, isSearched: false, isSearchable: true},
+                          {name: 'Email', sqlName: 'Student->Email', isSorted: false, isSortable: true, isDown: true, isSearched: false, isSearchable: true},
+                          {name: 'Телефон', sqlName: 'Student->Phone', isSorted: false, isSortable: true, isDown: true, isSearched: false, isSearchable: true},
+                          {name: 'Skype', sqlName: 'Student->Skype', isSorted: false, isSortable: true, isDown: true, isSearched: false, isSearchable: false},
+                          {name: 'Attendance status', sqlName: '', isSorted: false, isSortable: false, isDown: true,  isSearched: false,  isSearchable: false, captionStyle: {textAlign: 'center', width: '150px'}}];
 
-        $scope.allstud.properties = [{name:'lastName'}, {name:'firstName'}, {name:'middleName'}, {name:'company.shortName'}, {name:'email'}, {name:'phone'}, {name:'skype'}];
+        $scope.allstud.properties = [
+            {name:'lastName',
+                calculate: function(item){
+                    item.fullName = $scope.getFullNameForCurLang(item.lastName, item.firstName, item.middleName);
+                },}, 
+            {name:'company.shortName'}, 
+            {name:'email'}, 
+            {name:'phone'}, 
+            {name:'skype'},
+            {name:'attendedStatus',
+               cellSelectable: true,
+               cellStyle: {textAlign: 'center'},
+               getCssClass: function(item){
+                    if (item.attendedStatusCode == 'Visited'){
+                         return 'icon icon-check';
+                    }
+                    else if (item.attendedStatusCode == 'NotVisited'){
+                         return 'icon icon-check-empty';
+                    } 
+                    
+                    return 'icon icon-question';
+               },
+               onClickCell: function(item){
+                   var newCode = 'Visited';
+                   if (item.attendedStatusCode == 'Visited')
+                        newCode = 'NotVisited'
+                   
+                   TrainingSrvc.updateStudentAttendedStatus($scope.training.data.accessCode, item.id, newCode).then(
+                        function(data){
+                            $scope.allstud.forciblyUpdate++;
+                        },
+                        function(response){
+                            $scope.other.alert = UtilsSrvc.getAlert('Внимание!', response.data, 'error', true);
+                        });
+               }}
+        ];
+            
         $scope.allstud.pageSize = 15;
         $scope.allstud.pageCurr = 1;
         $scope.allstud.itemsTotal = 0;
@@ -521,6 +551,21 @@ controllersModule.controller('TrainingCtrl', function($scope, $route, $location,
     $scope.cert.exportToCSV = function(){
         ReportSrvc.certificates($scope.training.data.id);
     };
+    
+    // Отправка в офис
+    $scope.cert.sendToOffice = function(){
+        function send(){
+            CertificateSrvc.sendToOffice($scope.training.data.id).then(
+            function(data){
+                $scope.other.alert = UtilsSrvc.getAlert('Готово!', 'Письма добавлены в очередь, проверьте журнал рассылок', 'success', true);
+            },
+            function(response){
+                $scope.other.alert = UtilsSrvc.getAlert('Внимание!', response.data, 'error', true);
+            });
+        };
+
+        UtilsSrvc.openMessageBox('Рассылка писем', $filter('localize')("Выполнить рассылку списка сертификатов участникам группы \"Офис\" ?"), send);  
+    };
 
     // Создать все сертификаты
     $scope.cert.createAll = function(){
@@ -703,7 +748,16 @@ controllersModule.controller('TrainingCtrl', function($scope, $route, $location,
         UtilsSrvc.openMessageBox('Удалить слушателя', $filter('localize')("Удалить слушателя") + ' ' + item.lastName + "?", deleteTrainingStudent);   
     };
 
+    $scope.allstud.onSelect = function(item){     
+        
+    };
 
+    $scope.allstud.onSelectCell = function(item, property){
+        if (!item) return;
+
+        property.onClickCell(item);
+    };
+    
     $scope.allstud.selectTab = function(){
         if (!$scope.allstud.items || $scope.allstud.items.length==0)
             $scope.allstud.forciblyUpdate++;

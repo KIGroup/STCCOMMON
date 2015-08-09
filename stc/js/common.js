@@ -19,7 +19,8 @@ StcAppSetting.getLocale = function() {
         }
     }
 };
- 
+
+
 StcAppSetting.getCookie = function(name) {
     var matches = document.cookie.match(new RegExp("(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"))
     return matches ? decodeURIComponent(matches[1]) : undefined
@@ -70,5 +71,5 @@ StcAppSetting.getLang = function(){
     }
     */
     
-    return 'ru-RU';
+    return 'en-US';
 }  

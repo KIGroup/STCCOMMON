@@ -44,6 +44,7 @@ mainModule.config(['$routeProvider', function($routeProvider) {
     $routeProvider.when('/training/:id/students/:code', {templateUrl: 'partials/trainingstudents.csp', controller: 'TrainingStudentsCtrl'});
     
     $routeProvider.when('/training', {templateUrl: 'partials/createtraining.csp', controller: 'CreateTrainingCtrl'});
+    $routeProvider.when('/training/:id/clone', {templateUrl: 'partials/createtraining.csp', controller: 'CreateTrainingCtrl'});
     $routeProvider.when('/certificates', {templateUrl: 'partials/certificates.csp', controller: 'AllCertificatesCtrl'});
     $routeProvider.when('/settings', {templateUrl: 'partials/settings.csp', controller: 'SettingsCtrl'});
     

@@ -25,9 +25,9 @@
     <script language="javascript"  src="js/app.js"></script>    
     <script language="javascript">          
         // Настройки приложения. Имена веб-приложений для REST, google календарь, язык
-        StcAppSetting.defaultApp = '#(##class(Stc.Data.Settings).GetWebAppNamespace())#';
-        StcAppSetting.admin = '#(##class(Stc.Data.Settings).GetWebAppAdmin())#';
-        StcAppSetting.user = '#(##class(Stc.Data.Settings).GetWebAppUser())#';
+        StcAppSetting.defaultApp = '#(##class(Stc.Data.Settings).GetWebAppNamespace())#',
+        StcAppSetting.admin = '#(##class(Stc.Data.Settings).GetWebAppAdmin())#',
+        StcAppSetting.user = '#(##class(Stc.Data.Settings).GetWebAppUser())#',
         StcAppSetting.lang = StcAppSetting.getLang();
 
         document.write('<script language="javascript" src="js/localization/locale_' + StcAppSetting.lang + '.js"><\/script>'); 
@@ -115,9 +115,9 @@
        </div>
 
     </div>
-    
-<!--    <script language="javascript"  src="js/combine.js"></script>-->
-<!-- -->   
+   <!-- 
+   <script language="javascript"  src="js/combine.js"></script>
+ -->
 
     <script language="javascript"  src="js/controllers/MainCtrl.js"></script>
     <script language="javascript"  src="js/controllers/ScheduleFrameCtrl.js"></script>
@@ -136,7 +136,6 @@
         document.write('<script language="javascript"  src="js/controllers/PersonCtrl.js"><\/script>');
         document.write('<script language="javascript"  src="js/controllers/PersonTeacherCtrl.js"><\/script>');
         document.write('<script language="javascript"  src="js/controllers/PersonStudentCtrl.js"><\/script>');
-        document.write('<script language="javascript"  src="js/controllers/PersonCompanyContactCtrl.js"><\/script>');
         document.write('<script language="javascript"  src="js/controllers/AllPersonsCtrl.js"><\/script>');
         document.write('<script language="javascript"  src="js/controllers/AllCoursesCtrl.js"><\/script>');    
         document.write('<script language="javascript"  src="js/controllers/CourseCtrl.js"><\/script>');

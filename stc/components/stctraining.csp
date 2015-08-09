@@ -24,15 +24,15 @@
                         <i class="icon-refresh" style="font-size: 12px"></i>
                     </label>
                     <div class="controls">
-                        <input class="span6" type="text" ng-model="training.payout" required></input>
-                        <input class="span6" type="text" ng-model="training.cost.currency.name" disabled></input>
+                        <input class="span6" type="text" ng-model="training.payout" ng-required="training.id" ng-disabled="!training.id"></input>
+                        <input class="span6" type="text" ng-model="training.cost.currency.code" disabled></input>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="row-fluid">
-            <div class="span5">
+            <div class="span6">
                 <div class="control-group">
                     <label class="control-label" ng-bind="('Дата начала / окончания'|localize) + '*'"></label>
                     <div class="controls">
@@ -47,17 +47,7 @@
                     </div>
                 </div>
             </div>
-            <div class="span3">
-                <div class="control-group">
-                    <label class="control-label" ng-bind="('Время'|localize) + '*'"></label>
-                    <div class="controls">
-                        <input class="input" class="span6" style="width: 45%;" type="text" placeholder="{{'ЧЧ:MM'|localize}}" title="{{'Время начала'|localize}}" pattern="([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]" ng-model="training.timeStart" required></input>
-                        <!--&nbsp;&nbsp;-->
-                        <input class="input" class="span6" style="width: 45%;" type="text" placeholder="{{'ЧЧ:MM'|localize}}" title="{{'Время окончания'|localize}}" pattern="([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]" ng-model="training.timeFinish" required></input>
-                    </div>
-                </div>
-            </div>
-            <div class="span4">
+            <div class="span6">
                 <div class="control-group">
                     <label class="control-label" ng-bind="('Аудитория'|localize) + '*'"></label>
                     <div class="controls">
@@ -66,7 +56,23 @@
                 </div>
             </div>
         </div>
-
+        <div class="row-fluid">
+            <div class="control-group">
+                <label class="control-label" ng-bind="('Start / end time'|localize) + '*'"></label>
+                <div class="controls">
+                    <div class="input-append">
+                        <input class="input" style="width: 50px;" type="text" placeholder="{{'ЧЧ:MM'|localize}}" title="{{'Время начала'|localize}}" pattern="{{training.timePattern}}" ng-model="training.timeStart" required></input>
+                        <button class="btn" type="button" ng-click="changeTimeMode('timeStartType');" style="padding-left: 4px; padding-right: 4px; color: #7E827F;">{{training.timeStartType}}</button>
+                    </div>
+                    <!--&nbsp;&nbsp;-->
+                    <div class="input-append">
+                        <input class="input" style="width: 50px;" type="text" placeholder="{{'ЧЧ:MM'|localize}}" title="{{'Время окончания'|localize}}" pattern="{{training.timePattern}}" ng-model="training.timeFinish" required></input>
+                        <button class="btn" type="button" ng-click="changeTimeMode('timeFinishType');" style="padding-left: 4px; padding-right: 4px; color: #7E827F;">{{training.timeFinishType}}</button>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
         <div class="row-fluid">
             <div class="span12">
                 <div class="control-group">

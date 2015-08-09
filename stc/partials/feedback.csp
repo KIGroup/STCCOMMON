@@ -1,60 +1,71 @@
 <div class="row-fluid">
-	<div class="span10 offset1">
-		<accordion close-others="false">
-		    <accordion-group is-open="true" heading="{{'Информация о курсе'|localize}}">
-				<div class="row-fluid">
-					<div class="span6">
-						<p><span ng-bind="'Курс'|localize"></span>: <span ng-bind="page.training.course.name"></span></p>
-						<p><span ng-bind="'Дата начала'|localize"></span>: <span ng-bind="page.training.dateStart|convertCacheDate:('d MMMM y'|localize)"></span></p>
-						<p><span ng-bind="'Дата окончания'|localize"></span>: <span ng-bind="page.training.dateFinish|convertCacheDate:('d MMMM y'|localize)"></span></p>
-					</div>
-					<div class="span6">
-						<p><span ng-bind="'Город'|localize"></span>: <span ng-bind="page.training.city.name + ', ' + page.training.city.parentName + ', ' + page.training.city.greatParentName"></span></p>
-						<p><span ng-bind="'Адрес'|localize"></span>: <span ng-bind="page.training.street"></span></p>
-						<p><span ng-bind="'Аудитория'|localize"></span>: <span ng-bind="page.training.room"></span></p>
-					</div>
-				</div>
-    		</accordion-group>
-			<br>
-		    <accordion-group is-open="true" heading="{{'Отзыв о курсе'|localize}}" ng-hide="$parent.page.hide">
-				<form style="margin: 0 0 0 0;" ng-submit="page.submit()">
-					<div style="padding-bottom: 17px;">
-						<label class="control-label" style="display: inline; padding-right: 7px;" ng-bind="('Оценка'|localize) + '*'"></label>
-						<rating value="page.feedBack.rating" on-hover="" on-leave="" style="cursor: pointer;" required></rating>
-					</div>
-					<div class="control-group">
-						<label class="control-label" ng-bind="('Что понравилось'|localize) + '?'"></label>
-						<div class="controls">
-						   	<textarea class="span12" ng-model="page.feedBack.whatLiked" rows="4"></textarea>
-						</div>
-					</div>
-					<div class="control-group">
-						<label class="control-label" ng-bind="('Что можно улучшить'|localize) + '?'"></label>
-						<div class="controls">
-						   	<textarea class="span12" ng-model="page.feedBack.whatImprovements" rows="4"></textarea>
-						</div>
-					</div>
-					<div class="control-group">
-						<label class="control-label" ng-bind="('Что ещё хотелось бы услышать в курсе'|localize) + '?'"></label>
-						<div class="controls">
-						   	<textarea class="span12" ng-model="page.feedBack.whatHear" rows="4"></textarea>
-						</div>
-					</div>
-					<div class="control-group">
-						<label class="control-label" ng-bind="('Комментарии о докладчике'|localize) + '?'"></label>
-						<div class="controls">
-						   	<textarea class="span12" ng-model="page.feedBack.aboutTeacher" rows="4"></textarea>
-						</div>
-					</div>
-					<div class="row-fluid">
-						<button class="btn btn-small btn-success" type="submit" ng-bind="('Отправить'|localize)" ng-disabled="page.feedBack.rating==0"></button>	
-						<input type="text" class="span2" style="margin: 0 0 0 12px;" ng-model="page.feedBack.author" placeholder="{{'Подпись'|localize}}" title="{{'Фамилия И.О. (поле не обязательно для заполнения)'|localize}}"/>
-					</div>
-				</form>   			
-		    </accordion-group>
-		</accordion>
-	<br>
-	<stcalert data="page.alert"/>
-	</div >
-</div >
+    <div class="span10 offset1">
+        <form name="feedBackForm" style="margin: 0 0 0 0;" ng-submit="page.submit()">
+        <accordion close-others="false">
+            <accordion-group is-open="true" heading="{{'Информация о курсе'|localize}}">
+                <div class="row-fluid">
+                    <div class="span6">
+                        <p><span ng-bind="'Курс'|localize"></span>: <span ng-bind="page.training.course.name"></span></p>
+                        <p><span ng-bind="'Дата начала'|localize"></span>: <span ng-bind="page.training.dateStart|convertCacheDate:('d MMMM y'|localize)"></span></p>
+                        <p><span ng-bind="'Дата окончания'|localize"></span>: <span ng-bind="page.training.dateFinish|convertCacheDate:('d MMMM y'|localize)"></span></p>
+                    </div>
+                    <div class="span6">
+                        <p><span ng-bind="'Город'|localize"></span>: <span ng-bind="page.training.city.name + ', ' + page.training.city.parentName + ', ' + page.training.city.greatParentName"></span></p>
+                        <p><span ng-bind="'Адрес'|localize"></span>: <span ng-bind="page.training.street"></span></p>
+                        <p><span ng-bind="'Аудитория'|localize"></span>: <span ng-bind="page.training.room"></span></p>
+                    </div>
+                </div>
+            </accordion-group>
+            <br>
+            <accordion-group is-open="true" heading="{{'Review of the instructor'|localize}}" ng-hide="$parent.page.hide">
+                    <div ng-repeat="item in page.feedBack.items| filter: {groupTypeCode: '!Instructor Nonspecific'}">
+                        <div style="padding-bottom: 17px;" ng-show="item.type.isScaleType==1">
+                            <label class="control-label" style="display: inline;" ng-bind="'• ' + item.type.name"></label>
+                            <span ng-show="item.scaleValue==0" style="color: red;">*</span>
+                            <span ng-hide="item.scaleValue==0" style="color: white;">*</span>
+                            <rating value="item.scaleValue" on-hover="" on-leave="" style="cursor: pointer; padding-left: 7px;"></rating>
+                        </div>
+                        
+                        <div class="control-group" ng-show="item.type.isScaleType==0">
+                            <label class="control-label">{{'• ' + item.type.name}}<span ng-show="item.type.isRequired==1 && !item.textValue" style="color: red;">*</span></label>
+                            <div class="controls">
+                                <textarea class="span12" ng-model="item.textValue" rows="3" ng-required="item.type.isRequired==1 && item.type.isScaleType==0"></textarea>
+                            </div>
+                        </div>
+                    </div>        
+            </accordion-group>
+            <br>
+            <accordion-group is-open="true" heading="{{'Review of the course'|localize}}" ng-hide="$parent.page.hide">
+                   <div ng-repeat="item in page.feedBack.items| filter: {groupTypeCode: 'Instructor Nonspecific'}">
+                        <div style="padding-bottom: 17px;" ng-show="item.type.isScaleType==1">
+                            <label class="control-label" style="display: inline;" ng-bind="'• ' + item.type.name"></label>
+                            <span ng-show="item.scaleValue==0" style="color: red;">*</span>
+                            <span ng-hide="item.scaleValue==0" style="color: white;">*</span>
+                            <rating  value="item.scaleValue" on-hover="" on-leave="" style="cursor: pointer; padding-left: 7px;"></rating>
+                        </div>
+                        
+                        <div class="control-group" ng-show="item.type.isScaleType==0">
+                            <label class="control-label">{{'• ' + item.type.name}}<span ng-show="item.type.isRequired==1 && !item.textValue" style="color: red;">*</span></label>
+                            <div class="controls">
+                                <textarea class="span12" ng-model="item.textValue" rows="3" ng-required="item.type.isRequired==1 && item.type.isScaleType==0"></textarea>
+                            </div>
+                        </div>
+                    </div>        
+            </accordion-group>
+        </accordion>
+
+        <div class="row-fluid" style="border: 1px solid rgb(229, 229, 229); border-radius: 4px;" ng-hide="page.hide">
+            <div style="padding: 16px;">
+                <button class="btn btn-small btn-success" type="submit" ng-bind="('Отправить'|localize)" ng-disabled="page.feedBack.rating==0"></button>    
+                <input type="text" class="span4" style="margin: 0 0 0 12px;" ng-model="page.feedBack.author" placeholder="{{'Подпись'|localize}}" title="{{'Фамилия И.О. (поле не обязательно для заполнения)'|localize}}"/>
+                <div style="padding-top: 5px; display: inline;" >
+                    <i ng-show="feedBackForm.$invalid || !page.allRatingsAreFilled()">&nbsp;&nbsp;<span style="color: red;">*</span>&nbsp;Fill the required fields</i>
+                </div>
+            </div>
+        </div> 
+        </form>
+    <br>
+    <stcalert data="page.alert"/>
+    </div >
+</div>
 

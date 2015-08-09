@@ -2,7 +2,7 @@
 
 localizationModule.constant('StcDictionary', {
   strings: {
-    'Создать заявку*':'Создать заявку',
+    'Создать заявку*':'Обучения',
     'Обучения*':'Обучения'
   },
   getTranslate: function(word){

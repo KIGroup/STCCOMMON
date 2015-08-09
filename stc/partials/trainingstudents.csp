@@ -5,8 +5,8 @@
                 <div class="row-fluid">
                     <div class="span6">
                         <p><span ng-bind="'Курс'|localize"></span>: <span ng-bind="page.training.course.name"></span></p>
-                        <p><span ng-bind="'Дата начала'|localize"></span>: <span ng-bind="page.training.dateStart|convertCacheDate:('d MMMM y'|localize)"></span></p>
-                        <p><span ng-bind="'Дата окончания'|localize"></span>: <span ng-bind="page.training.dateFinish|convertCacheDate:('d MMMM y'|localize)"></span></p>
+                        <p><span ng-bind="'Дата начала / окончания'|localize"></span>: <span ng-bind="page.training.dates"></span></p>
+                        <p><a target="_blank" style="text-decoration: none;" ng-href="{{'#/training/' + page.training.id+'/order'}}"><i ng-bind="'Заявка на обучение'|localize"></i></a></p>
                     </div>
                     <div class="span6">
                         <p><span ng-bind="'Город'|localize"></span>: <span ng-bind="page.training.city.name + ', ' + page.training.city.parentName + ', ' + page.training.city.greatParentName"></span></p>
@@ -36,6 +36,8 @@
                         selectable="true"
                         selected-items="page.studTable.selectedItems"
                         multi-select-mode="false"
+                        on-select="page.studTable.onSelect(item)"
+                        on-select-cell="page.studTable.onSelectCell(item, property)"
 
                         action-column-visible="false"
                         forcibly-update="page.studTable.forciblyUpdate"
@@ -73,3 +75,6 @@
         <stcalert data="page.alert"/>
     </div>
 </div >
+<div class="row-fluid" style="text-align: center;">
+    <i> {{'The question mark in the column "Attendance status" means that the status is not specified.'|localize}}</i>
+</div>  

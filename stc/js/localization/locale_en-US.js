@@ -2,6 +2,8 @@
 
 localizationModule.constant('StcDictionary', {
   strings: {
+    'Сохранение завершено' : 'Changes have been saved',
+    'Ваш отзыв принят. Спасибо!':'Thanks for your feedback!',
     'Создание организации':'Creation of organization',
     'ссылка на отмену подписки' : 'link to unsubscribe',
     'Создание организации из заявки от слушателя' : 'Creating organization from request of the attendee',
@@ -180,8 +182,8 @@ localizationModule.constant('StcDictionary', {
     'Организация, указанная в заявке, не существует. Создать ее?' : 'The organization specified in the request does not exist. Create it?',
     'Контакт'                                                  : 'Contact person',
     'Контакт заменен.'                                         : 'Contact person has been replaced.',
-    'Контакт из заявки'                                        : 'Contact person from request',
-    'Контакт организации'                                         : "Organization's contact person",
+    'Контакт из заявки'                                        : 'Contact from request',
+    'Контакт организации'                                         : "Organization's contact",
     'Контакт организации изменен.'                                : "Organization's contact person has been changed.",
     'Контакт обновлен.'                                        : 'Contact person has been updated.',
     'Контакту на почту был выслан код доступа к заявке.'       : "Request access code has been sent to the contact person's email.",

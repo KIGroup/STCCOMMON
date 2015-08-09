@@ -58,12 +58,18 @@ servicesModule.factory('UtilsSrvc', function($dialog, $filter, DALSrvc) {
         getTwoDate: function(start, finish){
             var startText = $filter('convertCacheDate')(start, $filter('localize')('d MMMM y'));
             var finishText = $filter('convertCacheDate')(finish, $filter('localize')('d MMMM y'));
-                
-            var startYearBorder = startText.indexOf(" ", 3);
-            if (startYearBorder > 0){
-                startText = startText.substring(0, startYearBorder);    
+            var partsDate = startText.split(",");
+
+            if (partsDate.length == 1){
+                // На тот случай если startText == "17 октября 2015"
+                partsDate = startText.split(" ");
+                startText = partsDate[0] + ' ' + partsDate[1];
             }
-                
+            else if (partsDate.length == 2){
+                // На тот случай если startText == "october 17, 2015"
+                startText = partsDate[0];
+            }
+     
             return startText + ' - ' +  finishText;
         },
         getMailPattern: function(type){

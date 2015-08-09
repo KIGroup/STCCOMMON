@@ -1,4 +1,4 @@
-// Combine date time is 28.06.2015 22:43:41
+// Combine date time is 20.07.2015 21:48:58
 
 
 // ===============================================================================================================================
@@ -197,9 +197,9 @@ controllersModule.controller('ScheduleFrameCtrl', function($scope, $window, $fil
                             training.curatorInfo += ', ' + training.curator.phone;
                         }
 
-                        if (training.curator.email != ""){
-                            training.curatorInfo += ', ' + training.curator.email;
-                        }
+                        //if (training.curator.email != ""){
+                        //    training.curatorInfo += ', ' + training.curator.email;
+                        //}
     
                         training.urlJoin = 'http://' + host_appName + '/stc/index.csp#/training/' + training.id + '/order';
                         training.urlAddGoogleCalendarEvent = TrainingSrvc.getUrlForCreateGoogleCalendarEvent(
@@ -211,7 +211,7 @@ controllersModule.controller('ScheduleFrameCtrl', function($scope, $window, $fil
                                             courseProgramUrl: course.programUrl,
                                             city: training.city.name + ', ' + training.city.parentName + ', ' + training.city.greatParentName,
                                             address: training.address,
-                                            time: training.timeStart + ' - ' + training.timeFinish,
+                                            time: training.timeStartFinish,
                                             teacher: training.teacher.lastName + ' ' + training.teacher.firstName +  ', ' + training.teacher.email,
                                             curator: training.curatorInfo,
                                             otherInfo: training.otherInfo   
@@ -345,21 +345,16 @@ controllersModule.controller('TrainingCtrl', function($scope, $route, $location,
 
         //============================== ОТЗЫВЫ =======================================================================================
         $scope.feedBack.columns = [
-                          {name: 'Оценка', sqlName: 'Rating', isSorted: false, isSortable: true, isDown: true, isSearched: false, isSearchable: false, captionStyle: {textAlign: 'center', width: '50px'}},
-                          {name: 'Автор', sqlName: 'Author', isSorted: false, isSortable: true, isDown: true, isSearched: true, isSearchable: true},
-                          {name: 'Понравилось', sqlName: 'WhatLiked', isSorted: false, isSortable: true, isDown: true, isSearched: false, isSearchable: false},
-                          {name: 'Улучшения', sqlName: 'WhatImprovements', isSorted: false, isSortable: true, isDown: true, isSearched: false, isSearchable: false},
-                          {name: 'Дополнение', sqlName: 'WhatHear', isSorted: false, isSortable: true, isDown: true, isSearched: false, isSearchable: false},
-                          {name: 'О докладчике', sqlName: 'AboutTeacher', isSorted: false, isSortable: true, isDown: true, isSearched: false, isSearchable: true},
+                          {name: 'Автор', sqlName: 'Author', isSorted: false, isSortable: true, isDown: true, isSearched: true, isSearchable: false, captionStyle: {textAlign: 'center', width: '200px'}},
+                          {name: 'Avg. course rating', sqlName: 'AvgCourseRating', isSorted: false, isSortable: true, isDown: true, isSearched: false, isSearchable: false, captionStyle: {textAlign: 'center'}},
+                          {name: 'Avg. instructor rating', sqlName: 'AvgInstructorRating', isSorted: false, isSortable: true, isDown: true, isSearched: false, isSearchable: true, captionStyle: {textAlign: 'center'}},
                           {name: 'Дата создания', sqlName: 'CreatedTS', isSorted: true, isSortable: true, isDown: false, isSearched: false, isSearchable: false, filter: 'date', captionStyle: {width: '180px'}}];
  
-        $scope.feedBack.properties = [{name:'rating', cellStyle: {textAlign: 'center'}}, 
+        $scope.feedBack.properties = [
                                      {name: 'author'},
-                                     {name:'whatLikedStatus',        calculate: function(item){ item.whatLikedStatus       = item.whatLiked       =='' ? '' : $filter('localize')('Есть отзыв')}},
-                                     {name:'whatImprovementsStatus', calculate: function(item){ item.whatImprovementsStatus= item.whatImprovements=='' ? '' : $filter('localize')('Есть отзыв')}},
-                                     {name:'whatHearStatus',         calculate: function(item){ item.whatHearStatus        = item.whatHear        =='' ? '' : $filter('localize')('Есть отзыв')}},
-                                     {name:'aboutTeacherStatus',     calculate: function(item){ item.aboutTeacherStatus    = item.aboutTeacher    =='' ? '' : $filter('localize')('Есть отзыв')}},
-                                     {name:'createdTS', filter: 'date', filterParam: $filter('localize')('d MMMM y, HH:mm:ss')}];
+                                     {name: 'avgCourseRating', cellStyle: {textAlign: 'center'}}, 
+                                     {name: 'avgInstructorRating', cellStyle: {textAlign: 'center'}},
+                                     {name: 'createdTS', filter: 'date', filterParam: $filter('localize')('d MMMM y, HH:mm:ss')}];
 
         $scope.feedBack.pageSize = UtilsSrvc.getPropertyValue($scope.pageStore, 'feedBack.grid.pageSize', 10);
         $scope.feedBack.pageCurr = UtilsSrvc.getPropertyValue($scope.pageStore, 'feedBack.grid.pageCurr', 1);
@@ -410,13 +405,13 @@ controllersModule.controller('TrainingCtrl', function($scope, $route, $location,
 
         //============================== ВСЕ СТУДЕНТЫ ==========================================================================
         $scope.allstud.columns = [
-                          {name: 'Фамилия', sqlName: 'Students->LastName->Value', isSorted: false, isSortable: true, isDown: true, isSearched: true, isSearchable: true},
-                          {name: 'Имя', sqlName: 'Students->FirstName->Value', isSorted: false, isSortable: true, isDown: true, isSearched: false, isSearchable: false},
-                          {name: 'Отчество', sqlName: 'Students->MiddleName->Value', isSorted: false, isSortable: true, isDown: true, isSearched: false, isSearchable: false},
-                          {name: 'Организация', sqlName: 'Students->Company->ShortName->Value', isSorted: true, isSortable: true, isDown: true, isSearched: false, isSearchable: true},
-                          {name: 'Email', sqlName: 'Students->Email', isSorted: false, isSortable: true, isDown: true, isSearched: false, isSearchable: true},
-                          {name: 'Телефон', sqlName: 'Students->Phone', isSorted: false, isSortable: true, isDown: true, isSearched: false, isSearchable: true},
-                          {name: 'Skype', sqlName: 'Students->Skype', isSorted: false, isSortable: true, isDown: true, isSearched: false, isSearchable: false}];
+                          {name: 'Фамилия', sqlName: 'Student->LastName->Value', isSorted: false, isSortable: true, isDown: true, isSearched: true, isSearchable: true},
+                          {name: 'Имя', sqlName: 'Student->FirstName->Value', isSorted: false, isSortable: true, isDown: true, isSearched: false, isSearchable: false},
+                          {name: 'Отчество', sqlName: 'Student->MiddleName->Value', isSorted: false, isSortable: true, isDown: true, isSearched: false, isSearchable: false},
+                          {name: 'Организация', sqlName: 'Student->Company->ShortName->Value', isSorted: true, isSortable: true, isDown: true, isSearched: false, isSearchable: true},
+                          {name: 'Email', sqlName: 'Student->Email', isSorted: false, isSortable: true, isDown: true, isSearched: false, isSearchable: true},
+                          {name: 'Телефон', sqlName: 'Student->Phone', isSorted: false, isSortable: true, isDown: true, isSearched: false, isSearchable: true},
+                          {name: 'Skype', sqlName: 'Student->Skype', isSorted: false, isSortable: true, isDown: true, isSearched: false, isSearchable: false}];
 
         $scope.allstud.properties = [{name:'lastName'}, {name:'firstName'}, {name:'middleName'}, {name:'company.shortName'}, {name:'email'}, {name:'phone'}, {name:'skype'}];
         $scope.allstud.pageSize = 15;
@@ -1194,15 +1189,15 @@ controllersModule.controller('AllTrainingsCtrl', function($scope, $filter, $loca
         $scope.pageStore.trainings = {grid:{}};
 
     $scope.training = {};
-	if ($scope.menu.readOnlyMode){
+    if ($scope.menu.readOnlyMode){
         $scope.training.secondRowActionIcon = '';
-		$scope.training.actionColumnIcon = 'icon-ellipsis-horizontal';
-	}
-	else{
-		$scope.training.secondRowActionIcon = 'icon-remove';
-		$scope.training.actionColumnIcon = 'icon-plus-sign';
-	}
-	
+        $scope.training.actionColumnIcon = 'icon-ellipsis-horizontal';
+    }
+    else{
+        $scope.training.secondRowActionIcon = 'icon-remove';
+        $scope.training.actionColumnIcon = 'icon-plus-sign';
+    }
+    
     $scope.cert = {};
 
     $scope.training.init = function(){
@@ -1217,19 +1212,19 @@ controllersModule.controller('AllTrainingsCtrl', function($scope, $filter, $loca
                           {name: 'Статус', sqlName: 'IsCompleted', isSorted: false, isSortable: true,  isDown: true,  isSearched: false, isSearchable: false, captionStyle: {textAlign: 'center', width: '90px'}}];
                             
         $scope.training.properties = [{name: 'course.nameShort',
-        								calculate: function(item){
-	        								if (item.course.name.length > 60){
-	        									item.course.nameShort = item.course.name.substring(0, 60) + '...'; 
-	        								}
-	        								else{
-		        								item.course.nameShort = item.course.name;
-	        								}
-	        							}}, 
+                                        calculate: function(item){
+                                            if (item.course.name.length > 60){
+                                                item.course.nameShort = item.course.name.substring(0, 60) + '...'; 
+                                            }
+                                            else{
+                                                item.course.nameShort = item.course.name;
+                                            }
+                                        }}, 
                                       {name: 'city.name'}, 
                                       {name: 'dates', cellStyle: {textAlign: 'center'},
-                                      	calculate:function(item){
-	                                    	item.dates = UtilsSrvc.getTwoDate(item.dateStart, item.dateFinish);
-	                                    }},
+                                        calculate:function(item){
+                                            item.dates = UtilsSrvc.getTwoDate(item.dateStart, item.dateFinish);
+                                        }},
                                       {name: 'sgroups', cellStyle: {textAlign: 'center'}},
                                       {name: 'students', cellStyle: {textAlign: 'center'}},
                                       {name: 'feedBacks.count', cellStyle: {textAlign: 'center'}},
@@ -1242,15 +1237,15 @@ controllersModule.controller('AllTrainingsCtrl', function($scope, $filter, $loca
                                             return 'label ' + (item.isCompleted == 0 ? 'label-info' : 'label-success');
                                         },
                                         calculate: function(item){
-	                                        item.isCertificatesDone = item.isCertificatesDone==0 ? false : true;
+                                            item.isCertificatesDone = item.isCertificatesDone==0 ? false : true;
                                             item.isStudentsAutoMailing = item.isStudentsAutoMailing==0 ? false : true;
                                             item.isTeacherAutoMailing = item.isTeacherAutoMailing==0 ? false : true;
                                             item.isCuratorAutoMailing = item.isCuratorAutoMailing==0 ? false : true;
                                             item.isFeedBackAutoMailing = item.isFeedBackAutoMailing==0 ? false : true;
                                             item.status = item.isCompleted == 1 ? $filter('localize')('Завершено') : $filter('localize')('Не завершено');
                                             if (!item.isCertificatesDone){
-	                                        	item.status += '*';
-	                                        }
+                                                item.status += '*';
+                                            }
                                         }}];
 
         $scope.training.status = UtilsSrvc.getPropertyValue($scope.pageStore, 'trainings.status', 'All');
@@ -1263,7 +1258,7 @@ controllersModule.controller('AllTrainingsCtrl', function($scope, $filter, $loca
         
         $scope.statuses = [{id: 'completed', name: $filter('localize')('Завершённые обучения')}, {id: 'not-completed', name: $filter('localize')('Незавершённые обучения')}];
         $scope.certStatuses = [{id: 'done', name: $filter('localize')('Сертификаты выданы')}, {id: 'not-done', name: $filter('localize')('Сертификаты не выданы')}];
-   		$scope.training.refresh();
+        $scope.training.refresh();
     };
  
     // Загрузка
@@ -1284,10 +1279,10 @@ controllersModule.controller('AllTrainingsCtrl', function($scope, $filter, $loca
             });
     };
     
-	$scope.training.refresh = function(){
-		$scope.training.forciblyUpdate++;
-	}
-	
+    $scope.training.refresh = function(){
+        $scope.training.forciblyUpdate++;
+    }
+    
     // Открыть обучение для просмотра на другой странице
     $scope.training.open = function(item){
         $location.path('/training/' + item.id);
@@ -1296,6 +1291,11 @@ controllersModule.controller('AllTrainingsCtrl', function($scope, $filter, $loca
     // Создать пустое обучение
     $scope.training.add = function(){
         $location.path('/training');
+    };
+    
+    // Копировать обучение
+    $scope.training.clone = function(){
+        $location.path('/training/' + $scope.training.selectedItems[0].id + '/clone');
     };
 
     // Удалить пустое обучение
@@ -1445,19 +1445,46 @@ controllersModule.controller('AllTrainingFeedBacksCtrl', function($scope, $filte
 Создание обучения без подгрупп
 ===========================================================================================*/
 
-controllersModule.controller('CreateTrainingCtrl', function($scope, $location, UtilsSrvc, TrainingSrvc){
+controllersModule.controller('CreateTrainingCtrl', function($scope, $routeParams, $location, UtilsSrvc, TrainingSrvc){
+    $scope.training = {data:{timeStart:'9:00', timeFinish: '12:00', orders: []}};
     
-    $scope.training = {data:{timeStart:'10:00', timeFinish: '14:00', orders: []}};
-    
-    $scope.training.submit = function(){
-        TrainingSrvc.save($scope.training.data).then(
+    // Загрузить обучение по ИД и обновить/склонировать поля
+    $scope.training.loadData = function(id){
+        TrainingSrvc.get(id).then(
             function(data){
-                 $location.path('/trainings');
+                $scope.training.data.isLoaded = true;
+                $scope.training.data.teacher = data.teacher;
+                $scope.training.data.course = data.course;
+                $scope.training.data.city = data.city;
+                $scope.training.data.room = data.room;
+                $scope.training.data.address = data.address;
+                $scope.training.data.street = data.street;
+                $scope.training.data.curator = data.curator;
+                $scope.training.data.timeStart = data.timeStart;
+                $scope.training.data.timeFinish = data.timeFinish;
+                $scope.training.data.timeStartType = data.timeStartType;
+                $scope.training.data.timeFinishType = data.timeFinishType;
+                $scope.training.data.isPublic = data.isPublic == 1;
             },
             function(response){
                 $scope.training.alert = UtilsSrvc.getAlert('Внимание!', response.data, 'error', true);
             });
     };
+    
+    $scope.training.submit = function(){
+        TrainingSrvc.save($scope.training.data).then(
+            function(data){
+                 $location.path('/training/' + data.id);
+            },
+            function(response){
+                $scope.training.alert = UtilsSrvc.getAlert('Внимание!', response.data, 'error', true);
+            });
+    };
+    
+    
+    if ($routeParams.id){
+        $scope.training.loadData($routeParams.id);
+    }
 });
 
 
@@ -3435,13 +3462,13 @@ controllersModule.controller('TrainingStudentsCtrl', function($scope, $location,
 		
 		// Students
 		$scope.page.studTable.columns = [
-                          {name: 'Фамилия',       sqlName: 'Students->LastName->Value',           isSorted: false, isSortable: true, isDown: true,  isSearched: true,   isSearchable: true},
-                          {name: 'Имя',           sqlName: 'Students->FirstName->Value',          isSorted: false, isSortable: true, isDown: true,  isSearched: false,  isSearchable: false},
-                          {name: 'Отчество',      sqlName: 'Students->MiddleName->Value',         isSorted: false, isSortable: true, isDown: true,  isSearched: false,  isSearchable: false},
-                          {name: 'Организация',      sqlName: 'Students->Company->ShortName->Value', isSorted: true,  isSortable: true, isDown: true,  isSearched: false,  isSearchable: true},
-                          {name: 'Email',         sqlName: 'Students->Email',                     isSorted: false, isSortable: true, isDown: true,  isSearched: false,  isSearchable: true},
-                          {name: 'Телефон',       sqlName: 'Students->Phone',                     isSorted: false, isSortable: true, isDown: true,  isSearched: false,  isSearchable: true},
-                          {name: 'Skype',         sqlName: 'Students->Skype',                     isSorted: false, isSortable: true, isDown: true,  isSearched: false,  isSearchable: false}];
+                          {name: 'Фамилия',       sqlName: 'Student->LastName->Value',           isSorted: false, isSortable: true, isDown: true,  isSearched: true,   isSearchable: true},
+                          {name: 'Имя',           sqlName: 'Student->FirstName->Value',          isSorted: false, isSortable: true, isDown: true,  isSearched: false,  isSearchable: false},
+                          {name: 'Отчество',      sqlName: 'Student->MiddleName->Value',         isSorted: false, isSortable: true, isDown: true,  isSearched: false,  isSearchable: false},
+                          {name: 'Организация',      sqlName: 'Student->Company->ShortName->Value', isSorted: true,  isSortable: true, isDown: true,  isSearched: false,  isSearchable: true},
+                          {name: 'Email',         sqlName: 'Student->Email',                     isSorted: false, isSortable: true, isDown: true,  isSearched: false,  isSearchable: true},
+                          {name: 'Телефон',       sqlName: 'Student->Phone',                     isSorted: false, isSortable: true, isDown: true,  isSearched: false,  isSearchable: true},
+                          {name: 'Skype',         sqlName: 'Student->Skype',                     isSorted: false, isSortable: true, isDown: true,  isSearched: false,  isSearchable: false}];
 
         $scope.page.studTable.properties = [{name:'lastName'}, {name:'firstName'}, {name:'middleName'}, {name:'company.shortName'}, {name:'email'}, {name:'phone'}, {name:'skype'}];
         $scope.page.studTable.pageSize = 20;
@@ -3534,6 +3561,7 @@ controllersModule.controller('FeedBackCtrl', function($scope, $filter, $routePar
     
     $scope.page.init = function(){
         $scope.page.loadTraining();
+        $scope.page.loadFeedbackTemplate();
     };
 
     /* Подгрузить обучение */
@@ -3546,9 +3574,23 @@ controllersModule.controller('FeedBackCtrl', function($scope, $filter, $routePar
                 $scope.page.alert = UtilsSrvc.getAlert('Внимание!', response.data, 'error', true);
             }); 
     };
+    
+    /* Подгрузить шаблон отзыва */
+    $scope.page.loadFeedbackTemplate = function(){
+        TrainingSrvc.getFeedBackTemplate().then(
+            function(data){
+                $scope.page.feedBack = data;
+            },
+            function(response){
+                $scope.page.alert = UtilsSrvc.getAlert('Внимание!', response.data, 'error', true);
+            }); 
+    };
 
     // Save feedback
     $scope.page.submit = function(){
+        if (!$scope.page.allRatingsAreFilled)
+            return;
+        
         TrainingSrvc.saveFeedBack($scope.page.feedBack, $routeParams.id, $routeParams.code).then(
             function(data){
                 $scope.page.hide = true;
@@ -3557,6 +3599,19 @@ controllersModule.controller('FeedBackCtrl', function($scope, $filter, $routePar
             function(response){
                 $scope.page.alert = UtilsSrvc.getAlert('Внимание!', response.data, 'error', true);
             });        
+    };
+    
+    $scope.page.allRatingsAreFilled = function(){
+        if (!$scope.page.feedBack || !$scope.page.feedBack.items)
+            return true;
+        
+        for(var i=0; i < $scope.page.feedBack.items.length; i++){
+            var item = $scope.page.feedBack.items[i];
+            if (item.type.isRequired == 1 && item.type.isScaleType == 1 && item.scaleValue == 0)
+                return false; // не заполнили все рейтинги!
+        }
+        
+        return true;
     };
 
     $scope.page.init();
@@ -5124,6 +5179,9 @@ servicesModule.factory('TrainingSrvc', function(DALSrvc, $filter) {
         saveFeedBack: function(data, trId, code){
             return DALSrvc.getPromise('save', StcAppSetting.user + '/json/training/' + trId + '/feedback/' + code, data);
         },
+        getFeedBackTemplate:function(){
+            return DALSrvc.getPromise('get', StcAppSetting.user + '/json/feedback/template', null);
+        },
         /* All training feedbacks */
         getFeedBacksForGrid: function(pageCurr, pageSize, sqlName, isDown, searchSqlName, searchText, trainingId){
             var first = pageSize * (pageCurr - 1) + 1;
@@ -5568,12 +5626,18 @@ servicesModule.factory('UtilsSrvc', function($dialog, $filter, DALSrvc) {
         getTwoDate: function(start, finish){
             var startText = $filter('convertCacheDate')(start, $filter('localize')('d MMMM y'));
             var finishText = $filter('convertCacheDate')(finish, $filter('localize')('d MMMM y'));
-                
-            var startYearBorder = startText.indexOf(" ", 3);
-            if (startYearBorder > 0){
-                startText = startText.substring(0, startYearBorder);    
+            var partsDate = startText.split(",");
+
+            if (partsDate.length == 1){
+                // На тот случай если startText == "17 октября 2015"
+                partsDate = startText.split(" ");
+                startText = partsDate[0] + ' ' + partsDate[1];
             }
-                
+            else if (partsDate.length == 2){
+                // На тот случай если startText == "october 17, 2015"
+                startText = partsDate[0];
+            }
+     
             return startText + ' - ' +  finishText;
         },
         getMailPattern: function(type){
@@ -5931,8 +5995,8 @@ directivesModule.directive('stctraining', function(){
                 $scope.loadCourses();
             };
 
-            $scope.$watch('training.id', function(){
-                if ($scope.training && $scope.training.id){
+            $scope.$watch('training.isLoaded', function(){
+                if ($scope.training && $scope.training.isLoaded){
                     $scope.yandex.results.push($scope.training.address);
                     $scope.addressCheck(false, true, false);
                 }

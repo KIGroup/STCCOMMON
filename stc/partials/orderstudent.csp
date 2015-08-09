@@ -73,7 +73,7 @@ var callbackYmap = function(){};
                     </p>
                     <p>
                         <span ng-bind="'Дата'|localize"></span>: <span ng-bind="ordForm.training.dates"></span>
-                        <span ng-bind="', время'|localize"></span>: <span ng-bind="ordForm.training.timeStart + ' - ' + ordForm.training.timeFinish"></span>
+                        <span ng-bind="', время'|localize"></span>: <span ng-bind="ordForm.training.timeStartFinish"></span>
                     </p>
                 
                     <p><span ng-bind="'Преподаватель'|localize"></span>: <span ng-bind="getFullNameForCurLang(ordForm.training.teacher.lastName, ordForm.training.teacher.firstName, ordForm.training.teacher.middleName)"></span></p>

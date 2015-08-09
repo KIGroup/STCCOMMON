@@ -36,8 +36,8 @@ directivesModule.directive('stctraining', function(){
                 $scope.loadCourses();
             };
 
-            $scope.$watch('training.id', function(){
-                if ($scope.training && $scope.training.id){
+            $scope.$watch('training.isLoaded', function(){
+                if ($scope.training && $scope.training.isLoaded){
                     $scope.yandex.results.push($scope.training.address);
                     $scope.addressCheck(false, true, false);
                 }
@@ -77,6 +77,35 @@ directivesModule.directive('stctraining', function(){
                     });
             };
 
+            $scope.changeTimeMode = function(timeType){
+                switch($scope.training[timeType]){
+                    case 'a.m.':
+                    {
+                        $scope.training[timeType] = 'p.m.';
+                        break;
+                    }
+                    case 'p.m.':
+                    {
+                        $scope.training.timeStartType = '24';
+                        $scope.training.timeFinishType = '24';
+                        break;
+                    }
+                    case '24':
+                    {
+                        $scope.training[timeType] = 'a.m.';
+                        break;
+                    }
+                }
+            };
+            
+            $scope.$watch('training.startTimeType', function(){
+                if ($scope.training.startTimeType != '24')
+                    $scope.training.timePattern = '([0-9]|0[0-9]|1[0-2]|2[0-2]):[0-5][0-9]';
+                else
+                    $scope.training.timePattern = '([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]';
+            }, true);
+            
+            
             // Подгрузить курсы 
             $scope.loadCourses = function(){
                 CourseTeacherSrvc.getAll(-1).then(

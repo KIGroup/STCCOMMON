@@ -6,9 +6,9 @@
 ===========================================================================================*/
 
 servicesModule.factory('CertificateSrvc', function(DALSrvc) {
-	
-	return {
-	      /* Все сертификаты */
+    
+    return {
+          /* Все сертификаты */
         getAllForGrid: function(pageCurr, pageSize, sqlName, isDown, searchSqlName, searchText, isPrinted){
             var first = pageSize * (pageCurr - 1) + 1;
             var obj = {sqlName: sqlName, 
@@ -26,7 +26,10 @@ servicesModule.factory('CertificateSrvc', function(DALSrvc) {
         },
         print: function(number){
             return DALSrvc.getPromise('save', StcAppSetting.admin + '/json/certificate/' + number + '/print', null);
-        }
+        },
+        sendToOffice: function(trainingId){
+            return DALSrvc.getPromise('save', StcAppSetting.admin + '/json/traiing/' + trainingId + '/certificate/sendToOffice', null);
+        }    
     }
 });
   

@@ -162,7 +162,7 @@ directivesModule.directive('stcgrid', function(){
                 if (!$scope.selectable || property.cellSelectable)
                     return;
                  
-                item.rowClass = 'success';
+                item.rowClass = 'info';
                 var idx = UtilsSrvc.getIndexes($scope.selectedItems, 'id', item.id);
                 
                 if (idx.length != 0){

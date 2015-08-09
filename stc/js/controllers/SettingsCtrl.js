@@ -7,61 +7,66 @@ SettingsCtrl - all settings for google, mail
 
 controllersModule.controller('SettingsCtrl', function($scope, $filter, SettingsSrvc, UtilsSrvc){
     $scope.menu.selectMenu('settings');
-    $scope.page = {google:{
-                      settings: {},
-                      calendar: {}
-                   }, 
-                   mail:{
-                      settings: {},
-                      operators: {items:[{email:{}}]},
-                      reminder: {},
-                      feedback: {},
-                      listOfFeedbacks: {},
-                      teacher: {},
-                      curator: {},
-                      registration: {},
-                      orders: {},
-                      orderapply: {},
-                      mailinggroup: {},
-                      mailingsubscriber:{},
-                      confirmsubscription:{}
-                   }
-                 };
+    $scope.google = 
+    {
+        settings: {},
+        calendar: {}
+    }; 
+    
+    $scope.mail = 
+    {
+        settings: {},
+        operators: {items:[{email:{}}]},
+        types: [
+                {code: 'reminder', name: $filter('localize')('Слушатели. Напоминание о начале занятий')},
+                {code: 'registration', name: $filter('localize')('Слушатель. Подтверждение регистрации')},
+                {code: 'feedback', name: $filter('localize')('Слушатели. Доступ к анкете после завершения обучения')},
+                {code: 'teacher', name: $filter('localize')('Преподаватель. Доступ к списку слушателей перед началом обучения')},
+                {code: 'teacherSetAttendeeStatus', name: $filter('localize')('Преподаватель. Доступ к списку слушателей после завершения обучения, указать посещаемость')},
+                {code: 'curator', name: $filter('localize')('Куратор. Доступ к списку слушателей перед началом обучения')},
+                {code: 'orders', name: $filter('localize')('Заявки. Ссылка для регистрации')},
+                {code: 'orderapply', name: $filter('localize')('Одобрение заявки, отсылка письма контакту организации')},
+                {code: 'confirmsubscription', name: $filter('localize')('Активация подписки')},
+                {code: 'listOfFeedbacks', name: $filter('localize')('Доступ к отзывам о курсе')}
+              ],
+        common: {}
+     };
+    
     
     //================================================================================================================================================================
     // GOOGLE                                                                                                                                                   GOOGLE
     //================================================================================================================================================================
     // Load settings for google tab by type (calendar etc.)
-    $scope.page.google.load = function(type){
+    $scope.google.load = function(type){
         SettingsSrvc.getGoogle(type).then(
                 function(data){
-                    $scope.page.google[data.type] = data.data;
+                    $scope.google[data.type] = data.data;
                 },
                 function(response){      
-                    $scope.page.alert = UtilsSrvc.getAlert('Внимание!', response.data, 'error', true);
+                    $scope.alert = UtilsSrvc.getAlert('Внимание!', response.data, 'error', true);
                 });
     };
 
     // Save settings for google tab by type (calendar etc.)
-    $scope.page.google.save = function(type, form){
-        SettingsSrvc.saveGoogle($scope.page.google[type], type).then(
+    $scope.google.save = function(type, form){
+        SettingsSrvc.saveGoogle($scope.google[type], type).then(
                 function(data){
                     form.$setPristine();
-                    $scope.page.google[type].alertLabel = UtilsSrvc.getAlertLabel('Сохранение завершено', 'success');
+                    $scope.google[type].alertLabel = UtilsSrvc.getAlertLabel('Сохранение завершено', 'success');
                 },
                 function(response){      
-                    $scope.page.alert = UtilsSrvc.getAlert('Внимание!', response.data, 'error', true);
+                    $scope.alert = UtilsSrvc.getAlert('Внимание!', response.data, 'error', true);
                 });
     };
 
     // Load settings for google tab by type (calendar etc.)
-    $scope.page.google.cancel = function(type, form){
-        $scope.page.google.load(type);
+    $scope.google.cancel = function(type, form){
+        $scope.google.load(type);
         form.$setPristine();
     };
 
     // Show help dialog window
-    $scope.page.google.showHelp = function(type){
+    $scope.google.showHelp = function(type){
         var msg = '';
 
         switch(type){
@@ -75,14 +80,14 @@ controllersModule.controller('SettingsCtrl', function($scope, $filter, SettingsS
     };
 
     // Show preview for google tab as html
-    $scope.page.google.showPreview = function(type){
+    $scope.google.showPreview = function(type){
     SettingsSrvc.getGooglePreview(type).then(
                 function(data){
-                  $scope.page.google[type].preview = data.preview;
-                  $scope.page.google[type].previewIsVisible = true;
+                  $scope.google[type].preview = data.preview;
+                  $scope.google[type].previewIsVisible = true;
                 },
                 function(response){      
-                    $scope.page.alert = UtilsSrvc.getAlert('Внимание!', response.data, 'error', true);
+                    $scope.alert = UtilsSrvc.getAlert('Внимание!', response.data, 'error', true);
                 });  
     };
 
@@ -91,22 +96,32 @@ controllersModule.controller('SettingsCtrl', function($scope, $filter, SettingsS
     // MAIL                                                                                                                                                       MAIL
     //================================================================================================================================================================
     // Load settings for mail tab by type (reminder, feedback and etc.)
-    $scope.page.mail.load = function(type){
+    $scope.mail.load = function(type){
+        var propertyName = type;
+        
+        if (type != 'settings' && type != 'operators')
+            propertyName = 'common';
+    
+    
         SettingsSrvc.getMail(type).then(
                 function(data){
-                    $scope.page.mail[data.type] = data.data;
-                    if ($scope.page.mail[data.type].message){
-                        $scope.page.mail[data.type].message = $scope.page.mail[data.type].message.replace(/<br>/g, "\n")
+                    $scope.mail[propertyName] = data.data;
+                    if ($scope.mail[propertyName].message){
+                        $scope.mail[propertyName].message = $scope.mail[propertyName].message.replace(/<br>/g, "\n")
                     }
                 },
                 function(response){      
-                    $scope.page.alert = UtilsSrvc.getAlert('Внимание!', response.data, 'error', true);
+                    $scope.alert = UtilsSrvc.getAlert('Внимание!', response.data, 'error', true);
                 });
     };
     
     // Save settings for mail tab by type (reminder, feedback and etc.)
-    $scope.page.mail.save = function(type, form){
-        var mailData = angular.copy($scope.page.mail[type]);
+    $scope.mail.save = function(type, form){
+        var propertyName = type;
+        if (type != 'settings' && type != 'operators')
+            propertyName = 'common';
+            
+        var mailData = angular.copy($scope.mail[propertyName]);
         
         if (mailData.message){
             mailData.message = mailData.message.replace(/\n/g, "<br>");
@@ -115,26 +130,33 @@ controllersModule.controller('SettingsCtrl', function($scope, $filter, SettingsS
         SettingsSrvc.saveMail(mailData, type).then(
                 function(data){
                     form.$setPristine(); 
-                    $scope.page.mail[type].alertLabel = UtilsSrvc.getAlertLabel('Сохранение завершено', 'success');
+                    $scope.mail[propertyName].alertLabel = UtilsSrvc.getAlertLabel('Сохранение завершено', 'success');
                 },
                 function(response){      
-                    $scope.page.alert = UtilsSrvc.getAlert('Внимание!', response.data, 'error', true);
+                    $scope.alert = UtilsSrvc.getAlert('Внимание!', response.data, 'error', true);
                 });
     };
 
     // Load settings for mail tab by type (reminder, feedback and etc.)
-    $scope.page.mail.cancel = function(type, form){
-        $scope.page.mail.load(type);
+    $scope.mail.cancel = function(type, form){
+        $scope.mail.load(type);
         form.$setPristine();
     };
 
-    $scope.page.mail.removeOperator = function(idx, form){
-        $scope.page.mail.operators.items.splice(idx, 1);
+    $scope.mail.removeOperator = function(idx, form){
+        $scope.mail.operators.items.splice(idx, 1);
         form.$setDirty();
     };
     
+    $scope.mail.onTypeChanged = function(form){
+        $scope.mail.load($scope.mail.typeCode);
+        form.$setPristine();
+    };
+    
+    
+    
     // Show help dialog window 
-    $scope.page.mail.showHelp = function(type){
+    $scope.mail.showHelp = function(type){
         var getLocValue = function(key){
             return $filter('localize')(key)
         };
@@ -203,31 +225,27 @@ controllersModule.controller('SettingsCtrl', function($scope, $filter, SettingsS
     };
 
     // Show preview for mail tab as html
-    $scope.page.mail.showPreview = function(type){
+    $scope.mail.showPreview = function(type){
+        var propertyName = type;
+        
+        if (type != 'settings' && type != 'operators')
+            propertyName = 'common';
+        
         SettingsSrvc.getMailPreview(type).then(
                 function(data){
-                    $scope.page.mail[type].preview = data.preview;
-                    $scope.page.mail[type].previewIsVisible = true;
+                    $scope.mail[propertyName].preview = data.preview;
+                    $scope.mail[propertyName].previewIsVisible = true;
                 },
                 function(response){      
-                    $scope.page.alert = UtilsSrvc.getAlert('Внимание!', response.data, 'error', true);
+                    $scope.alert = UtilsSrvc.getAlert('Внимание!', response.data, 'error', true);
                 });  
     };
 
     
     // Load all settings
-      $scope.page.google.load('settings');
-    $scope.page.google.load('calendar');
-    $scope.page.mail.load('settings');
-    $scope.page.mail.load('operators');
-    $scope.page.mail.load('reminder');
-    $scope.page.mail.load('registration');
-    $scope.page.mail.load('feedback');
-    $scope.page.mail.load('teacher');
-    $scope.page.mail.load('curator');
-    $scope.page.mail.load('orders');
-    $scope.page.mail.load('orderapply');
-    $scope.page.mail.load('confirmsubscription');
-    $scope.page.mail.load('listOfFeedbacks'); 
+    $scope.google.load('settings');
+    $scope.google.load('calendar');
+    $scope.mail.load('settings');
+    $scope.mail.load('operators');
 });
 

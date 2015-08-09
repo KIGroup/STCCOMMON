@@ -134,6 +134,9 @@
                     second-row-action-title="'Удалить слушателя'|localize"
                     second-row-action-method="allstud.remove(item)"
                         
+                    on-select="allstud.onSelect(item)"
+                    on-select-cell="allstud.onSelectCell(item, property)"
+                        
                     forcibly-update="allstud.forciblyUpdate"
                 />
             </tab>
@@ -170,8 +173,10 @@
                         
                     forcibly-update="cert.forciblyUpdate"
                 />
-                <button type="button" ng-hide="menu.readOnlyMode" class="btn btn-small btn-primary" ng-click="cert.createAll()" ng-bind="'Обновить'|localize" title="{{'Создание сертификатов для слушателей (если еще не созданы)'|localize}}"></button>
-                <button type="button" ng-hide="menu.readOnlyMode" class="btn btn-small btn-success" ng-click="cert.exportToCSV()" ng-bind="'Экспорт'|localize" title="{{'Экспорт всех сертификатов в файл *.csv'|localize}}"></button>
+                <button type="button" ng-hide="menu.readOnlyMode" class="btn btn-small" ng-click="cert.createAll()" title="{{'Создание сертификатов для слушателей (если еще не созданы)'|localize}}"><i class="icon-refresh"></i>&nbsp;&nbsp;{{'Обновить / пересоздать'|localize}}</button>
+                <button type="button" ng-hide="menu.readOnlyMode" class="btn btn-small" ng-click="cert.exportToCSV()" title="{{'Экспорт всех сертификатов в файл *.csv'|localize}}"><i class="icon-download-alt"></i>&nbsp;&nbsp;{{'Экспорт сертификатов'|localize}}</button>
+                <button type="button" ng-hide="menu.readOnlyMode" class="btn btn-small" ng-click="cert.sendToOffice()" title="{{'Отправить сертификаты'|localize}}"><i class="icon-envelope"></i>&nbsp;&nbsp;{{'Отправить в офис'|localize}}</button>
+                
             </tab>
              <!-- ============================================ ОТЗЫВЫ ==================================================-->
             <tab heading="{{('Отзывы'|localize) + ' (' + training.data.feedBacks.count + ')'}}" select="feedBack.selectTab()" active="pageStore.training.tabFeedBacksActive">
@@ -505,12 +510,22 @@
          <tabset>
             <!-- ============================================ ПОДРОБНОСТИ ОТЗЫВА ==================================================-->
             <tab heading="{{'Информация'|localize}}">
-                <p><span class="spnTitle" ng-bind="'Оценка'|localize"></span>: <rating value="feedBack.selectedItems[0].rating" readonly="true" on-hover="" on-leave="" required></rating></p>
-                <p ng-hide="feedBack.selectedItems[0].author==''"><span class="spnTitle" ng-bind="'Автор'|localize"                               ></span>: <span ng-bind="feedBack.selectedItems[0].author"></span></p>
-                <p ng-hide="feedBack.selectedItems[0].whatLiked==''" style="text-align: justify;"><span class="spnTitle" ng-bind="'Что понравилось'|localize"></span>: <span ng-bind="feedBack.selectedItems[0].whatLiked"></span></p>
-                <p ng-hide="feedBack.selectedItems[0].whatImprovements==''" style="text-align: justify;"><span class="spnTitle" ng-bind="'Что можно улучшить'|localize"                  ></span>: <span ng-bind="feedBack.selectedItems[0].whatImprovements"></span></p>
-                <p ng-hide="feedBack.selectedItems[0].whatHear==''" style="text-align: justify;"><span class="spnTitle" ng-bind="'Что ещё хотелось бы услышать в курсе'|localize"></span>: <span ng-bind="feedBack.selectedItems[0].whatHear"></span></p>
-                <p ng-hide="feedBack.selectedItems[0].aboutTeacher==''" style="text-align: justify;"><span class="spnTitle" ng-bind="'Комментарии о докладчике'|localize"            ></span>: <span ng-bind="feedBack.selectedItems[0].aboutTeacher"></span></p>
+                <p ng-hide="feedBack.selectedItems[0].author==''"><span class="spnTitle" ng-bind="'Автор'|localize"></span>: <span ng-bind="feedBack.selectedItems[0].author"></span></p>
+                
+                <div class="row-fluid">
+                    <div class="span6">          
+                        <div ng-repeat="item in feedBack.selectedItems[0].items | orderBy: 'typeSeqNumber' | filter: {groupTypeCode: 'Instructor Nonspecific'}">
+                            <p ng-show="item.type.isScaleType==1"><span class="spnTitle" ng-bind="item.type.name"></span>: <rating value="item.scaleValue" readonly="true" on-hover="" on-leave=""></rating></p>
+                            <p ng-hide="item.type.isScaleType==1"><span class="spnTitle" ng-bind="item.type.name"></span>: <span ng-bind="item.textValue"></span></p>
+                        </div>
+                    </div>
+                    <div class="span6">
+                        <div ng-repeat="item in feedBack.selectedItems[0].items | orderBy: 'typeSeqNumber' | filter: {groupTypeCode: '!Instructor Nonspecific'}">
+                            <p ng-show="item.type.isScaleType==1"><span class="spnTitle" ng-bind="item.type.name"></span>: <rating value="item.scaleValue" readonly="true" on-hover="" on-leave=""></rating></p>
+                            <p ng-hide="item.type.isScaleType==1"><span class="spnTitle" ng-bind="item.type.name"></span>: <span ng-bind="item.textValue"></span></p>
+                        </div>
+                    </div>
+                </div>
             </tab>
         </tabset>
     </div>

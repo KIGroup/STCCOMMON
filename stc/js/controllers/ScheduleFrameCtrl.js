@@ -67,7 +67,7 @@ controllersModule.controller('ScheduleFrameCtrl', function($scope, $window, $fil
                                             courseProgramUrl: course.programUrl,
                                             city: training.city.name + ', ' + training.city.parentName + ', ' + training.city.greatParentName,
                                             address: training.address,
-                                            time: training.timeStart + ' - ' + training.timeFinish,
+                                            time: training.timeStartFinish,
                                             teacher: training.teacher.lastName + ' ' + training.teacher.firstName +  ', ' + training.teacher.email,
                                             curator: training.curatorInfo,
                                             otherInfo: training.otherInfo   
