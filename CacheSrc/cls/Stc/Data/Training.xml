@@ -502,22 +502,22 @@ Create certificates for all students</Description>
     
     set trId = ..%Id()
     
-    &sql(DECLARE TrCur CURSOR FOR 
+    &sql(DECLARE TrCur2 CURSOR FOR 
              SELECT Student
              FROM Stc_Data.SubGroupStudent
              WHERE Training = :trId AND AttendedStatusCode <> 'NotVisited') 
         
-    &sql(OPEN TrCur)
+    &sql(OPEN TrCur2)
     for  
     {   
-        &sql(FETCH TrCur INTO :stId) 
+        &sql(FETCH TrCur2 INTO :stId) 
         quit:(SQLCODE '= 0)
         
         set student = ##class(Person).%OpenId(stId)
         do listOfStudents.Insert(student)
     }
         
-    &sql(CLOSE TrCur)
+    &sql(CLOSE TrCur2)
     
     quit ##class(Stc.Data.Certificate).CreateAll($this, listOfStudents)
 ]]></Implementation>

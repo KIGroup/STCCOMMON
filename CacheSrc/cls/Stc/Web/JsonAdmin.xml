@@ -1497,7 +1497,7 @@ Method="POST" Url="/json/training/student/grid" </Description>
     try{
         $$$THROWONERROR(st, ##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(%request.Content,,.params, 1))
         
-        set whereRequired = "SubGroup IN (SELECT SubGroups FROM Stc_Data.Training_SubGroups WHERE Training = '"_..ParseParameter(params.trainingId)_"')"
+        set whereRequired = "Training = '"_..ParseParameter(params.trainingId)_"'"
         
         set gridData = ..GetJsonForGrid("SELECT Student FROM Stc_Data.SubGroupStudent", "Stc.Data.Person", params, whereRequired)
         $$$THROWONERROR(st, st)

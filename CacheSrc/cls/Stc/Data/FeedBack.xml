@@ -144,6 +144,7 @@ FeedBacks items</Description>
 <IdLocation>^Stc.Data.TrainingC("FeedBacks")</IdLocation>
 <IndexLocation>^Stc.Data.FeedBackI</IndexLocation>
 <StreamLocation>^Stc.Data.FeedBackS</StreamLocation>
+<ExtentSize>100000</ExtentSize>
 <Data name="FeedBackDefaultData">
 <Value name="1">
 <Value>%%CLASSNAME</Value>
