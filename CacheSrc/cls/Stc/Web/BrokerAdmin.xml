@@ -218,7 +218,8 @@ Private request processor for administrator</Description>
     <!-- Delete certificate -->
     <Route Method="DELETE" Url="/json/certificate/:number" Call="Stc.Web.JsonAdmin:DeleteCertificate"/> 
     
-    
+    <!-- Send certificates to office -->
+    <Route Method="POST" Url="/json/traiing/:id/certificate/sendToOffice" Call="Stc.Web.JsonAdmin:SendCertificatesToOffice"/> 
     
     <!-- ================================================================================================================================== -->
     <!-- PERSON                                                                                                                      PERSON -->

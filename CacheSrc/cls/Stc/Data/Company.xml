@@ -122,6 +122,12 @@ All employees</Description>
 <Type>Region</Type>
 </Property>
 
+<Property name="ISISID">
+<Description>
+Integrated student information system</Description>
+<Type>%String</Type>
+</Property>
+
 <Method name="ConvertToProxyObject">
 <Description>
 Convert to proxyObject (for JSON)</Description>
@@ -139,6 +145,7 @@ Convert to proxyObject (for JSON)</Description>
     set proxy.fullName = ..FullName.Value
     set proxy.settlementAccount = ..SettlementAccount
     set proxy.correspondentAccount = ..CorrespondentAccount
+    set proxy.isisID = ..ISISID
     set proxy.bic = ..BIC
     set proxy.kpp= ..KPP
     set proxy.inn = ..INN
@@ -154,7 +161,6 @@ Convert to proxyObject (for JSON)</Description>
     else{
         set proxy.isUnknownCity = $$$YES
     }
-    
     
     if $ISOBJECT(..Contact){
         set proxy.contact = ..Contact.ConvertToProxyObject()
@@ -208,6 +214,7 @@ Create or save modified organization</Description>
         set company.City = $$$NULLOREF
     }
     
+    set company.ISISID = data.isisID
     set company.BIC = $ZCONVERT(data.bic, "I","UTF8")
     set company.OGRN = $ZCONVERT(data.ogrn, "I","UTF8")
     set company.INN = $ZCONVERT(data.inn, "I","UTF8")
@@ -385,6 +392,9 @@ Delete organization, if it is available</Description>
 </Value>
 <Value name="17">
 <Value>City</Value>
+</Value>
+<Value name="18">
+<Value>ISISID</Value>
 </Value>
 </Data>
 </Storage>

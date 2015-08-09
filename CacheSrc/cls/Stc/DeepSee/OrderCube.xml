@@ -20,14 +20,14 @@ Cube definition from Architect.</Description>
   <dimension name="Course" displayName="Курс" disabled="false" hasAll="false" allCaption="All Name" allDisplayName="Name" type="data" iKnowType="entity" hidden="false" showHierarchies="default">
     <hierarchy name="Course" displayName="Курс" disabled="false">
       <level sourceProperty="Course.Name" name="Name" displayName="Курс" disabled="false" list="false" useDisplayValue="true" useAsFilter="true">
-        <property sourceProperty="Course.Name.Value" name="Value" displayName="Курс" disabled="false" hidden="false" isName="true"  isReference="true" useDisplayValue="false"></property>
+        <property sourceProperty="Course.Name.Value" name="Value" displayName="Курс" disabled="false" hidden="false" isName="true" isDescription="false" isReference="true" useDisplayValue="false"></property>
       </level>
     </hierarchy>
   </dimension>
   <dimension name="OrderStatus" displayName="Статус" disabled="false" hasAll="false" allCaption="All Name1" allDisplayName="Name1" type="data" iKnowType="entity" hidden="false" showHierarchies="default">
     <hierarchy name="H1" disabled="false">
       <level sourceProperty="OrderStatus.Name" name="OrderStatus" displayName="Статус" disabled="false" list="false" useDisplayValue="true" useAsFilter="true">
-        <property sourceProperty="OrderStatus.Name.Value" name="Value" displayName="Статус" disabled="false" hidden="false" isName="true"  isReference="true" useDisplayValue="false"></property>
+        <property sourceProperty="OrderStatus.Name.Value" name="Value" displayName="Статус" disabled="false" hidden="false" isName="true" isDescription="false" isReference="true" useDisplayValue="false"></property>
       </level>
     </hierarchy>
   </dimension>

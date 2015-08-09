@@ -45,6 +45,57 @@ Write all messages into global do ##class(Stc.Utils.Msg).Init()</Description>
 <ClassMethod>1</ClassMethod>
 <ReturnType>%Status</ReturnType>
 <Implementation><![CDATA[
+    set ^CacheMsg("Stc", "ru", "StudentsRemainder") = "Слушатели, напоминание"
+    set ^CacheMsg("Stc", "en", "StudentsRemainder") = "Reminder for attendees"
+    
+    set ^CacheMsg("Stc", "ru", "TeacherAccessToStudentsList") = "Преподаватель, доступ к списку слушателей"
+    set ^CacheMsg("Stc", "en", "TeacherAccessToStudentsList") = "Teacher. Access to the list of attendees"
+    
+    set ^CacheMsg("Stc", "ru", "TeacherAccessToStudentsListForSetStatus") = "Преподаватель, доступ к списку слушателей (посещаемость)"
+    set ^CacheMsg("Stc", "en", "TeacherAccessToStudentsListForSetStatus") = "Teacher. Access to the list of attendees (attendance)"
+    
+    set ^CacheMsg("Stc", "ru", "CuratorAccessToStudentList") = "Куратор, список слушателей"
+    set ^CacheMsg("Stc", "en", "CuratorAccessToStudentList") = "Curator. Access to the list of attendees"
+    
+    set ^CacheMsg("Stc", "ru", "StudentAccessToFeedBack") = "Слушатель, доступ к анкете"
+    set ^CacheMsg("Stc", "en", "StudentAccessToFeedBack") = "Attendee. Access to the survey"
+    
+    set ^CacheMsg("Stc", "ru", "ContactFromOrder") = "Контакт из заявки"
+    set ^CacheMsg("Stc", "en", "ContactFromOrder") = "Contact from request"
+    
+    set ^CacheMsg("Stc", "ru", "TeacherAccessToNewesFeedBacks") = "Преподаватель, доступ к новым отзывам"
+    set ^CacheMsg("Stc", "en", "TeacherAccessToNewesFeedBacks") = ""
+    
+    set ^CacheMsg("Stc", "ru", "NotificationAttendeesFromCity") = "Оповещение слушателей города - "
+    set ^CacheMsg("Stc", "en", "NotificationAttendeesFromCity") = "Notification attendees from city - "
+    
+    set ^CacheMsg("Stc", "ru", "Notification") = "Оповещение"
+    set ^CacheMsg("Stc", "en", "Notification") = "Notification"
+    
+    
+    set ^CacheMsg("Stc", "ru", "Operator") = "Оператор"
+    set ^CacheMsg("Stc", "en", "Operator") = "Operator"
+    
+    set ^CacheMsg("Stc", "ru", "GoToTrainingPage") = "Перейти на страницу обучения"
+    set ^CacheMsg("Stc", "en", "GoToTrainingPage") = "Go to training page"
+    
+    set ^CacheMsg("Stc", "ru", "GoToOrdersPage") = "Перейти на страницу заявок"
+    set ^CacheMsg("Stc", "en", "GoToOrdersPage") = "Go to orders page"
+    
+    set ^CacheMsg("Stc", "ru", "NewOrdersToJoin") = "Новые заявки на присоединение к курсу"
+    set ^CacheMsg("Stc", "en", "NewOrdersToJoin") = "New orders for joining to the course"
+    
+    set ^CacheMsg("Stc", "ru", "NewOrdersForTraining") = "Новые заявки на обучение"
+    set ^CacheMsg("Stc", "en", "NewOrdersForTraining") = "New training requests"
+    
+    set ^CacheMsg("Stc", "ru", "NewOrder") = "Новых заявок"
+    set ^CacheMsg("Stc", "en", "NewOrder") = "New requests"
+    
+    set ^CacheMsg("Stc", "ru", "") = ""
+    set ^CacheMsg("Stc", "en", "") = ""
+    
+    
+    
     set ^CacheMsg("Stc", "ru", "MailingFromTraining") = "Рассылка из обучения"
     set ^CacheMsg("Stc", "en", "MailingFromTraining") = "Mailing from training"
     
@@ -441,6 +492,7 @@ do ##class(Stc.Utils.Msg).DeepSeeMsg()</Description>
     // Курсы
     do ..AddDeepSeeMsg("Курсы и слушатели", "Courses and attendees")
     do ..AddDeepSeeMsg("Количество слушателей по курсам за все годы", "Number of attendees by courses for all years")
+    do ..AddDeepSeeMsg("Количество слушателей по курсам", "Number of attendees by courses")
     
     do ..AddDeepSeeMsg("Курсы и обучения", "Courses and trainings")
     do ..AddDeepSeeMsg("Количество обучений по курсам за все годы", "Number of trainings by courses for all years")

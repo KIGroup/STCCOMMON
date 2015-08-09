@@ -21,8 +21,8 @@ Cube definition from Architect.</Description>
   <dimension name="Course" displayName="Курс" disabled="false" hasAll="false" allCaption="All Value" allDisplayName="Value" type="data" iKnowType="entity" hidden="false" showHierarchies="default">
     <hierarchy name="H1" disabled="false">
       <level sourceProperty="Course.Name" name="CourseName" displayName="Курс" disabled="false" list="false" useDisplayValue="true" useAsFilter="true">
-        <property sourceProperty="Course.Name.Value" name="Value" displayName="Курс" disabled="false" hidden="false" isName="true" isDescription="false" isReference="true" useDisplayValue="false"></property>
-        <property sourceProperty="Course.Description.Value" name="Description" disabled="false" hidden="false" isName="false" isDescription="true" isReference="false" useDisplayValue="false"></property>
+        <property sourceProperty="Course.Name.Value" name="Value" displayName="Курс" disabled="false" hidden="false" isName="true" isReference="true" useDisplayValue="false"></property>
+        <property sourceProperty="Course.Description.Value" name="Description"  disabled="false" hidden="false" isName="false" isReference="false" useDisplayValue="false" isDescription="true"> </property>
       </level>
     </hierarchy>
   </dimension>
@@ -35,14 +35,13 @@ Cube definition from Architect.</Description>
   <dimension name="Teacher" displayName="Преподаватель" disabled="false" hasAll="false" allCaption="All Teacher" allDisplayName="Teacher" type="data" iKnowType="entity" hidden="false" showHierarchies="default">
     <hierarchy name="H1" disabled="false">
       <level sourceProperty="Teacher" name="TeacherFullName" displayName="Преподаватель" disabled="false" list="false" useDisplayValue="true" useAsFilter="true">
-        <property sourceProperty="Teacher.FullName" name="FullName" displayName="Преподаватель" disabled="false" hidden="false" isName="true" isDescription="false" isReference="true" useDisplayValue="false"></property>
+        <property sourceProperty="Teacher.FullName" name="FullName" displayName="Преподаватель" disabled="false" hidden="false" isName="true" isReference="true" useDisplayValue="false"></property>
       </level>
     </hierarchy>
   </dimension>
   <measure sourceProperty="%ID" name="Trainings" displayName="Обучения" disabled="false" aggregate="COUNT" type="integer" hidden="false" searchable="false" iKnowSource="string"></measure>
-  <measure sourceProperty="TeacherPayout" name="TeacherPayout" displayName="Оплата" disabled="false" aggregate="SUM" type="number" hidden="false" searchable="false"></measure>
   <relationship name="SubGroupCubeRelation" disabled="false" relatedCube="SubGroupCube" inverse="TrainingCubeRelation" cardinality="many"></relationship>
-  <listing name="Trainings" displayName="Обучения" disabled="false" listingType="table" sql="SELECT trTab.Course-&gt;Name-&gt;Value As &quot;$$$TEXT[&quot;Курс/Stc&quot;]&quot;,  trTab.City-&gt;Name-&gt;Value As &quot;$$$TEXT[&quot;Город/Stc&quot;]&quot;,  trTab.DateStart As &quot;$$$TEXT[&quot;Дата начала/Stc&quot;]&quot;,  trTab.DateFinish As &quot;$$$TEXT[&quot;Дата окончания/Stc&quot;]&quot;,  (SELECT COUNT(SubGroups) FROM Stc_Data.Training_SubGroups WHERE Training = trTab.ID) As &quot;$$$TEXT[&quot;Подгруппы/Stc&quot;]&quot;,  (SELECT COUNT(Students) FROM Stc_Data.SubGroup_Students as sgStuds INNER JOIN Stc_Data.Training_SubGroups As trSubs ON trSubs.Training = trTab.ID AND sgStuds.SubGroup=trSubs.SubGroups) As &quot;$$$TEXT[&quot;Слушатели/Stc&quot;]&quot;  FROM Stc_Data.Training as trTab WHERE trTab.ID IN (SELECT ID FROM $$$SOURCE WHERE $$$RESTRICT) ORDER BY &quot;$$$TEXT[&quot;Дата окончания/Stc&quot;]&quot;, &quot;$$$TEXT[&quot;Город/Stc&quot;]&quot;, &quot;$$$TEXT[&quot;Курс/Stc&quot;]&quot; "></listing>
+  <listing name="Trainings" displayName="Обучения" disabled="false" listingType="table" sql="SELECT trTab.Course-&gt;Name-&gt;Value As &quot;$$$TEXT[&quot;Курс/Stc&quot;]&quot;,  trTab.City-&gt;Name-&gt;Value As &quot;$$$TEXT[&quot;Город/Stc&quot;]&quot;,  trTab.DateStart As &quot;$$$TEXT[&quot;Дата начала/Stc&quot;]&quot;,  trTab.DateFinish As &quot;$$$TEXT[&quot;Дата окончания/Stc&quot;]&quot;,  (SELECT COUNT(SubGroups) FROM Stc_Data.Training_SubGroups WHERE Training = trTab.ID) As &quot;$$$TEXT[&quot;Подгруппы/Stc&quot;]&quot;,  (SELECT COUNT(Student) FROM Stc_Data.SubGroupStudent as sgStuds INNER JOIN Stc_Data.Training_SubGroups As trSubs ON trSubs.Training = trTab.ID AND sgStuds.SubGroup=trSubs.SubGroups) As &quot;$$$TEXT[&quot;Слушатели/Stc&quot;]&quot;  FROM Stc_Data.Training as trTab WHERE trTab.ID IN (SELECT ID FROM $$$SOURCE WHERE $$$RESTRICT) ORDER BY &quot;$$$TEXT[&quot;Дата окончания/Stc&quot;]&quot;, &quot;$$$TEXT[&quot;Город/Stc&quot;]&quot;, &quot;$$$TEXT[&quot;Курс/Stc&quot;]&quot; "></listing>
 </cube>
 ]]></Data>
 </XData>
@@ -54,8 +53,8 @@ Cube definition from Architect.</Description>
 <Implementation><![CDATA[
 	set count = 0
 	
-	&sql(SELECT COUNT(sgStudents.Students) INTO :count 
-		 FROM Stc_Data.SubGroup_Students as sgStudents INNER JOIN 
+	&sql(SELECT COUNT(sgStudents.Student) INTO :count 
+		 FROM Stc_Data.SubGroupStudent as sgStudents INNER JOIN 
 		 	  Stc_Data.Training_SubGroups as trSubGroups ON trSubGroups.SubGroups = sgStudents.SubGroup
 		 WHERE trSubGroups.Training = :id)
 	
@@ -101,17 +100,6 @@ Cube definition from Architect.</Description>
 	set name = "--"
 	&sql(SELECT ShortName->Value INTO :name FROM Stc_Data.Company WHERE ID = :id)
 	quit name
-]]></Implementation>
-</Method>
-
-<Method name="Localization">
-<ClassMethod>1</ClassMethod>
-<ReturnType>%Status</ReturnType>
-<Implementation><![CDATA[
-	
-	s a=$$$Text("Слушателей за годы")
-	
-	s a=$$$Text("Новая запись")
 ]]></Implementation>
 </Method>
 </Class>

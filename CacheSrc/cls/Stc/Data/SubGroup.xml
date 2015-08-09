@@ -19,13 +19,6 @@ Paying organization</Description>
 <Required>1</Required>
 </Property>
 
-<Property name="Students">
-<Description>
-Students</Description>
-<Type>Person</Type>
-<Collection>array</Collection>
-</Property>
-
 <Property name="Amount">
 <Description>
 Pay amount</Description>
@@ -84,39 +77,40 @@ Contract expiring date</Description>
 Convert to proxyObject (for JSON)</Description>
 <ReturnType>%ZEN.proxyObject</ReturnType>
 <Implementation><![CDATA[
-	set proxy = ##class(%ZEN.proxyObject).%New()
-	set proxy.id = ..%Id()
-	set proxy.payer = ..Payer.ConvertToProxyObject()
-	set proxy.amount = ..Amount
-	set proxy.amountNDS = ..Amount * 1.18
-	
-	if (..Discount = 0) {
-		set proxy.discount = ""
-	}
-	else{
-		set proxy.discount = ..Discount
-	}
-	
-	set proxy.currency = ..Currency.ConvertToProxyObject()
-	
-	set proxy.contract = ##class(%ZEN.proxyObject).%New()
-	set proxy.contract.fullName = ..SignerFullName.Value
-	set proxy.contract.document = ..DocumentInfo.Value
-	
-	if (..DateStart) && (..DateFinish){
-		set proxy.contract.dateStart = $ZDATE(..DateStart, 3)
-		set proxy.contract.dateFinish = $ZDATE(..DateFinish, 3)
-	}
-	
-	set proxy.students = ##class(%ListOfObjects).%New()
-	
-	set key = ""
-	for i=1:1:..Students.Count(){
-		set key = ..Students.Next(key)
-		do proxy.students.Insert(..Students.GetAt(key).ConvertToProxyObject())
-	}
-	
-	quit proxy
+    set proxy = ##class(%ZEN.proxyObject).%New()
+    set proxy.id = ..%Id()
+    set proxy.payer = ..Payer.ConvertToProxyObject()
+    set proxy.amount = ..Amount
+    set proxy.amountNDS = ..Amount * 1.18
+    
+    if (..Discount = 0) {
+        set proxy.discount = ""
+    }
+    else{
+        set proxy.discount = ..Discount
+    }
+    
+    set proxy.currency = ..Currency.ConvertToProxyObject()
+    
+    set proxy.contract = ##class(%ZEN.proxyObject).%New()
+    set proxy.contract.fullName = ..SignerFullName.Value
+    set proxy.contract.document = ..DocumentInfo.Value
+    
+    if (..DateStart) && (..DateFinish){
+        set proxy.contract.dateStart = $ZDATE(..DateStart, 3)
+        set proxy.contract.dateFinish = $ZDATE(..DateFinish, 3)
+    }
+    
+    set proxy.students = ##class(%ListOfObjects).%New()
+    
+    set studentsArray = ..GetArrayOfStudents()
+    set key = ""
+    for i=1:1:studentsArray.Count(){
+        set key = studentsArray.Next(key)
+        do proxy.students.Insert(studentsArray.GetAt(key).ConvertToProxyObject())
+    }
+    
+    quit proxy
 ]]></Implementation>
 </Method>
 
@@ -124,23 +118,49 @@ Convert to proxyObject (for JSON)</Description>
 <Description>
 Create subgroup in training</Description>
 <ClassMethod>1</ClassMethod>
-<FormalSpec><![CDATA[payer:Company,students:%ArrayOfObjects,course:Stc.Data.Course,&status]]></FormalSpec>
+<FormalSpec><![CDATA[payer:Company,course:Stc.Data.Course,&status]]></FormalSpec>
 <ReturnType>SubGroup</ReturnType>
 <Implementation><![CDATA[
-	do ##class(Stc.Utils.Log).Create(..%ClassName(1)_".Create", "PayerID="_payer.%Id()_"; PayerShortName="_payer.ShortName.Value)
-	
-	set sub = ..%New()
-	set sub.Payer = payer
-	set sub.Students = students
-	set sub.Currency = ##class(Currency).%OpenId(1)
-	set sub.SignerFullName = ##class(Stc.Data.Localization.LText).Create("")
-	set sub.DocumentInfo = ##class(Stc.Data.Localization.LText).Create("")
-	
-	set sub.Amount = course.Price
-	set sub.Currency = course.Currency
-	
-	set status = sub.%Save()
-	quit sub
+    do ##class(Stc.Utils.Log).Create(..%ClassName(1)_".Create", "PayerID="_payer.%Id()_"; PayerShortName="_payer.ShortName.Value)
+    
+    set sub = ..%New()
+    set sub.Payer = payer
+    set sub.Currency = ##class(Currency).%OpenId(1)
+    set sub.SignerFullName = ##class(Stc.Data.Localization.LText).Create("")
+    set sub.DocumentInfo = ##class(Stc.Data.Localization.LText).Create("")
+    
+    set sub.Amount = course.Price
+    set sub.Currency = course.Currency
+    
+    set status = sub.%Save()
+    quit sub
+]]></Implementation>
+</Method>
+
+<Method name="GetArrayOfStudents">
+<ReturnType>%ArrayOfObjects</ReturnType>
+<Implementation><![CDATA[
+    set sgId = ..%Id()
+    set array = ##class(%ArrayOfObjects).%New()
+    
+    &sql(DECLARE StudCur CURSOR FOR 
+             SELECT Student 
+             FROM Stc_Data.SubGroupStudent 
+             WHERE SubGroup = :sgId
+             ORDER BY Student->FullName) 
+        
+    &sql(OPEN StudCur)
+    for  
+    {   
+        &sql(FETCH StudCur INTO :stId) 
+        quit:(SQLCODE '= 0)
+        
+        do array.SetAt(##class(Person).%OpenId(stId), stId)
+    }
+        
+    &sql(CLOSE StudCur)
+    
+    quit array
 ]]></Implementation>
 </Method>
 

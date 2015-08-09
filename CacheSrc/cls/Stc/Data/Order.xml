@@ -230,7 +230,7 @@ Create "new" application</Description>
 	set st = $$$OK
 	
 	&sql(DECLARE GrCur CURSOR FOR
-			SELECT trSg.Training->Course, trSg.SubGroups, trSg.SubGroups->Payer, (SELECT COUNT(sgSt.Students) FROM Stc_Data.SubGroup_Students as sgSt WHERE sgSt.SubGroup = trSg.SubGroups)
+			SELECT trSg.Training->Course, trSg.SubGroups, trSg.SubGroups->Payer, (SELECT COUNT(sgSt.Student) FROM Stc_Data.SubGroupStudent as sgSt WHERE sgSt.SubGroup = trSg.SubGroups)
 			FROM Stc_Data.Training_SubGroups as trSg
 			WHERE trSg.Training = :trId)
 	&sql(OPEN GrCur)

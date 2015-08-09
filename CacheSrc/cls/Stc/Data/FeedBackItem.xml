@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="Stc.Data.FeedBackItem">
+<Description>
+Item of the feedback</Description>
+<Super>%Persistent</Super>
+<TimeCreated>63745,58089.628683</TimeCreated>
+
+<Property name="Type">
+<Description>
+Type of the feedback</Description>
+<Type>Stc.Data.FeedBackItemType</Type>
+<Required>1</Required>
+</Property>
+
+<Property name="TextValue">
+<Description>
+Text value of item</Description>
+<Type>%Text</Type>
+<Parameter name="MAXLEN" value="4000"/>
+</Property>
+
+<Property name="ScaleValue">
+<Description>
+Scale value of item (rating)</Description>
+<Type>%Integer</Type>
+</Property>
+
+<Property name="FeedBack">
+<Description>
+FeedBack</Description>
+<Type>Stc.Data.FeedBack</Type>
+<Cardinality>parent</Cardinality>
+<Inverse>Items</Inverse>
+<Relationship>1</Relationship>
+</Property>
+
+<Index name="FeedBackIndex">
+<Properties>FeedBack</Properties>
+</Index>
+
+<Method name="ConvertToProxyObject">
+<ReturnType>%ZEN.proxyObject</ReturnType>
+<Implementation><![CDATA[
+    set proxy = ##class(%ZEN.proxyObject).%New()
+    set proxy.id = ..%Id()
+    set proxy.type = ..Type.ConvertToProxyObject()
+    set proxy.typeSeqNumber = ..Type.SeqNumber
+    set proxy.groupTypeCode = ..Type.GroupType.Code
+    set proxy.textValue = ..TextValue
+    set proxy.scaleValue = ..ScaleValue
+    
+    quit proxy
+]]></Implementation>
+</Method>
+
+<Storage name="Default">
+<Type>%Library.CacheStorage</Type>
+<DataLocation>{%%PARENT}("Items")</DataLocation>
+<DefaultData>FeedBackItemDefaultData</DefaultData>
+<IdLocation>^Stc.Data.FeedBackC("Items")</IdLocation>
+<IndexLocation>^Stc.Data.FeedBackItemI</IndexLocation>
+<StreamLocation>^Stc.Data.FeedBackItemS</StreamLocation>
+<Data name="FeedBackItemDefaultData">
+<Value name="1">
+<Value>%%CLASSNAME</Value>
+</Value>
+<Value name="2">
+<Value>TextValue</Value>
+</Value>
+<Value name="3">
+<Value>ScaleValue</Value>
+</Value>
+<Value name="4">
+<Value>Type</Value>
+</Value>
+</Data>
+</Storage>
+</Class>
+</Export>

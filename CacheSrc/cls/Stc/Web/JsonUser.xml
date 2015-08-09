@@ -345,6 +345,95 @@ Method="GET" Url="/json/mailing/subscription/:code"</Description>
 ]]></Implementation>
 </Method>
 
+<Method name="GetFeedBackTemplateForFill">
+<Description><![CDATA[
+
+==========================================================================================================================
+FEEDBACK                                                                                                          FEEDBACK
+==========================================================================================================================
+
+Get feedback template for fill data -->
+Method="GET" Url="/json/feedback/template" ]]></Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    set st = $$$OK
+    
+    set feedBack = ##class(%ZEN.proxyObject).%New()
+    set feedBack.items = ##class(%ListOfObjects).%New()
+        
+    try{
+        
+        &sql(DECLARE FBCurr CURSOR FOR 
+             SELECT ID
+             FROM Stc_Data.FeedBackItemType
+             WHERE IsActive = 1
+             ORDER BY SeqNumber) 
+        
+        &sql(OPEN FBCurr)
+        for  
+        {   
+            &sql(FETCH FBCurr INTO :id) 
+            quit:(SQLCODE '= 0)
+            
+            set fbItem = ##class(%ZEN.proxyObject).%New()
+            set fbItem.type = ##class(Stc.Data.FeedBackItemType).%OpenId(id).ConvertToProxyObject()
+            set fbItem.scaleValue = 0
+            set fbItem.groupTypeCode = fbItem.type.groupType.code
+            do feedBack.items.Insert(fbItem)
+        }
+            
+        &sql(CLOSE FBCurr)
+    }
+    catch(ex){
+        set st = ex.AsStatus()
+    }
+    
+    quit feedBack.%ToJSON()
+]]></Implementation>
+</Method>
+
+<Method name="SaveTrainingFeedBack">
+<Description>
+Create feedBack for training
+Method="POST" Url="/json/training/:id/feedback/:code"</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>trId:%String,accessCode:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    set status = $$$OK
+    
+    try{
+        TSTART
+        
+        $$$THROWONERROR(status, ##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(%request.Content,,.data, 1))
+        
+        set tr = ##class(Stc.Data.Training).%OpenId(trId)
+        if ($P(tr.AccessCode,"-",1)_"-"_$P(tr.AccessCode,"-",5) '= accessCode){
+            $$$ThrowStatus(##class(Stc.Utils.Msg).GetErrorStatus("feedBackErrorCode"))
+        }
+        
+        if (tr.FeedBacks.Count() > 50){
+            $$$ThrowStatus(##class(Stc.Utils.Msg).GetErrorStatus("feedBackSpam"))
+        }
+        
+        set data.trainingId = tr.%Id()
+        do ##class(Stc.Data.FeedBack).Save(data, .status)
+        
+        if ($$$ISERR(status)) $$$ThrowStatus(##class(Stc.Utils.Msg).GetErrorStatus("feedBackSave")) 
+        
+        TCOMMIT
+    }
+    catch ex {
+        TROLLBACK
+        
+        set status = ex.AsStatus()
+    }
+    
+    quit status
+]]></Implementation>
+</Method>
+
 <Method name="GetCities">
 <Description>
 
@@ -430,93 +519,25 @@ Method="POST" Url="/json/training/:code/student"</Description>
     try{
         $$$THROWONERROR(status, ##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(%request.Content,,.params, 1))
         
+        set tr = ##class(Stc.Data.Training).AccessCodeIdxOpen(accessCode,,.status)
+        $$$THROWONERROR(status, status)
+        
         set whereRequired = "SubGroup IN (SELECT SubGroups FROM Stc_Data.Training_SubGroups WHERE Training->AccessCode = '"_..ParseParameter(accessCode)_"')"
         
-        $$$THROWONERROR(status, ..WriteJsonForGrid("SELECT Students FROM Stc_Data.SubGroup_Students", "Stc.Data.Person", params, whereRequired))
-    }
-    catch ex {
-        set status = ex.AsStatus()
-    }
-    
-    quit status
-]]></Implementation>
-</Method>
-
-<Method name="GetTrainingOrderNewStudents">
-<Description>
-All training oredernewstudents for teacher view by access code
-Method="POST" Url="/json/training/:code/student"</Description>
-<ClassMethod>1</ClassMethod>
-<FormalSpec>accessCode:%String</FormalSpec>
-<ReturnType>%Status</ReturnType>
-<Implementation><![CDATA[
-    set status = $$$OK
-    
-    try{
-        $$$THROWONERROR(status, ##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(%request.Content,,.params, 1))
         
-        set whereRequired = "Training->AccessCode = '"_..ParseParameter(accessCode)_"'"
+        set gridData = ..GetJsonForGrid("SELECT Student FROM Stc_Data.SubGroupStudent", "Stc.Data.Person", params, whereRequired, .status)
+        $$$THROWONERROR(status, status)
         
-        $$$THROWONERROR(status, ..WriteJsonForGrid("SELECT ID FROM Stc_Data.OrderNewStudent", "Stc.Data.OrderNewStudent", params, whereRequired))
-    }
-    catch ex {
-        set status = ex.AsStatus()
-    }
-    
-    quit status
-]]></Implementation>
-</Method>
-
-<Method name="SaveTrainingFeedBack">
-<Description>
-Create feedBack for training
-Method="POST" Url="/json/training/:id/feedback/:code"</Description>
-<ClassMethod>1</ClassMethod>
-<FormalSpec>trId:%String,accessCode:%String</FormalSpec>
-<ReturnType>%Status</ReturnType>
-<Implementation><![CDATA[
-    set status = $$$OK
-    
-    try{
-        TSTART
-        
-        $$$THROWONERROR(status, ##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(%request.Content,,.data, 1))
-        
-        set tr = ##class(Stc.Data.Training).%OpenId(trId)
-        if ($P(tr.AccessCode,"-",1)_"-"_$P(tr.AccessCode,"-",5) '= accessCode){
-            $$$ThrowStatus(##class(Stc.Utils.Msg).GetErrorStatus("feedBackErrorCode"))
+        for i=1:1:gridData.children.items.Count(){
+            set studentProxy = gridData.children.items.GetAt(i)
+            
+            #dim stGrData As Stc.Data.SubGroupStudent = ##class(Stc.Data.SubGroupStudent).TrainingStudentIndexOpen(tr.%Id(), studentProxy.id)
+            set studentProxy.attendedStatusCode = stGrData.AttendedStatusCode
         }
         
-        if (tr.FeedBacks.Count() > 50){
-            $$$ThrowStatus(##class(Stc.Utils.Msg).GetErrorStatus("feedBackSpam"))
-        }
-        
-        do ##class(Stc.Utils.Log).Create("Stc.Web.JsonUser.SaveTrainingFeedBack", 
-            "Author="_data.author_
-            "TrainingId="_tr.%Id()_
-            "Rating="_data.rating_
-            "WhatLiked="_data.whatLiked_
-            "WhatImprovements="_data.whatImprovements_
-            "WhatHear="_data.whatHear_
-            "AboutTeacher="_data.aboutTeacher)
-    
-        set fb = ##class(Stc.Data.FeedBack).%New()
-        set fb.Author = $ZCONVERT(data.author, "I","UTF8")
-        set fb.Training = tr
-        set fb.Rating = data.rating
-        set fb.WhatLiked = $ZCONVERT(data.whatLiked, "I","UTF8")
-        set fb.WhatImprovements = $ZCONVERT(data.whatImprovements, "I","UTF8")
-        set fb.WhatHear = $ZCONVERT(data.whatHear, "I","UTF8")
-        set fb.AboutTeacher = $ZCONVERT(data.aboutTeacher, "I","UTF8")
-        set status = fb.%Save()
-        
-        if ($$$ISERR(status)) $$$ThrowStatus(##class(Stc.Utils.Msg).GetErrorStatus("feedBackSave")) 
-        
-        TCOMMIT
+        do gridData.%ToJSON()
     }
     catch ex {
-        TROLLBACK
-        
         set status = ex.AsStatus()
     }
     
@@ -635,16 +656,16 @@ Method="POST" Url="/json/training/:id/question"</Description>
         
         
         set msg = 
-            "Курс: "_tr.Course.Name.Value_", "_tr.City.Name.Value_", "_$ZD(tr.DateStart, 3)_"<br>"_
-            "Автор: "_data.author_", "_data.email_"<br>"_
-            "Тема сообщения: "_data.subject_"<br>"_
-            "Сообщение:<br>"_data.msg
+            "Course: "_tr.Course.Name.Value_", "_tr.City.Name.Value_", "_$ZD(tr.DateStart, 3)_"<br>"_
+            "Author: "_data.author_", "_data.email_"<br>"_
+            "Subject: "_data.subject_"<br>"_
+            "Message:<br>"_data.msg
         
         set emailList = $LISTFROMSTRING(##class(Stc.Data.Settings).GetMailingOperatorAddresses(), ",")
         set grNumber = ##class(Stc.Data.MailingJournal).GetValidGroupNumber()
         for i=1:1:$LISTLENGTH(emailList){
             set email = $LIST(emailList, i)
-            do ##class(Stc.Data.MailingJournal).Create(email, "Оператор", "Вопрос от слушателя", msg, "Вопрос от слушателя", grNumber)
+            do ##class(Stc.Data.MailingJournal).Create(email, "Operator", "Question from attendee", msg, "Question from attendee", grNumber)
         }
         
         TCOMMIT
@@ -652,6 +673,60 @@ Method="POST" Url="/json/training/:id/question"</Description>
     catch ex {
         TROLLBACK
         
+        set status = ex.AsStatus()
+    }
+    
+    quit status
+]]></Implementation>
+</Method>
+
+<Method name="GetTrainingOrderNewStudents">
+<Description>
+All training oredernewstudents for teacher view by access code
+Method="POST" Url="/json/training/:code/student"</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>accessCode:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    set status = $$$OK
+    
+    try{
+        $$$THROWONERROR(status, ##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(%request.Content,,.params, 1))
+        
+        set whereRequired = "Training->AccessCode = '"_..ParseParameter(accessCode)_"'"
+        
+        $$$THROWONERROR(status, ..WriteJsonForGrid("SELECT ID FROM Stc_Data.OrderNewStudent", "Stc.Data.OrderNewStudent", params, whereRequired))
+    }
+    catch ex {
+        set status = ex.AsStatus()
+    }
+    
+    quit status
+]]></Implementation>
+</Method>
+
+<Method name="UpdateTrainingStudentAttendedStatus">
+<Description>
+Update training students attended state BY AccessCode
+Method="POST" Url="/json/training/:trainingAccessCode/student/udpateStatus"</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>accessCode:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    set status = $$$OK
+    
+    try{
+        $$$THROWONERROR(status, ##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(%request.Content,,.data, 1))
+        
+        set tr = ##class(Stc.Data.Training).AccessCodeIdxOpen(accessCode,,.st)
+        $$$THROWONERROR(st, st)
+        
+        set trId = tr.%Id()
+        &sql(UPDATE Stc_Data.SubGroupStudent 
+             SET AttendedStatusCode = :data.statusCode
+             WHERE Student = :data.studentId AND SubGroup IN (SELECT SubGroups FROM Stc_Data.Training_SubGroups WHERE Training = :trId))
+    }
+    catch ex {
         set status = ex.AsStatus()
     }
     

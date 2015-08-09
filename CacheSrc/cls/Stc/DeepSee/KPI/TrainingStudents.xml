@@ -75,11 +75,11 @@ Return an SQL statement to execute.</Description>
 <Data><![CDATA[
 <xml><![CDATA[
 SELECT 
-Students->LastName->Value || ' ' || SUBSTRING(Students->FirstName->Value,1,1) || '. ' || SUBSTRING(ISNULL(Students->MiddleName->Value,''),1,1) || '. ' As FullName,
-Students->Company->ShortName->Value As Company,
-Students->Email,
-Students->Phone
-FROM Stc_Data.SubGroup_Students
+Student->LastName->Value || ' ' || SUBSTRING(Student->FirstName->Value,1,1) || '. ' || SUBSTRING(ISNULL(Student->MiddleName->Value,''),1,1) || '. ' As FullName,
+Student->Company->ShortName->Value As Company,
+Student->Email,
+Student->Phone
+FROM Stc_Data.SubGroupStudent
 WHERE SubGroup IN (SELECT SubGroups FROM Stc_Data.Training_SubGroups WHERE Training = :trainingId)
 ORDER BY Company, FullName
 ]]]]><![CDATA[></xml>

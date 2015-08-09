@@ -196,7 +196,7 @@ Checking before deletion</Description>
     &sql(SELECT ID INTO:id FROM Stc_Data.Company WHERE Contact = :personId)
     if (id = ""){
         // Checking: if in subgroup of training
-        &sql(SELECT ID INTO:id FROM Stc_Data.SubGroup_Students WHERE Students = :personId)
+        &sql(SELECT ID INTO:id FROM Stc_Data.SubGroupStudent WHERE Student = :personId)
         
         if (id = ""){
             // Checking: if is teacher

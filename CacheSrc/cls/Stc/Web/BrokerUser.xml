@@ -66,6 +66,13 @@ Public request processor for users</Description>
     <Route Method="POST" Url="/json/mailing/subscription/confirmation/:code" Call="Stc.Web.JsonUser:ConfirmMailingSubscription"/>
     
     <!-- ================================================================================================================================== -->
+    <!-- FEEDBACK                                                                                                                  FEEDBACK -->
+    <!-- ================================================================================================================================== -->
+    
+    <!-- Get feedback template for fill data -->
+    <Route Method="GET" Url="/json/feedback/template" Call="Stc.Web.JsonUser:GetFeedBackTemplateForFill"/>
+    
+    <!-- ================================================================================================================================== -->
     <!-- OTHER                                                                                                                        OTHER -->
     <!-- ================================================================================================================================== -->
     
@@ -99,6 +106,12 @@ Public request processor for users</Description>
     
     <!-- Get feed Backs of trainings BY AccessCode-->
     <Route Method="POST" Url="/json/training/:id/question" Call="Stc.Web.JsonUser:CreateTrainingQuestion"/>   
+    
+    <!-- Update training students attended state BY AccessCode-->
+    <Route Method="POST" Url="/json/training/:trainingAccessCode/student/udpateStatus" Call="Stc.Web.JsonUser:UpdateTrainingStudentAttendedStatus"/>   
+    
+     <!-- Report, certificates of training -->
+    <Route Method="GET" Url="/text/:lang/certificates/:trainingAccessCode" Call="Stc.Web.Report:Certificates"/>
     
 </Routes>
 ]]></Data>

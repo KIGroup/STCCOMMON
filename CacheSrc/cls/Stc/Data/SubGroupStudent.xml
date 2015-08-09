@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="Stc.Data.SubGroupStudent">
+<Description>
+Training subgroup student</Description>
+<Super>%Persistent</Super>
+<TimeCreated>63752,60397.894817</TimeCreated>
+
+<Property name="Student">
+<Type>Person</Type>
+<Required>1</Required>
+</Property>
+
+<Property name="SubGroup">
+<Type>SubGroup</Type>
+<Required>1</Required>
+</Property>
+
+<Property name="Training">
+<Type>Training</Type>
+<Required>1</Required>
+</Property>
+
+<Property name="AttendedStatusCode">
+<Type>%String</Type>
+<InitialExpression>"Unknown"</InitialExpression>
+<Parameter name="VALUELIST" value="&apos;Unknown&apos;,&apos;Visited&apos;,&apos;NotVisited&apos;"/>
+</Property>
+
+<Index name="CommonKeyIndex">
+<Properties>Student,SubGroup</Properties>
+<Unique>1</Unique>
+</Index>
+
+<Index name="TrainingStudentIndex">
+<Properties>Training,Student</Properties>
+<Unique>1</Unique>
+</Index>
+
+<Method name="Save">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[stId:%String,grId:%String,trId:%String,&st]]></FormalSpec>
+<ReturnType>Stc.Data.SubGroupStudent</ReturnType>
+<Implementation><![CDATA[
+    set obj = ..%New()
+    set obj.Student = ##class(Person).%OpenId(stId)
+    set obj.SubGroup = ##class(SubGroup).%OpenId(grId)
+    set obj.Training = ##class(Training).%OpenId(trId)
+    
+    set st = obj.%Save()
+    
+    quit obj
+]]></Implementation>
+</Method>
+
+<Method name="FixOldData">
+<Description>
+do ##class(Stc.Data.SubGroupStudent).FixOldData()</Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    &sql(DECLARE SGSCur CURSOR FOR 
+             SELECT ID, SubGroup
+             FROM Stc_Data.SubGroupStudent)
+        
+    &sql(OPEN SGSCur)
+    for  
+    {   
+        &sql(FETCH SGSCur INTO :id, :subGroupId) 
+        quit:(SQLCODE '= 0)
+        
+        set obj = ..%OpenId(id)
+        &sql(SELECT Training INTO :trId
+             FROM Stc_Data.Training_SubGroups
+             WHERE SubGroups = :subGroupId)
+       
+        w !,"trId="_trId_"; subGroupId="_subGroupId
+        set obj.Training = ##class(Training).%OpenId(trId)
+        set st = obj.%Save()
+        if $$$ISERR(st){
+            w !,$SYSTEM.Status.GetErrorText(st)
+            quit
+        }
+    }
+       
+    &sql(CLOSE SGSCur)
+]]></Implementation>
+</Method>
+
+<Storage name="Default">
+<Type>%Library.CacheStorage</Type>
+<DataLocation>^Stc.Data.SubGroupStudentD</DataLocation>
+<DefaultData>SubGroupStudentDefaultData</DefaultData>
+<IdLocation>^Stc.Data.SubGroupStudentD</IdLocation>
+<IndexLocation>^Stc.Data.SubGroupStudentI</IndexLocation>
+<StreamLocation>^Stc.Data.SubGroupStudentS</StreamLocation>
+<Data name="SubGroupStudentDefaultData">
+<Value name="1">
+<Value>%%CLASSNAME</Value>
+</Value>
+<Value name="2">
+<Value>Student</Value>
+</Value>
+<Value name="3">
+<Value>SubGroup</Value>
+</Value>
+<Value name="4">
+<Value>AttendedStatusCode</Value>
+</Value>
+<Value name="5">
+<Value>Training</Value>
+</Value>
+</Data>
+</Storage>
+</Class>
+</Export>

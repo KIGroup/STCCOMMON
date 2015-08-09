@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="Stc.Data.FeedBackItemGroup">
+<Description>
+Group of feedback items </Description>
+<Super>%Persistent</Super>
+<TimeCreated>63745,59806.325576</TimeCreated>
+
+<Property name="Name">
+<Type>%String</Type>
+<Required>1</Required>
+</Property>
+
+<Property name="Code">
+<Type>%String</Type>
+<Required>1</Required>
+</Property>
+
+<Index name="CodeIndex">
+<Properties>Code</Properties>
+<Unique>1</Unique>
+</Index>
+
+<Method name="ConvertToProxyObject">
+<ReturnType>%ZEN.proxyObject</ReturnType>
+<Implementation><![CDATA[
+    set proxy = ##class(%ZEN.proxyObject).%New()
+    set proxy.id = ..%Id()
+    set proxy.name = ..Name
+    set proxy.code = ..Code
+
+    quit proxy
+]]></Implementation>
+</Method>
+
+<Storage name="Default">
+<Type>%Library.CacheStorage</Type>
+<DataLocation>^Stc.Data.FeedBackItemGroupD</DataLocation>
+<DefaultData>FeedBackItemGroupDefaultData</DefaultData>
+<IdLocation>^Stc.Data.FeedBackItemGroupD</IdLocation>
+<IndexLocation>^Stc.Data.FeedBackItemGroupI</IndexLocation>
+<StreamLocation>^Stc.Data.FeedBackItemGroupS</StreamLocation>
+<Data name="FeedBackItemGroupDefaultData">
+<Value name="1">
+<Value>%%CLASSNAME</Value>
+</Value>
+<Value name="2">
+<Value>Name</Value>
+</Value>
+<Value name="3">
+<Value>Code</Value>
+</Value>
+</Data>
+</Storage>
+</Class>
+</Export>

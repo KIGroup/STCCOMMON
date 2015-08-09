@@ -841,7 +841,11 @@ Method="POST" Url="/json/training"</Description>
             set isNew = $$$YES
             do ##class(Stc.Data.MailingTrainingGroup).CreateAll(tr)
         }
-
+        
+        set proxy = ##class(%ZEN.proxyObject).%New()
+        set proxy.id = tr.%Id()
+        do proxy.%ToJSON()
+        
         TCOMMIT
     }
     catch ex {
@@ -1334,7 +1338,7 @@ Method="POST" Url="/json/training/:trId/subgroup"</Description>
         
         set training = ##class(Stc.Data.Training).%OpenId(trId)
         set payer = ##class(Stc.Data.Company).%OpenId(data.payerId)
-        set sgroup = ##class(Stc.Data.SubGroup).Create(payer, ##class(%ArrayOfObjects).%New(), training.Course, .st)
+        set sgroup = ##class(Stc.Data.SubGroup).Create(payer, training.Course, .st)
         if $$$ISERR(st) $$$ThrowStatus(##class(Stc.Utils.Msg).GetErrorStatus("createSubGroup", "| "_st)) 
         
         do training.SubGroups.SetAt(sgroup, sgroup.%Id())
@@ -1495,7 +1499,17 @@ Method="POST" Url="/json/training/student/grid" </Description>
         
         set whereRequired = "SubGroup IN (SELECT SubGroups FROM Stc_Data.Training_SubGroups WHERE Training = '"_..ParseParameter(params.trainingId)_"')"
         
-        $$$THROWONERROR(st, ..WriteJsonForGrid("SELECT Students FROM Stc_Data.SubGroup_Students", "Stc.Data.Person", params, whereRequired))
+        set gridData = ..GetJsonForGrid("SELECT Student FROM Stc_Data.SubGroupStudent", "Stc.Data.Person", params, whereRequired)
+        $$$THROWONERROR(st, st)
+        
+        for i=1:1:gridData.children.items.Count(){
+            set studentProxy = gridData.children.items.GetAt(i)
+            
+            #dim stGrData As Stc.Data.SubGroupStudent = ##class(Stc.Data.SubGroupStudent).TrainingStudentIndexOpen(params.trainingId, studentProxy.id)
+            set studentProxy.attendedStatusCode = stGrData.AttendedStatusCode
+        }
+        
+        do gridData.%ToJSON()
     }
     catch ex {
         set st = ex.AsStatus()
@@ -1608,8 +1622,8 @@ Method="GET" Url="/json/training/:trainingId/student/email"</Description>
     set proxy.children = ##class(%ListOfObjects).%New()
     
     &sql(DECLARE StudCur CURSOR FOR 
-             SELECT Students As ID, Students->LastName->Value As LastName, Students->Email 
-             FROM Stc_Data.SubGroup_Students
+             SELECT Student As ID, Student->LastName->Value As LastName, Student->Email 
+             FROM Stc_Data.SubGroupStudent
              WHERE SubGroup IN (SELECT SubGroups FROM Stc_Data.Training_SubGroups WHERE Training = :trainingId)
              ORDER BY LastName) 
         
@@ -1658,9 +1672,10 @@ Create / add student into subgroup of training</Description>
         }
         
         if (data.group.id){
-            set group = ##class(Stc.Data.SubGroup).%OpenId(data.group.id)
-            $$$THROWONERROR(st, group.Students.SetAt(student, student.%Id()))
-            $$$THROWONERROR(st, group.%Save())
+            do ##class(Stc.Data.SubGroupStudent).Save(student.%Id(), data.group.id, data.training.id, .st)
+            if $$$ISERR(st){
+                $$$ThrowStatus(st)
+            }
         }
         else{
             set training = ##class(Stc.Data.Training).%OpenId(data.training.id)
@@ -1699,11 +1714,11 @@ Method="DELETE" Url="/json/training/:trainingId/student/:studentId"</Description
     set sgroupId = 0
     
     &sql(SELECT SubGroup INTO :sgroupId
-         FROM Stc_Data.SubGroup_Students
+         FROM Stc_Data.SubGroupStudent
          WHERE SubGroup IN (SELECT SubGroups 
                             FROM Stc_Data.Training_SubGroups 
                             WHERE Training = :trainingId) 
-                        AND Students = :studentId)
+                        AND Student = :studentId)
     
     set st = ..DeleteSubGroupStudent(sgroupId, studentId)
 
@@ -1729,10 +1744,7 @@ Method="DELETE" Url="/json/training/subgroup/:sgroupId/student/:studentId"</Desc
         // Check privilege for Person table
         $$$THROWONERROR(st, ##class(Stc.Data.Person).CheckDeletePrivilege())
         
-        set sgroup = ##class(Stc.Data.SubGroup).%OpenId(sgroupId, , .st)
-        $$$THROWONERROR(st, st)
-        do sgroup.Students.RemoveAt(studentId)
-        set st = sgroup.%Save()
+        do ##class(Stc.Data.SubGroupStudent).CommonKeyIndexDelete(studentId, sgroupId,,.st)
         if $$$ISERR(st) $$$ThrowStatus(##class(Stc.Utils.Msg).GetErrorStatus("saveSubGroup", " | "_st))
         
         TCOMMIT     
@@ -1933,6 +1945,34 @@ Method="DELETE" Url="/json/certificate/:number"</Description>
 ]]></Implementation>
 </Method>
 
+<Method name="SendCertificatesToOffice">
+<Description>
+Send certificates to office
+Method="POST" Url="/json/traiing/:id/certificate/sendToOffice"</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>trainingId:%String</FormalSpec>
+<Implementation><![CDATA[
+    // Check privilege for Person table
+    set st = ##class(Stc.Data.Person).CheckDeletePrivilege()
+    quit:$$$ISERR(st) st
+    
+    set mGroup = ##class(Stc.Data.MailingGroup).GetOfficeGroup()    
+    set mail = ##class(Stc.Data.MailingGroup).GetMail(mGroup.%Id(), trainingId)
+    
+    set contacts = ##class(Stc.Data.MailingGroup).GetMailingItemsContacts(mGroup.%Id())
+    set grNumber = ##class(Stc.Data.MailingJournal).GetValidGroupNumber()
+    
+    for i=1:1:contacts.Count(){
+        set mItem = ##class(Stc.Data.MailingItemApproved).%OpenId(contacts.GetAt(i).id)
+        if '$ISOBJECT(mItem) continue
+            
+        do ##class(Stc.Data.MailingJournal).Create(contacts.GetAt(i).email, contacts.GetAt(i).name, mail.subject, mail.message, mGroup.Name, grNumber)  
+    }
+    
+    quit st
+]]></Implementation>
+</Method>
+
 <Method name="SavePerson">
 <Description>
 
@@ -2103,7 +2143,7 @@ Method="GET" Url="/json/person/free/subgroup/:sgId/student/:word"</Description>
 <FormalSpec>sgroupId:%String,word:%String</FormalSpec>
 <ReturnType>%Status</ReturnType>
 <Implementation><![CDATA[
-    set where = "id NOT IN (SELECT Students FROM Stc_Data.SubGroup_Students WHERE SubGroup = "_..ParseParameter(sgroupId)_") AND"
+    set where = "id NOT IN (SELECT Student FROM Stc_Data.SubGroupStudent WHERE SubGroup = "_..ParseParameter(sgroupId)_") AND"
     
     quit ..GetPersonBySearchParameters(word, where)
 ]]></Implementation>
@@ -2117,7 +2157,7 @@ Method="GET" Url="/json/person/free/training/:trId/student/:word"</Description>
 <FormalSpec>trainingId:%String,word:%String</FormalSpec>
 <ReturnType>%Status</ReturnType>
 <Implementation><![CDATA[
-    set where = "id NOT IN (SELECT Students FROM Stc_Data.SubGroup_Students WHERE SubGroup IN (SELECT SubGroups FROM Stc_Data.Training_SubGroups WHERE Training = '"_..ParseParameter(trainingId)_"')) AND"
+    set where = "id NOT IN (SELECT Student FROM Stc_Data.SubGroupStudent WHERE SubGroup IN (SELECT SubGroups FROM Stc_Data.Training_SubGroups WHERE Training = '"_..ParseParameter(trainingId)_"')) AND"
     
     quit ..GetPersonBySearchParameters(word, where)
 ]]></Implementation>
@@ -2140,7 +2180,7 @@ Method="GET" Url="/json/person/:id/training"</Description>
     "Training->TimeFinish As timeFinish, "_
     "Training->isCompleted As isCompleted "_
     "FROM Stc_Data.Training_SubGroups "_
-    "WHERE SubGroups IN (SELECT SubGroup FROM Stc_Data.SubGroup_Students WHERE Students = "_..ParseParameter(id)_") "_
+    "WHERE SubGroups IN (SELECT SubGroup FROM Stc_Data.SubGroupStudent WHERE Student = "_..ParseParameter(id)_") "_
     "ORDER BY isCompleted, dateFinish"
     
     quit ..WriteJsonFromSql(sql)
@@ -2238,7 +2278,7 @@ Method="GET" Url="/json/teacher/:id/statistics/datefrom/:dateFrom/dateto/:dateTo
         set proxy.totalRating = 0
         set proxy.courses = ##class(%ListOfObjects).%New()
         
-        &sql(SELECT %NOLOCK ROUND(AVG(Rating), 2) INTO :proxy.totalRating
+        &sql(SELECT %NOLOCK ROUND(AVG(AvgInstructorRating), 2) INTO :proxy.totalRating
              FROM Stc_Data.FeedBack
              WHERE Training->Teacher = :teacherId AND Training->DateStart >= :dateFromLogical AND Training->DateFinish <= :dateToLogical)
         
@@ -2248,7 +2288,7 @@ Method="GET" Url="/json/teacher/:id/statistics/datefrom/:dateFrom/dateto/:dateTo
                  trTab.Course, 
                  trTab.Course->Name->Value As CourseName, 
                  COUNT(trTab.Course) As TrainingsCount, 
-                 (SELECT ROUND(AVG(fbTab.Rating), 2) 
+                 (SELECT ROUND(AVG(fbTab.AvgInstructorRating), 2) 
                   FROM Stc_Data.FeedBack as fbTab 
                   WHERE fbTab.Training->Course = trTab.Course AND fbTab.Training->Teacher = trTab.Teacher AND fbTab.Training->DateStart >= :dateFromLogical AND fbTab.Training->DateFinish <= :dateToLogical) As AvgRating
                  FROM Stc_Data.Training as trTab
@@ -2558,6 +2598,9 @@ Method="GET" Url="/json/settings/mail/preview/:type"</Description>
         elseif (type = "listOfFeedbacks"){
             set mail = ##class(Stc.Utils.Email).GetMailForListOfTrainingFeedBacks(tr)
         }
+        elseif (type = "teacherSetAttendeeStatus"){
+            set mail = ##class(Stc.Utils.Email).GetMailForTrainingTeacherSetAttendeeStatus(tr)
+        }
         
         set proxy = ##class(%ZEN.proxyObject).%New()
         set proxy.preview = mail.subject_"<br><br>"_mail.message
@@ -2831,7 +2874,7 @@ Method="GET" Url="/json/mailing/group/:id/mail"</Description>
 <ReturnType>%Status</ReturnType>
 <Implementation><![CDATA[
     set trId = ""
-    &sql(SELECT TOP 1 ID INTO :trId FROM Stc_Data.Training ORDER BY ID DESC)
+    &sql(SELECT TOP 1 Training INTO :trId FROM Stc_Data.Certificate ORDER BY ID DESC)
     
     quit ##class(Stc.Data.MailingGroup).GetMail(grId , trId).%ToJSON()
 ]]></Implementation>
@@ -2858,7 +2901,7 @@ Method="POST" Url="/json/mailing/mail/send"</Description>
             set mItem = ##class(Stc.Data.MailingItemApproved).%OpenId(data.contacts.GetAt(i).id)
             if '$ISOBJECT(mItem) continue
                     
-            set msg = $REPLACE(data.message, "%UnsubscribeUrl", "http://"_##class(Stc.Data.Settings).GetWebAppDomain()_"/stc/index.csp#/mailing/subscription/"_$system.Encryption.Base64Encode(mItem.AccessCode))
+            set msg = $REPLACE(data.message, "%UnsubscribeUrl", "http://"_##class(Stc.Data.Settings).GetWebAppDomainNamespace()_"/stc/index.csp#/mailing/subscription/"_$system.Encryption.Base64Encode(mItem.AccessCode))
             do ##class(Stc.Data.MailingJournal).Create(data.contacts.GetAt(i).email, $ZCVT(data.contacts.GetAt(i).name, "I", "UTF8"), data.subject, msg, "ГР: "_mItem.MGroup.Name, grNumber)    
         }
         

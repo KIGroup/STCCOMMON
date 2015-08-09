@@ -126,8 +126,8 @@ Get special group for subscribers</Description>
     }
     
     set gr = ..%New()
-    set gr.Name = "Подписка на анонсы"
-    set gr.Description = "Подписка на анонсы"
+    set gr.Name = "Subscribers "
+    set gr.Description = "Subscribers"
     set gr.AccessCode = "Announcement"
     set gr.MailSubject = ##class(Stc.Data.Localization.LText).Create("")
     set gr.MailMessage = ##class(Stc.Data.Localization.LText).Create("")
@@ -148,9 +148,31 @@ Get special group for students</Description>
     }
     
     set gr = ..%New()
-    set gr.Name = "Все слушатели"
-    set gr.Description = "Все слушатели из базы данных"
+    set gr.Name = "All students"
+    set gr.Description = "All students from data base"
     set gr.AccessCode = "Students"
+    set gr.MailSubject = ##class(Stc.Data.Localization.LText).Create("")
+    set gr.MailMessage = ##class(Stc.Data.Localization.LText).Create("")
+    do gr.%Save()
+    
+    quit gr
+]]></Implementation>
+</Method>
+
+<Method name="GetOfficeGroup">
+<Description>
+Get special group for main company office ##class(Stc.Data.MailingGroup).GetOfficeGroup()</Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>MailingGroup</ReturnType>
+<Implementation><![CDATA[
+    if (..AccessCodeIdxExists("Office")){
+        quit ..AccessCodeIdxOpen("Office")
+    }
+    
+    set gr = ..%New()
+    set gr.Name = "Office"
+    set gr.Description = "Office"
+    set gr.AccessCode = "Office"
     set gr.MailSubject = ##class(Stc.Data.Localization.LText).Create("")
     set gr.MailMessage = ##class(Stc.Data.Localization.LText).Create("")
     do gr.%Save()
@@ -201,10 +223,10 @@ Get special group for students</Description>
     set mail.subject = ##class(Stc.Utils.Email).GetMailMessageWithTrainingData(group.MailSubject.Value, tr)
     set mail.message = ##class(Stc.Utils.Email).GetMailMessageWithTrainingData(group.MailMessage.Value, tr)
     
-    set mail.message = $REPLACE(mail.message, "%JoinUrl", "http://"_##class(Stc.Data.Settings).GetWebAppDomain()_"/stc/index.csp#/training/"_tr.%Id()_"/order")
-    set mail.message = $REPLACE(mail.message, "%UnsubscribeUrl", "http://"_##class(Stc.Data.Settings).GetWebAppDomain()_"/stc/index.csp#/mailing/subscription/%AccessCode")
-    set mail.message = $REPLACE(mail.message, "%ListOfAttendeesUrl", "http://"_##class(Stc.Data.Settings).GetWebAppDomain()_"/stc/index.csp#/training/"_tr.%Id()_"/students/"_tr.AccessCode)
-    
+    set mail.message = $REPLACE(mail.message, "%JoinUrl", "http://"_##class(Stc.Data.Settings).GetWebAppDomainNamespace()_"/stc/index.csp#/training/"_tr.%Id()_"/order")
+    set mail.message = $REPLACE(mail.message, "%UnsubscribeUrl", "http://"_##class(Stc.Data.Settings).GetWebAppDomainNamespace()_"/stc/index.csp#/mailing/subscription/%AccessCode")
+    set mail.message = $REPLACE(mail.message, "%ListOfAttendeesUrl", "http://"_##class(Stc.Data.Settings).GetWebAppDomainNamespace()_"/stc/index.csp#/training/"_tr.%Id()_"/students/"_tr.AccessCode)
+    set mail.message = $REPLACE(mail.message, "%DownloadCertificatesUrl", "http://"_##class(Stc.Data.Settings).GetWebAppDomain()_##class(Stc.Data.Settings).GetWebAppUser()_"/text/en/certificates/"_tr.AccessCode)
     quit mail
 ]]></Implementation>
 </Method>

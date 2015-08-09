@@ -31,9 +31,10 @@ Cube definition from Architect.</Description>
       </level>
     </hierarchy>
   </dimension>
-  <measure sourceProperty="Rating" name="Rating" displayName="Суммарная оценка" disabled="false" aggregate="SUM" type="integer" hidden="false" searchable="false"></measure>
-  <measure sourceProperty="Rating" name="RatingAvg" displayName="Средняя оценка" disabled="false" aggregate="AVG" type="integer" hidden="false" searchable="false"></measure>
-  <listing name="FeedBackListing" disabled="false" listingType="table" fieldList="Training-&gt;Course-&gt;Name-&gt;Value,Training-&gt;DateStart,Training-&gt;Teacher-&gt;FullName,Author,AboutTeacher,WhatHear,WhatImprovements,WhatLiked,Rating"></listing>
+  <!--<measure sourceProperty="AvgInstructorRating" name="AvgInstructorRating" displayName="Суммарная оценка" disabled="false" aggregate="SUM" type="integer" hidden="false" searchable="false"></measure>
+  <measure sourceProperty="AvgInstructorRating" name="AvgInstructorRating" displayName="Средняя оценка" disabled="false" aggregate="AVG" type="integer" hidden="false" searchable="false"></measure>
+  <listing name="FeedBackListing" disabled="false" listingType="table" fieldList="Training-&gt;Course-&gt;Name-&gt;Value,Training-&gt;DateStart,Training-&gt;Teacher-&gt;FullName,Author,AboutTeacher,AvgInstructorRating"></listing>
+-->
 </cube>
 ]]></Data>
 </XData>

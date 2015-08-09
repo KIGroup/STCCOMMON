@@ -12,17 +12,17 @@ Get proxyObject by id and class</Description>
 <FormalSpec>className:%String,id:%String</FormalSpec>
 <ReturnType>%ZEN.proxyObject</ReturnType>
 <Implementation><![CDATA[
-	set proxy = ""
-	
-	try{
-		set obj = $CLASSMETHOD(className, "%OpenId", id)
-		set proxy = obj.ConvertToProxyObject()
-	}
-	catch (ex){
-		set proxy = ##class(%ZEN.proxyObject).%New()
-	}
-	
-	quit proxy
+    set proxy = ""
+    
+    try{
+        set obj = $CLASSMETHOD(className, "%OpenId", id)
+        set proxy = obj.ConvertToProxyObject()
+    }
+    catch (ex){
+        set proxy = ##class(%ZEN.proxyObject).%New()
+    }
+    
+    quit proxy
 ]]></Implementation>
 </Method>
 
@@ -33,16 +33,16 @@ Transform sql to json</Description>
 <FormalSpec>sql:%String</FormalSpec>
 <ReturnType>%Status</ReturnType>
 <Implementation><![CDATA[
-  	set status = $$$OK
-  	
-   	try{
-	   	do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(,sql,,300)
-	}
-	catch ex{
-		set status = ex.AsStatus()
-	}
-	
-  	quit status
+    set status = $$$OK
+    
+    try{
+        do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(,sql,,300)
+    }
+    catch ex{
+        set status = ex.AsStatus()
+    }
+    
+    quit status
 ]]></Implementation>
 </Method>
 
@@ -53,60 +53,81 @@ Paged output of table, for any class with parameters, sorting and searching</Des
 <FormalSpec>sql:%String,className:%String,params:%RegisteredObject,whereRequired:%String=""</FormalSpec>
 <ReturnType>%Status</ReturnType>
 <Implementation><![CDATA[
-	set status = $$$OK
-	
-	try{
-		// Определяем что находится в WHERE.
-		if (whereRequired = "") && (params.searchText '= ""){
-			// Одно условие - поиск
-			set sql = sql_" WHERE "_..ParseParameter(params.searchSqlName)_" LIKE '%"_..ParseParameter($ZCONVERT(params.searchText, "I","UTF8"))_"%'"
-		}
-		elseif (whereRequired '= "") && (params.searchText = ""){
-			// Одно условие - заданное, например - выборка по статусу
-			set sql = sql_" WHERE "_whereRequired
-		}
-		elseif (whereRequired '= "") && (params.searchText '= ""){
-			// Два(+) условия = поиск и дополнительные
-			set sql = sql_" WHERE "_whereRequired_" AND "_..ParseParameter(params.searchSqlName)_" LIKE '%"_..ParseParameter($ZCONVERT(params.searchText, "I","UTF8"))_"%'"
-		}
-		
-		// Сортировка
-		set isDown = "ASC"
-		if (params.isDown '= 1) set isDown = "DESC"
-		
-		set sql = sql_" ORDER BY "_..ParseParameter(params.sqlName)_" "_isDown
-		
-		set ^temp("sql") = sql
-			
-		set statement = ##class(%SQL.Statement).%New()	
-		$$$THROWONERROR(status, statement.%Prepare(sql))		
-		set rs = statement.%Execute()
+    set status = $$$OK
+    
+    try{
+        set proxyResult = ..GetJsonForGrid(sql, className, params, whereRequired, .status)
+        $$$THROWONERROR(status, status)
+        
+        do proxyResult.%ToJSON()
+    }
+    catch ex{
+        set status = ex.AsStatus()  
+    }
+    
+    quit status
+]]></Implementation>
+</Method>
 
-		set proxyItems = ##class(%ListOfObjects).%New()			
-		
-		// Все элементы, попавшие в заданный диапазон конвертируются в proxy и помещаются в результирующий список
-		while (rs.%Next() '= 0){
-			if (rs.%ROWCOUNT >= params.first) && (rs.%ROWCOUNT <= params.last){
-				do proxyItems.Insert(..GetProxyObject(className, rs.%GetData(1)))
-			}
-		}
-		// Общее число элементов с заданными параметрами в WHERE
-		set itemsTotal = rs.%ROWCOUNT
-		
-		do rs.%Close()						
-		do statement.%Close()
-		
-		set proxyResult = ##class(%ZEN.proxyObject).%New()
-		set proxyResult.children = ##class(%ZEN.proxyObject).%New()
-		set proxyResult.children.items = proxyItems
-	    set proxyResult.children.itemsTotal = itemsTotal
-	    do proxyResult.%ToJSON()
-	}
-	catch ex{
-		set status = ex.AsStatus()	
-	}
-	
-	quit status
+<Method name="GetJsonForGrid">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[sql:%String,className:%String,params:%RegisteredObject,whereRequired:%String="",&status:%Status]]></FormalSpec>
+<ReturnType>%ZEN.proxyObject</ReturnType>
+<Implementation><![CDATA[
+    set status = $$$OK
+    set proxyResult = ##class(%ZEN.proxyObject).%New()
+            
+    try{
+        // Определяем что находится в WHERE.
+        if (whereRequired = "") && (params.searchText '= ""){
+            // Одно условие - поиск
+            set sql = sql_" WHERE "_..ParseParameter(params.searchSqlName)_" LIKE '%"_..ParseParameter($ZCONVERT(params.searchText, "I","UTF8"))_"%'"
+        }
+        elseif (whereRequired '= "") && (params.searchText = ""){
+            // Одно условие - заданное, например - выборка по статусу
+            set sql = sql_" WHERE "_whereRequired
+        }
+        elseif (whereRequired '= "") && (params.searchText '= ""){
+            // Два(+) условия = поиск и дополнительные
+            set sql = sql_" WHERE "_whereRequired_" AND "_..ParseParameter(params.searchSqlName)_" LIKE '%"_..ParseParameter($ZCONVERT(params.searchText, "I","UTF8"))_"%'"
+        }
+        
+        // Сортировка
+        set isDown = "ASC"
+        if (params.isDown '= 1) set isDown = "DESC"
+        
+        set sql = sql_" ORDER BY "_..ParseParameter(params.sqlName)_" "_isDown
+        
+        set ^temp("sql") = sql
+            
+        set statement = ##class(%SQL.Statement).%New()  
+        $$$THROWONERROR(status, statement.%Prepare(sql))        
+        set rs = statement.%Execute()
+
+        set proxyItems = ##class(%ListOfObjects).%New()         
+        
+        // Все элементы, попавшие в заданный диапазон конвертируются в proxy и помещаются в результирующий список
+        while (rs.%Next() '= 0){
+            if (rs.%ROWCOUNT >= params.first) && (rs.%ROWCOUNT <= params.last){
+                do proxyItems.Insert(..GetProxyObject(className, rs.%GetData(1)))
+            }
+        }
+        // Общее число элементов с заданными параметрами в WHERE
+        set itemsTotal = rs.%ROWCOUNT
+        
+        do rs.%Close()                      
+        do statement.%Close()
+        
+
+        set proxyResult.children = ##class(%ZEN.proxyObject).%New()
+        set proxyResult.children.items = proxyItems
+        set proxyResult.children.itemsTotal = itemsTotal
+    }
+    catch ex{
+        set status = ex.AsStatus()  
+    }
+    
+    quit proxyResult
 ]]></Implementation>
 </Method>
 
@@ -117,14 +138,14 @@ Delete "garbage" from input parameters</Description>
 <FormalSpec>parameter:%String</FormalSpec>
 <ReturnType>%String</ReturnType>
 <Implementation><![CDATA[
-	set parameter = $ZCONVERT(parameter, "U")
-	
-	quit $REPLACE(
-		 $REPLACE(
-		 $REPLACE(
-		 $REPLACE(
-		 $REPLACE(
-		 $REPLACE(parameter, "SELECT",""), "DELETE", ""), "UNION", ""), "FROM",""), "INSERT", ""), "'", "")
+    set parameter = $ZCONVERT(parameter, "U")
+    
+    quit $REPLACE(
+         $REPLACE(
+         $REPLACE(
+         $REPLACE(
+         $REPLACE(
+         $REPLACE(parameter, "SELECT",""), "DELETE", ""), "UNION", ""), "FROM",""), "INSERT", ""), "'", "")
 ]]></Implementation>
 </Method>
 </Class>

@@ -17,7 +17,7 @@ Reports</Description>
 <Description>
 Report, certificates of training</Description>
 <ClassMethod>1</ClassMethod>
-<FormalSpec>lang:%String,trainingId:%String</FormalSpec>
+<FormalSpec>lang:%String,trainingKey:%String</FormalSpec>
 <ReturnType>%Status</ReturnType>
 <Implementation><![CDATA[
     set %response.ContentType = ..#ContentType
@@ -26,8 +26,14 @@ Report, certificates of training</Description>
     set status = $$$OK
     
     try{
-        set training = ##class(Stc.Data.Training).%OpenId(trainingId)
+        set training = ##class(Stc.Data.Training).%OpenId(trainingKey,,.status)
+        if $$$ISERR(status){
+            set training = ##class(Stc.Data.Training).AccessCodeIdxOpen(trainingKey,,.status)
+        }
+        
         $$$THROWONERROR(status, status)
+        
+        set trainingId = training.%Id()
         
         set course = ##class(Stc.Data.Localization.LTextValue).GetValue(training.Course.Name.%Id(), lang)
         set city = ##class(Stc.Data.Localization.LTextValue).GetValue(training.City.Name.%Id(), lang)
@@ -55,8 +61,12 @@ Report, certificates of training</Description>
             set lname = ##class(Stc.Data.Localization.LTextValue).GetValue(lnameId, lang)
             set fname = ##class(Stc.Data.Localization.LTextValue).GetValue(fnameId, lang)
             set mname = ##class(Stc.Data.Localization.LTextValue).GetValue(mnameId, lang)
-            
-            w number_";"_lname_";"_fname_";"_mname,!
+            if (lang = "ru"){
+                w number_";"_lname_";"_fname_";"_mname,!
+            }
+            else{
+                w number_";"_fname_";"_lname,!
+            }
         }
         
         &sql(CLOSE CertCur)
@@ -98,16 +108,16 @@ Report, students of training</Description>
         do %response.SetHeader("Content-Disposition","attachment;filename="_fileName)
 
         &sql(DECLARE StudCur CURSOR FOR 
-             SELECT Students->LastName,
-             Students->FirstName,
-             Students->MiddleName,
-             Students->Company->ShortName,
-             Students->Email,
-             Students->Phone,
-             Students->Skype 
-             FROM Stc_Data.SubGroup_Students
+             SELECT Student->LastName,
+             Student->FirstName,
+             Student->MiddleName,
+             Student->Company->ShortName,
+             Student->Email,
+             Student->Phone,
+             Student->Skype 
+             FROM Stc_Data.SubGroupStudent
              WHERE SubGroup IN (SELECT SubGroups FROM Stc_Data.Training_SubGroups WHERE Training->AccessCode = :trainingAccessCode)
-             ORDER BY Students->Company->ShortName) 
+             ORDER BY Student->Company->ShortName) 
         
         &sql(OPEN StudCur)
         for  

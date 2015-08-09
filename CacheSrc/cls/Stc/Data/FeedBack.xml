@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Export generator="Cache" version="25">
 <Class name="Stc.Data.FeedBack">
+<Description>
+FeedBack (Survey)</Description>
 <Super>%Persistent</Super>
 <TimeCreated>63228,84673.864246</TimeCreated>
 
@@ -8,43 +10,6 @@
 <Description>
 Author of feedback  </Description>
 <Type>%String</Type>
-</Property>
-
-<Property name="Rating">
-<Description>
-Training rating</Description>
-<Type>%Integer</Type>
-<Required>1</Required>
-<Parameter name="MAXVAL" value="5"/>
-<Parameter name="MINVAL" value="1"/>
-</Property>
-
-<Property name="WhatLiked">
-<Description>
-What we liked</Description>
-<Type>%Text</Type>
-<Parameter name="MAXLEN" value="3000"/>
-</Property>
-
-<Property name="WhatImprovements">
-<Description>
-What can be improved</Description>
-<Type>%Text</Type>
-<Parameter name="MAXLEN" value="3000"/>
-</Property>
-
-<Property name="WhatHear">
-<Description>
-What else would like to hear in the course</Description>
-<Type>%Text</Type>
-<Parameter name="MAXLEN" value="3000"/>
-</Property>
-
-<Property name="AboutTeacher">
-<Description>
-Comments on Speaker</Description>
-<Type>%Text</Type>
-<Parameter name="MAXLEN" value="3000"/>
 </Property>
 
 <Property name="Training">
@@ -63,6 +28,29 @@ Date time feedback creation </Description>
 <Required>1</Required>
 </Property>
 
+<Property name="Items">
+<Description>
+FeedBacks items</Description>
+<Type>Stc.Data.FeedBackItem</Type>
+<Cardinality>children</Cardinality>
+<Inverse>FeedBack</Inverse>
+<Relationship>1</Relationship>
+</Property>
+
+<Property name="AvgCourseRating">
+<Type>%Double</Type>
+<Calculated>1</Calculated>
+<SqlComputeCode>set {AvgCourseRating} = ##class({%%CLASSNAME}).GetAvgCourseRating({%%ID})</SqlComputeCode>
+<SqlComputed>1</SqlComputed>
+</Property>
+
+<Property name="AvgInstructorRating">
+<Type>%Double</Type>
+<Calculated>1</Calculated>
+<SqlComputeCode>set {AvgInstructorRating} = ##class({%%CLASSNAME}).GetAvgInstructorRating({%%ID})</SqlComputeCode>
+<SqlComputed>1</SqlComputed>
+</Property>
+
 <Index name="TrainingIdx">
 <Properties>Training</Properties>
 </Index>
@@ -72,13 +60,16 @@ Date time feedback creation </Description>
 <Implementation><![CDATA[
     set proxy = ##class(%ZEN.proxyObject).%New()
     set proxy.id = ..%Id()
-    set proxy.author = ..Author
-    set proxy.rating = ..Rating
-    set proxy.whatLiked = ..WhatLiked
-    set proxy.whatImprovements = ..WhatImprovements
-    set proxy.whatHear = ..WhatHear
-    set proxy.aboutTeacher = ..AboutTeacher
     set proxy.createdTS = ..CreatedTS
+    set proxy.author = ..Author
+    set proxy.avgCourseRating = ..AvgCourseRating
+    set proxy.avgInstructorRating = ..AvgInstructorRating
+    
+    set proxy.items = ##class(%ListOfObjects).%New()
+    for i=1:1:..Items.Count(){
+        do proxy.items.Insert(..Items.GetAt(i).ConvertToProxyObject())
+    }
+    
     quit proxy
 ]]></Implementation>
 </Method>
@@ -93,6 +84,59 @@ Date time feedback creation </Description>
 ]]></Implementation>
 </Method>
 
+<Method name="Save">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[data:%RegisteredObject,&st:%Status]]></FormalSpec>
+<ReturnType>FeedBack</ReturnType>
+<Implementation><![CDATA[
+    set fb = ..%New()
+    set fb.Author = data.author
+    set fb.Training = ##class(Training).%OpenId(data.trainingId)
+    
+    for i=1:1:data.items.Count(){
+        set proxyFbItem = data.items.GetAt(i)
+        
+        set fbItem = ##class(FeedBackItem).%New()
+        set fbItem.Type = ##class(FeedBackItemType).%OpenId(proxyFbItem.type.id)
+        set fbItem.ScaleValue = proxyFbItem.scaleValue
+        set fbItem.TextValue = proxyFbItem.textValue
+        do fb.Items.Insert(fbItem)
+    } 
+    
+    set st = fb.%Save()
+    
+    quit fb
+]]></Implementation>
+</Method>
+
+<Method name="GetAvgInstructorRating">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>id:%String</FormalSpec>
+<ReturnType>%Double</ReturnType>
+<Implementation><![CDATA[
+    set res = 0
+    &sql(SELECT ROUND(AVG(ScaleValue), 2) INTO :res
+         FROM Stc_Data.FeedBackItem
+         WHERE FeedBack = :id AND Type->IsScaleType = 1 AND Type->GroupType->Code = 'Instructor')
+         
+    quit res
+]]></Implementation>
+</Method>
+
+<Method name="GetAvgCourseRating">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>id:%String</FormalSpec>
+<ReturnType>%Double</ReturnType>
+<Implementation><![CDATA[
+    set res = 0
+    &sql(SELECT ROUND(AVG(ScaleValue), 2) INTO :res
+         FROM Stc_Data.FeedBackItem
+         WHERE FeedBack = :id AND Type->IsScaleType = 1 AND Type->GroupType->Code = 'Instructor Nonspecific')
+         
+    quit res
+]]></Implementation>
+</Method>
+
 <Storage name="Default">
 <Type>%Library.CacheStorage</Type>
 <DataLocation>{%%PARENT}("FeedBacks")</DataLocation>
@@ -100,34 +144,15 @@ Date time feedback creation </Description>
 <IdLocation>^Stc.Data.TrainingC("FeedBacks")</IdLocation>
 <IndexLocation>^Stc.Data.FeedBackI</IndexLocation>
 <StreamLocation>^Stc.Data.FeedBackS</StreamLocation>
-<ExtentSize>100000</ExtentSize>
 <Data name="FeedBackDefaultData">
 <Value name="1">
 <Value>%%CLASSNAME</Value>
 </Value>
 <Value name="2">
-<Value>Rating</Value>
+<Value>Author</Value>
 </Value>
 <Value name="3">
-<Value>WhatLiked</Value>
-</Value>
-<Value name="4">
-<Value>WhatImprovements</Value>
-</Value>
-<Value name="5">
-<Value>WhatHear</Value>
-</Value>
-<Value name="6">
-<Value>AboutTeacher</Value>
-</Value>
-<Value name="7">
-<Value>AccessCode</Value>
-</Value>
-<Value name="8">
 <Value>CreatedTS</Value>
-</Value>
-<Value name="9">
-<Value>Author</Value>
 </Value>
 </Data>
 </Storage>

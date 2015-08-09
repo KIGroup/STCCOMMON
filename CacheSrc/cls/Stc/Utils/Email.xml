@@ -15,6 +15,7 @@ Working with email</Description>
     set patternMsg = $REPLACE(patternMsg, "%TimeStart", $e(##class(%Library.Time).LogicalToDisplay(tr.TimeStart), 1, 5))
     set patternMsg = $REPLACE(patternMsg, "%TimeEnd", $e(##class(%Library.Time).LogicalToDisplay(tr.TimeFinish), 1, 5))
     set patternMsg = $REPLACE(patternMsg, "%Course.Name", tr.Course.Name.Value)
+    set patternMsg = $REPLACE(patternMsg, "%Course.Description", tr.Course.Description.Value)
     set patternMsg = $REPLACE(patternMsg, "%City.Name", tr.City.Name.Value)
     set patternMsg = $REPLACE(patternMsg, "%Region.Name", tr.City.ParentRegion.Name.Value)
     set patternMsg = $REPLACE(patternMsg, "%Country.Name", tr.City.ParentRegion.ParentRegion.Name.Value)
@@ -28,6 +29,31 @@ Working with email</Description>
     set patternMsg = $REPLACE(patternMsg, "%Curator.PhoneSecret", $SELECT(tr.CuratorPhoneSecret="":"-", tr.CuratorPhoneSecret'="":tr.CuratorPhoneSecret))
     set patternMsg = $REPLACE(patternMsg, "%Curator.PhonePublic", $SELECT(tr.CuratorPhone="":"-", tr.CuratorPhone'="":tr.CuratorPhone))
     set patternMsg = $REPLACE(patternMsg, "%OtherInfo", tr.OtherInfo.Value)
+    
+    if ($FIND(patternMsg, "%ListOfCertificates") '= 0){
+        set certData = ""
+        
+        set trId = tr.%Id()
+        
+        &sql(DECLARE CertCur CURSOR FOR 
+             SELECT Number, Student->FullName
+             FROM Stc_Data.Certificate
+             WHERE Training = :trId
+             ORDER BY Number) 
+        
+        &sql(OPEN CertCur)
+        for  
+        {   
+            &sql(FETCH CertCur INTO :number, :fullName) 
+            quit:(SQLCODE '= 0)
+            
+            set certData = certData_number_", "_fullName_"<br>"
+        }
+        &sql(CLOSE CertCur)
+        
+        set patternMsg = $REPLACE(patternMsg, "%ListOfCertificates", certData)
+    }
+    
     quit patternMsg
 ]]></Implementation>
 </Method>
@@ -52,7 +78,7 @@ Working with email</Description>
     set mail = ..GetEmailPattern("orders")
     set mail.subject = ..GetMailMessageWithTrainingData(mail.subject, tr)
     set mail.message = ..GetMailMessageWithTrainingData(mail.message, tr)
-    set mail.message = $REPLACE(mail.message, "%JoinUrl", "http://"_##class(Stc.Data.Settings).GetWebAppDomain()_"/stc/index.csp#/training/"_tr.%Id()_"/order")
+    set mail.message = $REPLACE(mail.message, "%JoinUrl", "http://"_##class(Stc.Data.Settings).GetWebAppDomainNamespace()_"/stc/index.csp#/training/"_tr.%Id()_"/order")
     quit mail
 ]]></Implementation>
 </Method>
@@ -65,7 +91,20 @@ Working with email</Description>
     set mail = ..GetEmailPattern("teacher")
     set mail.subject = ..GetMailMessageWithTrainingData(mail.subject, tr)
     set mail.message = ..GetMailMessageWithTrainingData(mail.message, tr)
-    set mail.message = $REPLACE(mail.message, "%ListOfAttendeesUrl", "http://"_##class(Stc.Data.Settings).GetWebAppDomain()_"/stc/index.csp#/training/"_tr.%Id()_"/students/"_tr.AccessCode)
+    set mail.message = $REPLACE(mail.message, "%ListOfAttendeesUrl", "http://"_##class(Stc.Data.Settings).GetWebAppDomainNamespace()_"/stc/index.csp#/training/"_tr.%Id()_"/students/"_tr.AccessCode)
+    quit mail
+]]></Implementation>
+</Method>
+
+<Method name="GetMailForTrainingTeacherSetAttendeeStatus">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>tr:Stc.Data.Training</FormalSpec>
+<ReturnType>%ZEN.proxyObject</ReturnType>
+<Implementation><![CDATA[
+    set mail = ..GetEmailPattern("teacherSetAttendeeStatus")
+    set mail.subject = ..GetMailMessageWithTrainingData(mail.subject, tr)
+    set mail.message = ..GetMailMessageWithTrainingData(mail.message, tr)
+    set mail.message = $REPLACE(mail.message, "%ListOfAttendeesUrl", "http://"_##class(Stc.Data.Settings).GetWebAppDomainNamespace()_"/stc/index.csp#/training/"_tr.%Id()_"/students/"_tr.AccessCode)
     quit mail
 ]]></Implementation>
 </Method>
@@ -78,7 +117,7 @@ Working with email</Description>
     set mail = ..GetEmailPattern("curator")
     set mail.subject = ..GetMailMessageWithTrainingData(mail.subject, tr)
     set mail.message = ..GetMailMessageWithTrainingData(mail.message, tr)
-    set mail.message = $REPLACE(mail.message, "%ListOfAttendeesUrl", "http://"_##class(Stc.Data.Settings).GetWebAppDomain()_"/stc/index.csp#/training/"_tr.%Id()_"/students/"_tr.AccessCode)
+    set mail.message = $REPLACE(mail.message, "%ListOfAttendeesUrl", "http://"_##class(Stc.Data.Settings).GetWebAppDomainNamespace()_"/stc/index.csp#/training/"_tr.%Id()_"/students/"_tr.AccessCode)
     quit mail
 ]]></Implementation>
 </Method>
@@ -91,7 +130,7 @@ Working with email</Description>
     set mail = ..GetEmailPattern("feedback")
     set mail.subject = ..GetMailMessageWithTrainingData(mail.subject, tr)
     set mail.message = ..GetMailMessageWithTrainingData(mail.message, tr)
-    set mail.message = $REPLACE(mail.message, "%SurveyUrl", "http://"_##class(Stc.Data.Settings).GetWebAppDomain()_"/stc/index.csp#/training/"_tr.%Id()_"/feedback/"_$p(tr.AccessCode,"-",1)_"-"_$p(tr.AccessCode,"-",5)) 
+    set mail.message = $REPLACE(mail.message, "%SurveyUrl", "http://"_##class(Stc.Data.Settings).GetWebAppDomainNamespace()_"/stc/index.csp#/training/"_tr.%Id()_"/feedback/"_$p(tr.AccessCode,"-",1)_"-"_$p(tr.AccessCode,"-",5)) 
     quit mail
 ]]></Implementation>
 </Method>
@@ -104,7 +143,7 @@ Working with email</Description>
     set mail = ..GetEmailPattern("listOfFeedbacks")
     set mail.subject = ..GetMailMessageWithTrainingData(mail.subject, tr)
     set mail.message = ..GetMailMessageWithTrainingData(mail.message, tr)
-    set mail.message = $REPLACE(mail.message, "%ListOfSurveysUrl", "http://"_##class(Stc.Data.Settings).GetWebAppDomain()_"/stc/index.csp#/training/"_tr.%Id()_"/feedbacks/"_tr.GetAccessCodeForFeedbackList()) 
+    set mail.message = $REPLACE(mail.message, "%ListOfSurveysUrl", "http://"_##class(Stc.Data.Settings).GetWebAppDomainNamespace()_"/stc/index.csp#/training/"_tr.%Id()_"/feedbacks/"_tr.GetAccessCodeForFeedbackList()) 
     
     set nowTime = $ZDT($ZTS, 3)
     set trId = tr.%Id()
@@ -151,7 +190,7 @@ Working with email</Description>
 <ReturnType>%Status</ReturnType>
 <Implementation><![CDATA[
     set mail = ..GetEmailPattern("confirmsubscription")
-    set mail.message = $REPLACE(mail.message, "%ActivationUrl", "http://"_##class(Stc.Data.Settings).GetWebAppDomain()_"/stc/index.csp#/mailing/subscription/confirmation/"_$system.Encryption.Base64Encode(mItem.AccessCode))
+    set mail.message = $REPLACE(mail.message, "%ActivationUrl", "http://"_##class(Stc.Data.Settings).GetWebAppDomainNamespace()_"/stc/index.csp#/mailing/subscription/confirmation/"_$system.Encryption.Base64Encode(mItem.AccessCode))
     quit mail
 ]]></Implementation>
 </Method>
@@ -209,7 +248,10 @@ Get email pattern from ^CacheMsg</Description>
         set proxy.subject = ##class(Stc.Utils.Msg).GetMsg("mail_Subject_Training-ListOfFeedBacks")
         set proxy.message = ##class(Stc.Utils.Msg).GetMsg("mail_Message_Training-ListOfFeedBacks")
     }
-    
+    elseif (type = "teacherSetAttendeeStatus"){
+        set proxy.subject = ##class(Stc.Utils.Msg).GetMsg("mail_Subject_Training-TeacherSetAttendeeStatus")
+        set proxy.message = ##class(Stc.Utils.Msg).GetMsg("mail_Message_Training-TeacherSetAttendeeStatus")
+    }
     quit proxy
 ]]></Implementation>
 </Method>
@@ -267,6 +309,10 @@ Get email pattern from ^CacheMsg</Description>
         do ##class(Stc.Utils.Msg).SetMsg("mail_Subject_Training-ListOfFeedBacks", subject)
         do ##class(Stc.Utils.Msg).SetMsg("mail_Message_Training-ListOfFeedBacks", message)
     }
+    elseif (type = "teacherSetAttendeeStatus"){
+        do ##class(Stc.Utils.Msg).SetMsg("mail_Subject_Training-TeacherSetAttendeeStatus", subject)
+        do ##class(Stc.Utils.Msg).SetMsg("mail_Message_Training-TeacherSetAttendeeStatus", message)
+    }
     
     quit $$$OK
 ]]></Implementation>
@@ -277,9 +323,9 @@ Get email pattern from ^CacheMsg</Description>
 <FormalSpec>email:%String,subject:%String,msg:%String,recipientName:%String=""</FormalSpec>
 <ReturnType>%Status</ReturnType>
 <Implementation><![CDATA[
-    //if ($FIND(email, "ilson") = 0){
-    //  set email = "stc_testmail2@mail.ru"
-    //}
+    if ($FIND(email, "ilson") = 0){
+      set email = "stc_testmail2@mail.ru"
+    }
     
     set st = $$$OK
     
