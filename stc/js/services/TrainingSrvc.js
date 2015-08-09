@@ -1,0 +1,229 @@
+'use strict';
+//dddddde
+
+/*===========================================================================================
+Обучения
+===========================================================================================*/
+
+servicesModule.factory('TrainingSrvc', function(DALSrvc, $filter) {
+    return {
+        /* Добавить слушателя из заявки в обучение */
+        addNewStudentIntoTraining: function(trainingData){
+           return DALSrvc.getPromise('save', StcAppSetting.admin + '/json/training/orderNewStudent', trainingData);
+        },
+        /* Сохранить/ создать обучение */
+        save: function(trainingData){
+           return DALSrvc.getPromise('save', StcAppSetting.admin + '/json/training', trainingData);
+        },
+        /* Удалить обучение */
+        remove: function(id){
+           return DALSrvc.getPromise('delete', StcAppSetting.admin + '/json/training/' + id, null);
+        },
+        /* Завершить обучение */
+        complete: function(trainingId){
+           return DALSrvc.getPromise('save', StcAppSetting.admin + '/json/training/' + trainingId + '/complete', null);
+        },
+        /* Получить обучение */
+        get: function(id){
+           return DALSrvc.getPromise('get', StcAppSetting.admin + '/json/training/' + id, null);
+        },
+        /**/
+        getSubGroupById: function(id){
+           return DALSrvc.getPromise('get', StcAppSetting.admin + '/json/training/subgroup/' + id, null);
+        },
+        /* Получить обучение для пользователя*/
+        getForUser: function(id){
+           return DALSrvc.getPromise('get', StcAppSetting.user + '/json/training/' + id, null);
+        },
+        /* Все сертификаты обучения */
+        getCertificates: function(pageCurr, pageSize, sqlName, isDown, searchSqlName, searchText, trainingId){
+            var first = pageSize * (pageCurr - 1) + 1;
+            var obj = {sqlName: sqlName, 
+                       isDown: isDown, 
+                       first: first, 
+                       last: first + pageSize - 1,
+                       searchSqlName: searchSqlName, 
+                       searchText: searchText,
+                       trainingId: trainingId};
+
+            return DALSrvc.getPromise('save', StcAppSetting.admin + '/json/training/certificate/grid', obj);
+        },
+        createCertificates: function(trainingId){
+            return DALSrvc.getPromise('save', StcAppSetting.admin + '/json/training/' + trainingId + '/certificate', null);
+          },
+        /* Получить все обучения для таблицы */
+        getAllForGrid: function(pageCurr, pageSize, sqlName, isDown, searchSqlName, searchText, other){
+            var first = pageSize * (pageCurr - 1) + 1;
+            var obj = {sqlName: sqlName, 
+                       isDown: isDown, 
+                       first: first, 
+                       last: first + pageSize - 1,
+                       searchSqlName: searchSqlName, 
+                       searchText: searchText,
+                       other: other};
+
+            return DALSrvc.getPromise('save', StcAppSetting.admin + '/json/training/grid', obj);
+        },
+        /* Все подгруппы обучения для таблицы */
+        getSubGroupsForGrid: function(pageCurr, pageSize, sqlName, isDown, searchSqlName, searchText, trainingId){
+            var first = pageSize * (pageCurr - 1) + 1;
+            var obj = {sqlName: sqlName, 
+                       isDown: isDown, 
+                       first: first, 
+                       last: first + pageSize - 1,
+                       searchSqlName: searchSqlName, 
+                       searchText: searchText,
+                       trainingId: trainingId};
+
+            return DALSrvc.getPromise('save', StcAppSetting.admin + '/json/training/subgroup/grid', obj);
+        },
+        /* Все слушатели обучения для таблицы */
+        getStudentsForGrid: function(pageCurr, pageSize, sqlName, isDown, searchSqlName, searchText, trainingId){
+            var first = pageSize * (pageCurr - 1) + 1;
+            var obj = {sqlName: sqlName, 
+                       isDown: isDown, 
+                       first: first, 
+                       last: first + pageSize - 1,
+                       searchSqlName: searchSqlName, 
+                       searchText: searchText,
+                       trainingId: trainingId};
+
+            return DALSrvc.getPromise('save', StcAppSetting.admin + '/json/training/student/grid', obj);
+        },
+        /* Все слушатели обучения для таблицы */
+        getStudentsByAccessCodeForGrid: function(pageCurr, pageSize, sqlName, isDown, searchSqlName, searchText, code){
+            var first = pageSize * (pageCurr - 1) + 1;
+            var obj = {sqlName: sqlName, 
+                       isDown: isDown, 
+                       first: first, 
+                       last: first + pageSize - 1,
+                       searchSqlName: searchSqlName, 
+                       searchText: searchText
+                     };
+
+            return DALSrvc.getPromise('save', StcAppSetting.user + '/json/training/' + code + '/student', obj);
+        },
+        /* Все заявки на присоединение  */
+        getOrderStudentsByAccessCodeForGrid: function(pageCurr, pageSize, sqlName, isDown, searchSqlName, searchText, code){
+            var first = pageSize * (pageCurr - 1) + 1;
+            var obj = {sqlName: sqlName, 
+                       isDown: isDown, 
+                       first: first, 
+                       last: first + pageSize - 1,
+                       searchSqlName: searchSqlName, 
+                       searchText: searchText
+                     };
+
+            return DALSrvc.getPromise('save', StcAppSetting.user + '/json/training/' + code + '/ordernewstudent', obj);
+        },
+        deleteSubGroupStudent: function(sgroupId, studentId){
+            return DALSrvc.getPromise('delete', StcAppSetting.admin + '/json/training/subgroup/' + sgroupId + '/student/' + studentId, null);
+        },
+        deleteStudent: function(trainingId, studentId){
+            return DALSrvc.getPromise('delete', StcAppSetting.admin + '/json/training/' + trainingId + '/student/' + studentId, null);
+        },
+        /* Все валюты */
+        getCurrencies: function(){
+            return DALSrvc.getPromise('get', StcAppSetting.admin + '/json/currency', null);
+        },
+        /* */
+        getEMail: function(trId, type){
+            return DALSrvc.getPromise('get', StcAppSetting.admin + '/json/training/' + trId + '/mail/' + type, null);
+        },
+        /* Сохранить платеж */
+        saveSubGroupPayment: function(payment){
+            return DALSrvc.getPromise('save', StcAppSetting.admin + '/json/training/subgroup/payment', payment);  
+        },
+        addStudent: function(trainingId, groupId, person){
+            return DALSrvc.getPromise('save', StcAppSetting.admin + '/json/training/student', {training: {id: trainingId},group: {id: groupId}, student: person});
+        },
+        /* Сохранить инфу о договоре */
+        saveSubGroupContract: function(contract){
+            return DALSrvc.getPromise('save', StcAppSetting.admin + '/json/training/subgroup/contract', contract);  
+        },
+        /* Создать подгруппу и добавить ее в обучение */
+        createSubGroup: function(trId, sgData){
+            return DALSrvc.getPromise('save', StcAppSetting.admin + '/json/training/' + trId + '/subgroup', sgData);  
+        },
+        /* Удалить подгруппу из обучения */
+        deleteSubGroup: function(trainingId, sgroupId){
+            return DALSrvc.getPromise('delete', StcAppSetting.admin + '/json/training/' + trainingId + '/subgroup/' +  sgroupId, null);  
+        },
+        doEvent: function(data){
+            return DALSrvc.getPromise('save', StcAppSetting.admin + '/json/trainingEvent', data);
+          },
+        getEmailContacts: function(trainingId){
+            return DALSrvc.getPromise('get', StcAppSetting.admin + '/json/training/' + trainingId + '/student/email', null);
+        },
+        changeStatusAutoMailing: function(data){
+            return DALSrvc.getPromise('save', StcAppSetting.admin + '/json/training/automailing/status', data);
+        },
+        saveFeedBack: function(data, trId, code){
+            return DALSrvc.getPromise('save', StcAppSetting.user + '/json/training/' + trId + '/feedback/' + code, data);
+        },
+        /* All training feedbacks */
+        getFeedBacksForGrid: function(pageCurr, pageSize, sqlName, isDown, searchSqlName, searchText, trainingId){
+            var first = pageSize * (pageCurr - 1) + 1;
+            var obj = {sqlName: sqlName, 
+                       isDown: isDown, 
+                       first: first, 
+                       last: first + pageSize - 1,
+                       searchSqlName: searchSqlName, 
+                       searchText: searchText,
+                       trainingId: trainingId};
+
+            return DALSrvc.getPromise('save', StcAppSetting.admin + '/json/training/feedback/grid', obj);
+        },
+        /* All training feedbacks by Access Code */
+        getFeedBacksForGridByAccessCode: function(pageCurr, pageSize, sqlName, isDown, searchSqlName, searchText, trainingId, accessCode){
+            var first = pageSize * (pageCurr - 1) + 1;
+            var obj = {sqlName: sqlName, 
+                       isDown: isDown, 
+                       first: first, 
+                       last: first + pageSize - 1,
+                       searchSqlName: searchSqlName, 
+                       searchText: searchText,
+                       trainingId: trainingId,
+                       accessCode: accessCode};
+
+            return DALSrvc.getPromise('save', StcAppSetting.user + '/json/training/feedback/grid', obj);
+        },
+        deleteFeedBack: function(id){
+            return DALSrvc.getPromise('delete', StcAppSetting.admin + '/json/training/feedback/' + id, null); 
+        },
+        getMailingGroups: function(trId){
+            return DALSrvc.getPromise('get', StcAppSetting.admin + '/json/training/' + trId + '/mailing/group', null);
+        },
+        sendEmail: function(data){
+            return DALSrvc.getPromise('save', StcAppSetting.admin + '/json/training/mail/send', data);
+        },
+        createQuestion: function(trId, data){
+            return DALSrvc.getPromise('save', StcAppSetting.user + '/json/training/' + trId + '/question', data);
+        },
+        getTeacherPayout: function(trainingId, teacherId){
+            return DALSrvc.getPromise('get', StcAppSetting.admin + '/json/training/' + trainingId + '/teacher/' + teacherId + '/payout', null);
+        },
+        getUrlForCreateGoogleCalendarEvent: function(text, dates, location, details){
+                return 'https://www.google.com/calendar/render?action=TEMPLATE&hl=ru' + 
+                                        '&text=' + text +
+                                        '&dates=' + dates +
+                                        '&location=' + location +
+                                        '&details=' +  
+                                                    '<a href="' + details.courseProgramUrl + '" target="_blank">Программа курса</a>%0A%0A' +
+                                                    '<a href="' + 'http://' + window.location.host + StcAppSetting.defaultApp + '/stc/index.csp%23/training/' + details.trainingId + '/order" target="_blank">' + $filter('localize')('Присоединиться') + '</a>%0A%0A' +
+                                                    $filter('localize')('Место проведения') + ':' + '%0A' + 
+                                                    details.city + '%0A' +
+                                                    details.address + '%0A%0A' +
+                                                    $filter('localize')('Время') + ':' + '%0A' + 
+                                                    details.time + '%0A%0A' +
+                                                    $filter('localize')('Преподаватель') + ':' + '%0A' +
+                                                    details.teacher + '%0A%0A' + 
+                                                    $filter('localize')('Контактное лицо') + ':' + '%0A' +
+                                                    details.curator +
+                                                    (details.otherInfo == "" ? "" : '%0A%0A' +  $filter('localize')('Примечание') + ':' + ' %0A' + details.otherInfo) 
+                                                    '&sf=true&output=xml';
+        }
+        
+    }
+});
+  

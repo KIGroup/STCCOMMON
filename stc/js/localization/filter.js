@@ -14,5 +14,4 @@ localizationModule.filter('localize', function(StcDictionary) {
 
 servicesModule.config(['$httpProvider', function ($httpProvider) {
   $httpProvider.defaults.headers.common['Accept-Language'] = StcAppSetting.lang.substring(0,2);
-  
 }]);

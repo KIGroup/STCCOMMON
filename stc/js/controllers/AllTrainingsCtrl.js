@@ -1,0 +1,168 @@
+'use strict';
+//ddвdаd
+
+/*===========================================================================================
+Все обучения
+===========================================================================================*/
+
+controllersModule.controller('AllTrainingsCtrl', function($scope, $filter, $location, $routeParams, UtilsSrvc, TrainingSrvc){
+    $scope.menu.selectMenu('trainings');
+
+    if (!$scope.pageStore.trainings)
+        $scope.pageStore.trainings = {grid:{}};
+
+    $scope.training = {};
+	if ($scope.menu.readOnlyMode){
+        $scope.training.secondRowActionIcon = '';
+		$scope.training.actionColumnIcon = 'icon-ellipsis-horizontal';
+	}
+	else{
+		$scope.training.secondRowActionIcon = 'icon-remove';
+		$scope.training.actionColumnIcon = 'icon-plus-sign';
+	}
+	
+    $scope.cert = {};
+
+    $scope.training.init = function(){
+        $scope.training.columns = [
+                          {name: 'Курс', sqlName: 'Course->Name->Value', isSorted: false, isSortable: true, isDown: false, isSearched: true, isSearchable: true},
+                          {name: 'Город', sqlName: 'City->Name->Value', isSorted: false, isSortable: true, isDown: true, isSearched: false, isSearchable: true},
+                          {name: 'Дата начала / окончания', sqlName: 'DateStart', isSorted: true, isSortable: true, isDown: false,  isSearched: false, isSearchable: false, captionStyle: {textAlign: 'center', width: '225px'}},
+                          {name: 'Подгруппы', sqlName: '', isSorted: false, isSortable: false, isDown: true, isSearched: false, isSearchable: false, captionStyle: {textAlign: 'center', width: '85px'}},
+                          {name: 'Слушатели', sqlName: '', isSorted: false, isSortable: false, isDown: true, isSearched: false, isSearchable: false, captionStyle: {textAlign: 'center', width: '85px'}},
+                          {name: 'Отзывы', sqlName: '', isSorted: false, isSortable: false, isDown: true, isSearched: false, isSearchable: false, captionStyle: {textAlign: 'center', width: '60px'}},
+                          {name: 'Заявки', sqlName: '', isSorted: false, isSortable: false, isDown: true, isSearched: false, isSearchable: false, captionStyle: {textAlign: 'center', width: '60px'}},
+                          {name: 'Статус', sqlName: 'IsCompleted', isSorted: false, isSortable: true,  isDown: true,  isSearched: false, isSearchable: false, captionStyle: {textAlign: 'center', width: '90px'}}];
+                            
+        $scope.training.properties = [{name: 'course.nameShort',
+        								calculate: function(item){
+	        								if (item.course.name.length > 60){
+	        									item.course.nameShort = item.course.name.substring(0, 60) + '...'; 
+	        								}
+	        								else{
+		        								item.course.nameShort = item.course.name;
+	        								}
+	        							}}, 
+                                      {name: 'city.name'}, 
+                                      {name: 'dates', cellStyle: {textAlign: 'center'},
+                                      	calculate:function(item){
+	                                    	item.dates = UtilsSrvc.getTwoDate(item.dateStart, item.dateFinish);
+	                                    }},
+                                      {name: 'sgroups', cellStyle: {textAlign: 'center'}},
+                                      {name: 'students', cellStyle: {textAlign: 'center'}},
+                                      {name: 'feedBacks.count', cellStyle: {textAlign: 'center'}},
+                                      {name: 'newStudents', cellStyle: {textAlign: 'center'},
+                                        getCssClass: function(item){
+                                            return '' + (item.newStudents > 0 ? 'label label-important' : '');
+                                        }},
+                                      {name: 'status', cellStyle: {textAlign: 'center'},
+                                        getCssClass: function(item){
+                                            return 'label ' + (item.isCompleted == 0 ? 'label-info' : 'label-success');
+                                        },
+                                        calculate: function(item){
+	                                        item.isCertificatesDone = item.isCertificatesDone==0 ? false : true;
+                                            item.isStudentsAutoMailing = item.isStudentsAutoMailing==0 ? false : true;
+                                            item.isTeacherAutoMailing = item.isTeacherAutoMailing==0 ? false : true;
+                                            item.isCuratorAutoMailing = item.isCuratorAutoMailing==0 ? false : true;
+                                            item.isFeedBackAutoMailing = item.isFeedBackAutoMailing==0 ? false : true;
+                                            item.status = item.isCompleted == 1 ? $filter('localize')('Завершено') : $filter('localize')('Не завершено');
+                                            if (!item.isCertificatesDone){
+	                                        	item.status += '*';
+	                                        }
+                                        }}];
+
+        $scope.training.status = UtilsSrvc.getPropertyValue($scope.pageStore, 'trainings.status', 'All');
+        $scope.training.pageSize = UtilsSrvc.getPropertyValue($scope.pageStore, 'trainings.grid.pageSize', 10);;
+        $scope.training.pageCurr = UtilsSrvc.getPropertyValue($scope.pageStore, 'trainings.grid.pageCurr', 1);;
+        $scope.training.itemsTotal = 0;
+        $scope.training.selectedItems = [];
+        $scope.training.multiSelectMode = false;
+        $scope.training.forciblyUpdate = 0;
+        
+        $scope.statuses = [{id: 'completed', name: $filter('localize')('Завершённые обучения')}, {id: 'not-completed', name: $filter('localize')('Незавершённые обучения')}];
+        $scope.certStatuses = [{id: 'done', name: $filter('localize')('Сертификаты выданы')}, {id: 'not-done', name: $filter('localize')('Сертификаты не выданы')}];
+   		$scope.training.refresh();
+    };
+ 
+    // Загрузка
+    $scope.training.loadItems = function(pageCurr, pageSize, sqlName, isDown, searchSqlName, searchText){
+        TrainingSrvc.getAllForGrid(pageCurr, pageSize, sqlName, isDown, searchSqlName, searchText, {status: $scope.training.selectedStatus, certStatus: $scope.training.selectedCertStatus}).then(
+            function(data){
+                $scope.training.pageTotal = Math.ceil(data.itemsTotal / pageSize);
+                $scope.training.itemsTotal = data.itemsTotal;
+                $scope.training.items = data.items;
+                
+                if ($scope.training.selectedItems && $scope.training.items && $scope.training.selectedItems.length == 0 && $scope.training.items.length != 0){
+                    $scope.training.selectedItems[0] = $scope.training.items[0];
+                    $scope.training.selectedItems[0].rowClass = 'info';
+                }
+            },
+            function(response){
+                $scope.training.alert = UtilsSrvc.getAlert('Внимание!', response.data, 'error', true);
+            });
+    };
+    
+	$scope.training.refresh = function(){
+		$scope.training.forciblyUpdate++;
+	}
+	
+    // Открыть обучение для просмотра на другой странице
+    $scope.training.open = function(item){
+        $location.path('/training/' + item.id);
+    };
+
+    // Создать пустое обучение
+    $scope.training.add = function(){
+        $location.path('/training');
+    };
+
+    // Удалить пустое обучение
+    $scope.training.remove = function(item){
+        function deleteTraining(){
+            TrainingSrvc.remove(item.id).then(
+                function(data){
+                    $scope.training.alert = UtilsSrvc.getAlert('Готово!', 'Обучение удалено.', 'success', true);
+                    $scope.training.selectedItems = [];
+                    $scope.training.forciblyUpdate++;
+                },
+                function(response){
+                    $scope.training.alert = UtilsSrvc.getAlert('Внимание!', response.data, 'error', true);
+                });  
+        };
+
+        UtilsSrvc.openMessageBox('Удалить обучение', $filter('localize')("Удалить обучение по курсу ") + " '" + item.course.name + "'?", deleteTraining);    
+    };
+
+    
+    $scope.training.changeStatusAutoMailing = function(type){
+        var isAutoMailing = 0;
+        switch(type){
+            case 'teacher':{
+                isAutoMailing = $scope.training.selectedItems[0].isTeacherAutoMailing;
+                break;
+            }
+            case 'students':{
+                isAutoMailing = $scope.training.selectedItems[0].isStudentsAutoMailing;
+                break;
+            }
+            case 'feedback':{
+                isAutoMailing = $scope.training.selectedItems[0].isFeedBackAutoMailing;
+                break;
+            }
+            case 'curator':{
+                isAutoMailing = $scope.training.selectedItems[0].isCuratorAutoMailing;
+                break;
+            }
+        }
+
+        TrainingSrvc.changeStatusAutoMailing({id: $scope.training.selectedItems[0].id, isAutoMailing: isAutoMailing, type: type}).then(
+            function(data){
+                $scope.training.alert = UtilsSrvc.getAlert('Готово!', 'Изменения сохранены.', 'success', true);
+            },
+            function(response){
+                $scope.training.alert = UtilsSrvc.getAlert('Внимание!', response.data, 'error', true);
+            });
+    };
+    $scope.training.init();
+});
+

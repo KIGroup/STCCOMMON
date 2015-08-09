@@ -26,6 +26,7 @@
         StcAppSetting.lang = 'ru-RU';
         //StcAppSetting.lang = 'en-US';
         
+        /// Get parameter from url
         function getParameterByName(name) {
             name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
             var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),

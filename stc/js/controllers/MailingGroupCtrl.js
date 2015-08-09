@@ -1,0 +1,103 @@
+'use strict';
+//
+
+/*===========================================================================================
+Группа рассылки, создание и изменение
+===========================================================================================*/
+
+controllersModule.controller('MailingGroupCtrl', function($scope, $filter, $routeParams, $location, MailingSrvc, UtilsSrvc){
+    $scope.groupForm = {};
+    
+    $scope.groupForm.init = function(){
+        if (!isNaN(parseInt($routeParams.id))){
+            $scope.groupForm.caption = 'Редактирование группы';
+            $scope.groupForm.actionName = 'Сохранить';
+            $scope.groupForm.loadData();    
+        }
+        else{
+            $scope.groupForm.caption = 'Добавление группы';
+            $scope.groupForm.actionName = 'Добавить';
+        }
+    };
+
+    // Загрузить курс
+    $scope.groupForm.loadData = function(){
+        MailingSrvc.getGroup($routeParams.id).then(
+            function(data){
+                data.mailMessage = data.mailMessage.replace(/<br>/g, "\n");
+                $scope.groupForm.group = data;
+            },
+            function(response){
+                 $scope.groupForm.alert = UtilsSrvc.getAlert('Внимание!', response.data, 'error', true);
+            }); 
+    };
+
+    // Сохранить / создать курс
+    $scope.groupForm.submit = function(){
+        var group = angular.copy($scope.groupForm.group);
+        group.mailMessage = group.mailMessage.replace(/\n/g, "<br>");
+        
+        MailingSrvc.saveGroup(group).then(
+            function(data){
+                if (!$scope.groupForm.group.id){
+                    $scope.groupForm.alert = UtilsSrvc.getAlert('Готово!', 'Группа создана.', 'success', true);
+                    $scope.groupForm.group = {};
+                }
+                else{
+                    $scope.groupForm.alert = UtilsSrvc.getAlert('Готово!', 'Изменения сохранены.', 'success', true);
+                }
+                
+                $scope.form.$setPristine();
+            },
+            function(response){
+                $scope.groupForm.alert = UtilsSrvc.getAlert('Внимание!', response.data, 'error', true);
+            }); 
+    };
+
+
+    // Загрузить превью
+    $scope.groupForm.loadPreview = function(){
+        MailingSrvc.getGroupMail($scope.groupForm.group.id).then(
+            function(data){
+                $scope.groupForm.previewVisible = true;
+                $scope.groupForm.preview = data.subject + '<br><br>' + data.message;
+            },
+            function(response){
+                $scope.groupForm.alert = UtilsSrvc.getAlert('Внимание!', response.data, 'error', true);
+            }); 
+    };
+
+    // Отмена - возврат на страницу курсов
+    $scope.groupForm.cancel = function(){
+        $location.path('/mailing/groups');
+    };
+    
+    // Show help dialog window 
+    $scope.groupForm.showHelp = function(type){
+        var getLocValue = function(key){
+            return $filter('localize')(key)
+        };
+       
+        var msg = getLocValue('В содержании письма можно использовать переменные(%Variable), которые впоследствии будут заменены на соответствующие значения. Список доступных переменных для данного шаблона:<br>');
+        msg += 
+              '%DateStart, %DateEnd - '+ getLocValue('дата начала / окончания обучения') + ';<br>' +
+              '%TimeStart, %TimeEnd - '+ getLocValue('время начала / окончание занятий') + ';<br>' +
+              '%Course.Name - '+ getLocValue('название курса') + ';<br>' +
+              '%City.Name, %Region.Name, %Country.Name - '+ getLocValue('город, регион, страна') + ';<br>' +
+              '%Street, %Room - '+ getLocValue('улица и аудитория') + ';<br>' +
+              '%Trainer.FullName - '+ getLocValue('фамилия и имя преподавателя') + ';<br>' +
+              '%Trainer.Email, %Trainer.Phone - '+ getLocValue('email, телефон') + '<br>' +
+              '%Curator.FullName - '+ getLocValue('фамилия и имя куратора') + ';<br>' + 
+              '%Curator.Email, %Curator.PhoneSecret, %Curator.PhonePublic - '+ getLocValue('email, личный | публичный телефон') + ';<br>' +
+              '%OtherInfo - '+ getLocValue('дополнительная информация об обучении') + ';<br>' + 
+              '%JoinUrl - '+ getLocValue('ссылка на страницу регистрации') + ';<br>'+
+              '%ListOfAttendeesUrl - '+ getLocValue('ссылка на страницу со списком слушателей') + ';<br>' +
+              '%UnsubscribeUrl - '+ getLocValue('ссылка на отмену подписки') + '.<br>';
+         
+        UtilsSrvc.openCustomMessageBox('Справка', msg, [{result: '1', label: $filter('localize')('Закрыть'),  cssClass: 'btn-small', func: null}]);    
+    };
+    
+    $scope.groupForm.init();
+});
+    
+
