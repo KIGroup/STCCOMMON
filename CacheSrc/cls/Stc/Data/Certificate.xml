@@ -2,7 +2,7 @@
 <Export generator="Cache" version="25">
 <Class name="Stc.Data.Certificate">
 <Description>
-Student's certificate</Description>
+Student's certificate.</Description>
 <Super>%Persistent</Super>
 <TimeCreated>63098,13360.224443</TimeCreated>
 

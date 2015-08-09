@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Export generator="Cache" version="25">
-<Document name="$TRASH-Mobile-Test.dashboard.DFI">
-<dashboard xmlns="http://www.intersystems.com/deepsee/library" name="Test" folderName="$TRASH/Mobile" title="test" description="" keywords="" owner="" shared="true" public="true" locked="false" resource="" timeCreated="2015-05-05T14:36:59.326Z" createdBy="mobile" category="" bookCover="" scheme="" worklistCount="2" snapTo="true" snapGrid="true" gridRows="10" gridCols="10" canResize="true" canModify="true" showTitleBar="true" companyName="" companyLogo="" companyStyle="">
-</dashboard>
-</Document></Export>
