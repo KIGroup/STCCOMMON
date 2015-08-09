@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Document name="$TRASH-ThisYear-Bug Tree Map.dashboard.DFI">
+<dashboard xmlns="http://www.intersystems.com/deepsee/library" name="Bug Tree Map" folderName="$TRASH/ThisYear" title="Bug Tree Map" description="" keywords="" owner="" shared="true" public="true" locked="false" resource="" timeCreated="2015-05-17T15:14:43.511Z" createdBy="mobile" category="" bookCover="" scheme="" worklistCount="2" snapTo="true" snapGrid="true" gridRows="10" gridCols="10" canResize="true" canModify="true" showTitleBar="true" companyName="" companyLogo="" companyStyle="">
+  <widget name="Виджет1" type="pivot" subtype="pivot" subtypeClass="lineChart" title="Организации: слушатели, количества обучений и деньги" dataSource="Mobile/Организации деньги и люди.pivot" dataLink="" drillDownDataSource="" width="200" height="200" sidebarContent="" showSidebar="false" sidebarWidth="" maximized="false" homeRowL="0" homeColL="0" colSpanL="5" rowSpanL="5" showToolbar="true" theme="" dataColorList="">
+    <control name="" action="applyFilter" target="*" targetProperty="[Year].[H1].[Year]" location="dashboard" type="auto" controlClass="" label="Год" title="" value="&amp;[2015]" text="" readOnly="false" valueList="" displayList="" activeWhen=""></control>
+    <control name="" action="applyFilter" target="*" targetProperty="[CompanyType].[H1].[Name]" location="dashboard" type="auto" controlClass="" label="Тип организации" title="" value="&amp;[CF9E764F-0F6C-4361-BC14-A695775399AB00]" text="" readOnly="false" valueList="" displayList="" activeWhen=""></control>
+    <control name="" action="applyFilter" target="*" targetProperty="[TrainingCubeRelation].[Course].[H1].[CourseName]" location="dashboard" type="auto" controlClass="" label="TrainingCubeRelation.Курс" title="" value="" text="" readOnly="false" valueList="" displayList="" activeWhen=""></control>
+  </widget>
+  <widget name="Виджет2" type="pivot" subtype="pieChart3D" subtypeClass="pieChart" title="Топ 5 по слушателям" dataSource="Mobile/Организации и люди Top 5.pivot" dataLink="" drillDownDataSource="" width="200" height="200" sidebarContent="" showSidebar="false" sidebarWidth="" maximized="false" homeRowL="0" homeColL="5" colSpanL="5" rowSpanL="5" showToolbar="true" theme="" dataColorList="">
+  </widget>
+  <widget name="Виджет3" type="pivot" subtype="treeMapChart" subtypeClass="treeMapChart" title="Карта по слушателям" dataSource="Mobile/Организации и люди.pivot" dataLink="" drillDownDataSource="" width="200" height="200" sidebarContent="" showSidebar="false" sidebarWidth="" maximized="false" homeRowL="5" homeColL="0" colSpanL="8" rowSpanL="5" showToolbar="true" theme="" dataColorList="">
+  </widget>
+</dashboard>
+</Document></Export>

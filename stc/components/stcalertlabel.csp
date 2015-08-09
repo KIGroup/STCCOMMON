@@ -1,0 +1,1 @@
+<label ng-show="data.visible" ng-class="'label label-' + data.cssClass" ng-bind="data.msg" style="margin-left: 5px; margin-bottom: 4px;"></label>

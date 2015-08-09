@@ -1,0 +1,76 @@
+'use strict';
+//dddddfd
+
+/*===========================================================================================
+Курс, создание и изменение
+===========================================================================================*/
+
+controllersModule.controller('CourseCtrl', function($scope, $routeParams, $window, CourseTeacherSrvc, TrainingSrvc, UtilsSrvc){
+    if ($scope.menu.active) $scope.menu.active.css = "menuAfterActive";
+    $scope.courseForm = {};
+    
+    $scope.courseForm.init = function(){
+        $scope.courseForm.loadCurrencies();
+
+        if (!isNaN(parseInt($routeParams.id))){
+            $scope.courseForm.caption = 'Редактирование курса';
+            $scope.courseForm.actionName = 'Сохранить';
+            $scope.courseForm.loadData();    
+        }
+        else{
+            $scope.courseForm.caption = 'Добавление курса';
+            $scope.courseForm.actionName = 'Добавить';
+        }
+    };
+
+    // Загрузить курс
+    $scope.courseForm.loadData = function(){
+        CourseTeacherSrvc.get($routeParams.id).then(
+            function(data){
+                $scope.courseForm.course = data;
+            },
+            function(response){
+                 $scope.courseForm.alert = UtilsSrvc.getAlert('Ошибка !', response.data, 'error', true);
+            }); 
+    };
+
+    // Сохранить / создать курс
+    $scope.courseForm.submit = function(){
+        CourseTeacherSrvc.save($scope.courseForm.course).then(
+            function(data){
+	            if (!$scope.courseForm.course.id){
+                	$scope.courseForm.alert = UtilsSrvc.getAlert('Готово!', 'Курс создан.', 'success', true);
+                	$scope.courseForm.course = {};
+	            }
+                else{
+                	$scope.courseForm.alert = UtilsSrvc.getAlert('Готово!', 'Изменения сохранены.', 'success', true);
+                }
+                
+                $scope.cForm.$setPristine();
+            },
+            function(response){
+                $scope.courseForm.alert = UtilsSrvc.getAlert('Ошибка!', response.data, 'error', true);
+            }); 
+    };
+
+    // Отмена - возврат на страницу курсов
+    $scope.courseForm.cancel = function(){
+        $window.history.back();
+    };
+
+
+    // Загрузить валюты
+    $scope.courseForm.loadCurrencies = function(){
+        TrainingSrvc.getCurrencies().then(
+            function(data){
+                $scope.courseForm.currencies = data;
+            },
+            function(response){
+                $scope.courseForm.alert = UtilsSrvc.getAlert('Внимание!', response.data, 'error', true);
+            });
+    };
+    
+    $scope.courseForm.init();
+});
+    
+

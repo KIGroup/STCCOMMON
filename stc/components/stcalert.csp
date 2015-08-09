@@ -1,0 +1,6 @@
+<div class="row-fluid" ng-show="data.visible">
+   <div ng-class="data.cssClass">
+       <button class="close" type="button" ng-click="close()">&times;</button>
+          <strong ng-bind="data.title"></strong>&nbsp;<span ng-bind="data.msg"></span>
+   </div>
+</div>

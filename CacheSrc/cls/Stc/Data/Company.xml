@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="Stc.Data.Company">
+<Description>
+Customer organization</Description>
+<Super>%Persistent</Super>
+<TimeCreated>63098,13287.262923</TimeCreated>
+
+<Property name="FullName">
+<Description>
+Full name of organization</Description>
+<Type>Stc.Data.Localization.LText</Type>
+<Required>1</Required>
+</Property>
+
+<Property name="ShortName">
+<Description>
+Short name of organization</Description>
+<Type>Stc.Data.Localization.LText</Type>
+<Required>1</Required>
+</Property>
+
+<Property name="SettlementAccount">
+<Description>
+Settlement account of organizaton</Description>
+<Type>%String</Type>
+<Parameter name="MAXLEN" value="1000"/>
+</Property>
+
+<Property name="CorrespondentAccount">
+<Description>
+Correspondent account of organization</Description>
+<Type>%String</Type>
+<Parameter name="MAXLEN" value="1000"/>
+</Property>
+
+<Property name="BIC">
+<Description>
+Bank Identification Code</Description>
+<Type>%String</Type>
+<Parameter name="MAXLEN" value="500"/>
+</Property>
+
+<Property name="KPP">
+<Description>
+Code reason for registration</Description>
+<Type>%String</Type>
+<Parameter name="MAXLEN" value="500"/>
+</Property>
+
+<Property name="INN">
+<Description>
+Taxpayer identification number</Description>
+<Type>%String</Type>
+<Parameter name="MAXLEN" value="500"/>
+</Property>
+
+<Property name="OGRN">
+<Description>
+Main state registration number</Description>
+<Type>%String</Type>
+<Parameter name="MAXLEN" value="500"/>
+</Property>
+
+<Property name="LegalAddress">
+<Description>
+Legal address</Description>
+<Type>Stc.Data.Localization.LText</Type>
+<Required>1</Required>
+</Property>
+
+<Property name="MailAddress">
+<Description>
+Mail address</Description>
+<Type>Stc.Data.Localization.LText</Type>
+<Required>1</Required>
+</Property>
+
+<Property name="Contact">
+<Description>
+Contact person</Description>
+<Type>Person</Type>
+</Property>
+
+<Property name="WebSite">
+<Description>
+Web-site</Description>
+<Type>%String</Type>
+<Parameter name="MAXLEN" value="500"/>
+</Property>
+
+<Property name="IsUniversity">
+<Description>
+Organization is university</Description>
+<Type>%Boolean</Type>
+<InitialExpression>0</InitialExpression>
+</Property>
+
+<Property name="OtherInfo">
+<Description>
+Other information</Description>
+<Type>Stc.Data.Localization.LText</Type>
+<Required>1</Required>
+</Property>
+
+<Property name="Type">
+<Description>
+Type of company - univer, partner etc.</Description>
+<Type>Stc.Data.CompanyType</Type>
+</Property>
+
+<Property name="Employees">
+<Description>
+All employees</Description>
+<Type>Stc.Data.Person</Type>
+<Cardinality>many</Cardinality>
+<Inverse>Company</Inverse>
+<Relationship>1</Relationship>
+</Property>
+
+<Property name="City">
+<Type>Region</Type>
+</Property>
+
+<Method name="ConvertToProxyObject">
+<Description>
+Convert to proxyObject (for JSON)</Description>
+<FormalSpec>shortInfo:%Boolean=0</FormalSpec>
+<ReturnType>%ZEN.proxyObject</ReturnType>
+<Implementation><![CDATA[
+    set proxy = ##class(%ZEN.proxyObject).%New()
+    
+    set proxy.id = ..%Id()
+    set proxy.shortName = ..ShortName.Value
+    set proxy.site = ..WebSite
+    
+    if (shortInfo = 1) quit proxy
+    
+    set proxy.fullName = ..FullName.Value
+    set proxy.settlementAccount = ..SettlementAccount
+    set proxy.correspondentAccount = ..CorrespondentAccount
+    set proxy.bic = ..BIC
+    set proxy.kpp= ..KPP
+    set proxy.inn = ..INN
+    set proxy.ogrn = ..OGRN
+    set proxy.legalAddress = ..LegalAddress.Value
+    set proxy.mailAddress = ..MailAddress.Value
+    set proxy.otherInfo = ..OtherInfo.Value
+    
+    set proxy.isUnknownCity = $$$NO
+    if $ISOBJECT(..City){
+        set proxy.city = ..City.ConvertToProxyObject()
+    }
+    else{
+        set proxy.isUnknownCity = $$$YES
+    }
+    
+    
+    if $ISOBJECT(..Contact){
+        set proxy.contact = ..Contact.ConvertToProxyObject()
+    }
+    
+    set proxy.employeesNumber = ..Employees.Count()
+    
+    if (..Type.Code = "Univer"){
+        set proxy.status = 1
+    }
+    else{
+        set proxy.status = 0
+    }
+    
+    quit proxy
+]]></Implementation>
+</Method>
+
+<Method name="Save">
+<Description>
+Create or save modified organization</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[data:%RegisteredObject,&status]]></FormalSpec>
+<ReturnType>Company</ReturnType>
+<Implementation><![CDATA[
+    do ##class(Stc.Utils.Log).Create(..%ClassName(1)_".Save", "ID="_data.id_"; ShortName="_$ZCONVERT(data.shortName, "I","UTF8"))
+    
+    if (data.id '= ""){
+        set company = ..%OpenId(data.id,3,.status)
+        set company.FullName.Value = $ZCONVERT(data.fullName, "I","UTF8")
+        set company.ShortName.Value = $ZCONVERT(data.shortName, "I","UTF8")
+        set company.LegalAddress.Value = $ZCONVERT(data.legalAddress, "I","UTF8")
+        set company.MailAddress.Value = $ZCONVERT(data.mailAddress, "I","UTF8")
+        set company.OtherInfo.Value = $ZCONVERT(data.otherInfo, "I","UTF8") 
+    }
+    else{
+        set company = ..%New()
+        set company.FullName = ##class(Stc.Data.Localization.LText).Create($ZCONVERT(data.fullName, "I","UTF8"))
+        set company.ShortName = ##class(Stc.Data.Localization.LText).Create($ZCONVERT(data.shortName, "I","UTF8"))
+        set company.LegalAddress = ##class(Stc.Data.Localization.LText).Create($ZCONVERT(data.legalAddress, "I","UTF8"))
+        set company.MailAddress = ##class(Stc.Data.Localization.LText).Create($ZCONVERT(data.mailAddress, "I","UTF8"))
+        set company.OtherInfo = ##class(Stc.Data.Localization.LText).Create($ZCONVERT(data.otherInfo, "I","UTF8"))
+    }
+    
+    
+    
+    if (data.isUnknownCity '= $$$YES) && $ISOBJECT(data.city){
+        set company.City = ##class(Region).%OpenId(data.city.id)
+    }
+    else{
+        set company.City = $$$NULLOREF
+    }
+    
+    set company.BIC = $ZCONVERT(data.bic, "I","UTF8")
+    set company.OGRN = $ZCONVERT(data.ogrn, "I","UTF8")
+    set company.INN = $ZCONVERT(data.inn, "I","UTF8")
+    set company.SettlementAccount = $ZCONVERT(data.settlementAccount, "I","UTF8")
+    set company.CorrespondentAccount = $ZCONVERT(data.correspondentAccount, "I","UTF8") 
+    set company.KPP = $ZCONVERT(data.kpp, "I","UTF8")
+    set company.WebSite = $REPLACE($REPLACE($ZCONVERT(data.site, "I","UTF8"),"http://",""), "https://","")
+    
+    if (data.status = 1){
+        set company.Type = ##class(CompanyType).CodeIdxOpen("Univer")
+    }
+    else{
+        set company.Type = ##class(CompanyType).CodeIdxOpen("Partner")
+    }
+    
+    set status = company.%Save()
+    
+    quit company
+]]></Implementation>
+</Method>
+
+<Method name="Delete">
+<Description>
+Delete organization, if it is available</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>id</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    do ##class(Stc.Utils.Log).Create(..%ClassName(1)_".Delete", "ID="_id)
+    
+    set company = ..%OpenId(id,4,.status)
+    quit:$$$ISERR(status) ##class(Stc.Utils.Msg).GetErrorStatus("openCompany", "| "_status)
+    
+    set findId = ""
+    
+    // Checking: if in applications
+    &sql(SELECT ID INTO:findId FROM Stc_Data.Order WHERE Company = :id)
+    if (findId = ""){
+        // Checking: if has employees
+        &sql(SELECT ID INTO:findId FROM Stc_Data.Person WHERE Company = :id)
+        
+        if (findId = ""){
+            // Checking: if is payer for subgroup
+            &sql(SELECT ID INTO:findId FROM Stc_Data.SubGroup WHERE Payer = :id)
+            
+            if (findId = ""){
+                // Checking: in application from student
+                &sql(SELECT ID INTO:findId FROM Stc_Data.OrderNewStudent WHERE Company = :id)   
+            }   
+        }
+    }
+    
+    // Quit, if has links
+    quit:findId'="" ##class(Stc.Utils.Msg).GetErrorStatus("deleteCompanyImpossible")
+    
+    // Delete localization
+    set status = ##class(Stc.Data.Localization.LText).Delete(company.FullName.%Id())
+    quit:$$$ISERR(status) status
+        
+    set status = ##class(Stc.Data.Localization.LText).Delete(company.ShortName.%Id())
+    quit:$$$ISERR(status) status
+        
+    set status = ##class(Stc.Data.Localization.LText).Delete(company.LegalAddress.%Id())
+    quit:$$$ISERR(status) status
+    
+    set status = ##class(Stc.Data.Localization.LText).Delete(company.MailAddress.%Id())
+    quit:$$$ISERR(status) status
+    
+    set status = ##class(Stc.Data.Localization.LText).Delete(company.OtherInfo.%Id())
+    quit:$$$ISERR(status) status
+    
+    // Delete organization
+    set status = ..%DeleteId(id, 4)
+    quit:$$$ISERR(status) ##class(Stc.Utils.Msg).GetErrorStatus("deleteCompany", "| "_status)
+    
+    quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="UpdateCity">
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+    &sql(DECLARE CmpCur CURSOR FOR 
+         SELECT ID
+         FROM Stc_Data.Company
+         WHERE LegalAddress->Value <> '')   
+    
+    &sql(OPEN CmpCur)
+    for  
+    {   
+        &sql(FETCH CmpCur INTO :cmpId) 
+        quit:(SQLCODE '= 0)
+        
+        set cmp = ..%OpenId(cmpId)
+        w !,!,"Company ID=",cmpId," Name=",cmp.ShortName.Value
+        w !,"LegalAddress = ",cmp.LegalAddress.Value
+        
+        set cityName = $P(cmp.LegalAddress.Value, ",", 2)
+        set cityId = ""
+        &sql(SELECT ID INTO :cityId FROM Stc_Data.Region WHERE HLevel = 2 AND Name->Value = TRIM(BOTH ' ' FROM :cityName))
+        
+        set newCity = ##class(Region).%OpenId(cityId, , .st)
+        if $$$ISERR(st){
+            w !,"City not found = ",cityName
+            continue
+        }
+        
+        w !,"CityName     = "_$REPLACE(cityName, " ", "")
+        w !,"Founded city = "_newCity.Name.Value,", ",newCity.ParentRegion.Name.Value,", ",newCity.ParentRegion.ParentRegion.Name.Value     
+    
+        set cmp.City = newCity
+        do cmp.%Save()
+    }
+    
+    &sql(CLOSE CmpCur)
+]]></Implementation>
+</Method>
+
+<Storage name="Default">
+<Type>%Library.CacheStorage</Type>
+<DataLocation>^Stc.Data.CompanyD</DataLocation>
+<DefaultData>CompanyDefaultData</DefaultData>
+<IdLocation>^Stc.Data.CompanyD</IdLocation>
+<IndexLocation>^Stc.Data.CompanyI</IndexLocation>
+<StreamLocation>^Stc.Data.CompanyS</StreamLocation>
+<ExtentSize>100000</ExtentSize>
+<Data name="CompanyDefaultData">
+<Value name="1">
+<Value>%%CLASSNAME</Value>
+</Value>
+<Value name="2">
+<Value>FullName</Value>
+</Value>
+<Value name="3">
+<Value>ShortName</Value>
+</Value>
+<Value name="4">
+<Value>SettlementAccount</Value>
+</Value>
+<Value name="5">
+<Value>CorrespondentAccount</Value>
+</Value>
+<Value name="6">
+<Value>BIC</Value>
+</Value>
+<Value name="7">
+<Value>KPP</Value>
+</Value>
+<Value name="8">
+<Value>INN</Value>
+</Value>
+<Value name="9">
+<Value>OGRN</Value>
+</Value>
+<Value name="10">
+<Value>LegalAddress</Value>
+</Value>
+<Value name="11">
+<Value>MailAddress</Value>
+</Value>
+<Value name="12">
+<Value>Contact</Value>
+</Value>
+<Value name="13">
+<Value>WebSite</Value>
+</Value>
+<Value name="14">
+<Value>OtherInfo</Value>
+</Value>
+<Value name="15">
+<Value>IsUniversity</Value>
+</Value>
+<Value name="16">
+<Value>Type</Value>
+</Value>
+<Value name="17">
+<Value>City</Value>
+</Value>
+</Data>
+</Storage>
+</Class>
+</Export>

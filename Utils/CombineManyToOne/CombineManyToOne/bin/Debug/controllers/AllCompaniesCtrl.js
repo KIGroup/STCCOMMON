@@ -1,0 +1,90 @@
+'use strict';
+//dd
+
+/*===========================================================================================
+Все компании
+===========================================================================================*/
+controllersModule.controller('AllCompaniesCtrl', function($scope, $filter, $location, $routeParams, UtilsSrvc, CompanySrvc){
+    $scope.menu.selectMenu('companies');
+    
+	if (!$scope.pageStore.companies)
+       	$scope.pageStore.companies = {grid:{}};
+
+    $scope.company = {};
+
+    $scope.company.init = function(){
+        $scope.company.columns = [
+                          {name: 'Название', sqlName: 'ShortName->Value', isSorted: true,  isSortable: true,  isDown: true, isSearched: true, isSearchable: true},
+                          {name: 'Сотрудники', captionStyle: {textAlign: 'center', width: '80px'}},
+                          {name: 'Юридический адрес', sqlName: 'LegalAddress->Value', isSorted: false, isSortable: true,  isDown: true,  isSearched: false, isSearchable: true},
+                          {name: 'Статус', sqlName: 'Type->Name->Value', isSorted: false, isSortable: true,  isDown: true,  isSearched: false, isSearchable: false, captionStyle: {textAlign: 'center', width: '80px'}}];
+        
+        $scope.company.properties = [{name: 'shortName'}, 
+                                     {name: 'employeesNumber', cellStyle: {textAlign: 'center'}}, 
+                                     {name: 'legalAddress'}, 
+                                     {name: 'statusName', cellStyle: {textAlign: 'center'},
+                                        getCssClass: function(item){
+                                                    return 'label ' + (item.status == 0 ? '' : 'label-info');
+                                        },
+                                        calculate: function(item){
+                                                    item.statusName = item.status == 0 ? $filter('localize')('Партнёр') : $filter('localize')('Университет');
+                                        }}];
+        $scope.company.status = UtilsSrvc.getPropertyValue($scope.pageStore, 'company.status', 'All');
+        $scope.company.pageSize = UtilsSrvc.getPropertyValue($scope.pageStore, 'companies.grid.pageSize', 10);
+        $scope.company.pageCurr = UtilsSrvc.getPropertyValue($scope.pageStore, 'companies.grid.pageCurr', 1);
+        $scope.company.itemsTotal = 0;
+        $scope.company.selectedItems = [];
+        $scope.company.multiSelectMode = false;
+		$scope.company.forciblyUpdate = 0;
+    };
+
+    // company
+    // Загрузка
+    $scope.company.loadItems = function(pageCurr, pageSize, sqlName, isDown, searchSqlName, searchText){
+        CompanySrvc.getAllForGrid(pageCurr, pageSize, sqlName, isDown, searchSqlName, searchText, $scope.company.status).then(
+            function(data){
+                $scope.company.pageTotal = Math.ceil(data.itemsTotal / pageSize);
+                $scope.company.itemsTotal = data.itemsTotal;
+                $scope.company.items = data.items;
+                
+                if ($scope.company.selectedItems && $scope.company.items && $scope.company.selectedItems.length == 0 && $scope.company.items.length != 0){
+                    $scope.company.selectedItems[0] = $scope.company.items[0];
+                    $scope.company.selectedItems[0].rowClass = 'info';
+                }
+            },
+            function(response){
+                $scope.company.alert = UtilsSrvc.getAlert('Внимание!', response.data, 'error', true);
+            });
+    };
+       
+    // Переход на страницу редактирования компании
+    $scope.company.edit = function(item){
+         $location.path('/company').search({id: item.id});
+    };
+
+    // Удалить компанию
+    $scope.company.remove = function(item){
+        function deleteComp(){
+            CompanySrvc.remove(item.id).then(
+                function(data){
+                    $scope.company.alert = UtilsSrvc.getAlert('Готово!', 'Организация удалена.', 'success', true);
+                    $scope.company.selectedItems = [];
+                    $scope.company.forciblyUpdate++;
+                },
+                function(response){
+                    $scope.company.alert = UtilsSrvc.getAlert('Внимание!', response.data, 'error', true);
+                });  
+        };
+
+        UtilsSrvc.openMessageBox('Удалить организацию', $filter('localize')("Если ссылочная целостность не нарушается, то произвести удаление организации") + " '" + item.shortName + "'?", deleteComp);    
+    };
+
+    // При смене статуса подгружать соответствующие записи
+    $scope.$watch('company.status', function(){
+        $scope.company.forciblyUpdate++;
+        $scope.pageStore.companies.status = $scope.company.status;
+    });
+
+    $scope.company.init();
+});
+

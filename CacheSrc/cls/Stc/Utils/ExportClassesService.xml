@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="Stc.Utils.ExportClassesService">
+<Abstract>1</Abstract>
+<TimeCreated>63744,84579.858459</TimeCreated>
+
+<Parameter name="CommonExportFolderName">
+<Description>
+Имя папки, в которой будут расположены результаты экспорта с разных областей    </Description>
+<Default>CacheExport</Default>
+</Parameter>
+
+<Method name="ExportPackage">
+<Description>
+Экспорт всех классов одним файлом и по отдельности. Старая папка будет удалена перед экспортом автоматически.
+packageName - пакет, классы которого будут экспортированы 
+exportDir - папка с результатами экспорта, в ней будет создана папка с имнем области, а уже в ней будут результаты.
+Полный путь к папке будет такой: [exportDir]\[CommonExportFolderName]\[имя области]\ 
+nameOfTheFileWithAllClasses - имя файла со всеми классами
+Пример:
+do ##class(Stc.Utils.ExportClassesService).ExportPackage("Stc", "c:\InterSystems\StcExport")
+</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>packageName:%String,exportDir:%String="c:",nameOfTheFileWithAllClasses:%String=""</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    // Если имя файла со всеми классами не указали, то он будет назван как пакет
+    if (nameOfTheFileWithAllClasses = ""){
+        set nameOfTheFileWithAllClasses = packageName
+    }
+    else{
+        // На тот случай, если указали расширение
+        set nameOfTheFileWithAllClasses = $REPLACE(nameOfTheFileWithAllClasses, ".xml", "")
+    }
+    
+    set exportDir = exportDir_"\"_..#CommonExportFolderName
+    
+    // Удаляем папку - пакет с классами. Чтобы ничего лищнего в ней не осталось после прошлого экспорта
+    do ##class(%File).RemoveDirectoryTree(exportDir_"\"_packageName)
+    
+    // Экспорт всех классов в пакете по папочкам
+    set st = $system.OBJ.ExportAllClassesIndividual(exportDir_"\", "/displaylog=0/diffexport=1", "", "", packageName, 1)
+    if $$$ISERR(st){
+        w !,"Ошибка во время экспорта всех классов отдельно: "_$SYSTEM.Status.GetErrorText(st)
+        quit st
+    } 
+    
+    set st = $system.OBJ.ExportPackage(packageName, exportDir_"\"_nameOfTheFileWithAllClasses_".xml", "/displaylog=0/diffexport=1")
+    if $$$ISERR(st){
+        w !,"Ошибка во время экспорта всех классов одним файлом "_$SYSTEM.Status.GetErrorText(st)
+        quit st
+    }
+    
+    w !, "Экспорт успешно завершен. Результаты: "_exportDir
+    quit st
+]]></Implementation>
+</Method>
+
+<Method name="ExportDeepSeeFiles">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    &sql(DECLARE DSCur CURSOR FOR
+         SELECT documentname
+         FROM %DeepSee_UserLibrary.FolderItem)
+    
+    &sql(open DSCur)
+    for {
+        &sql(FETCH DSCur INTO :name) 
+        quit:(SQLCODE '= 0)
+        
+    }
+    &sql(CLOSE DSCur)
+]]></Implementation>
+</Method>
+</Class>
+</Export>

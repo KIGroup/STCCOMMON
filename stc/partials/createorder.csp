@@ -1,0 +1,58 @@
+<div class="row-fluid">
+	<div class="span8 offset2">
+	<div class="row-fluid">
+	<div class="span8 offset2">
+
+		<accordion close-others="false">
+			<accordion-group id="gcalendar" heading="{{'Календарь ближайших курсов'|localize}}" is-open="ordForm.calendarOpen">
+		    	<iframe id="ifcalendar"
+		    		src='#(##class(Stc.Data.Settings).GetGoogleCalendarSRC())#'
+		    		style="border: 0" 
+		    		width="100%" 
+		    		height="500px" 
+		    		frameborder="0" 
+		    		scrolling="auto">
+		    	</iframe>
+		    </accordion-group>
+		    <accordion-group heading="{{'Форма регистрации'|localize}}" is-open="!ordForm.calendarOpen">
+    			<form class="form" ng-submit="ordForm.submit()" style="margin: 0 0 10px 0;" >
+					<div class="row-fluid">
+						<div class="control-group">
+					    	<label class="control-label" ng-bind="('Курс'|localize) + '*'"></label>
+					        <div class="controls">
+			                	<select class="span12" ng-model="ordForm.order.course.id" ng-options="course.id as course.name for course in ordForm.courses" required>
+			                		<option value=""></option>
+			                	</select>
+					        </div>
+					    </div>
+					</div>
+					<stcperson
+						person="ordForm.order.contact"
+						companies="ordForm.companies"
+						company-switch-off="true"
+						company-exist="false"
+					/>
+					<div class="row-fluid">
+					    <div class="control-group">
+					        <label class="control-label" ng-bind="('Предполагаемое количество слушателей'|localize) + '*'"></label>
+					        <div class="controls">
+					            <input class="span12" type="text" pattern="[0-9]{1,3}" ng-model="ordForm.order.studentsNumber" required></input>
+					        </div>
+					    </div>
+					    <div class="control-group">
+					        <div class="controls">
+					            <button type="submit" class="btn btn-success btn-small" ng-bind="'Зарегистрироваться'|localize"      ng-click="ordForm.formatData()" ng-disabled="ordForm.btnDisabled"></button>
+					            <button type="button" class="btn btn-primary btn-small" ng-bind="'Зарегистрироваться на другой курс'|localize" ng-click="ordForm.again()"      ng-show="ordForm.btnNewShow"></button>
+					            <button type="button" class="btn btn-small"             ng-bind="'Очистить'|localize"     ng-click="ordForm.clear()"      ng-show="ordForm.btnClearShow"></button>
+					        </div>
+					    </div>
+					</div>
+				</form>
+		    </accordion-group>
+		</accordion>
+		<stcalert data="ordForm.alert"/>
+	</div >
+	</div >
+	</div >
+</div >
+</br>
