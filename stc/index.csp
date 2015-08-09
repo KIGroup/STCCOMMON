@@ -31,7 +31,6 @@
         StcAppSetting.lang = StcAppSetting.getLang();
 
         document.write('<script language="javascript" src="js/localization/locale_' + StcAppSetting.lang + '.js"><\/script>'); 
-        console.log('loading...');
     </script>
   </head>
   <body> 
@@ -115,43 +114,40 @@
        </div>
 
     </div>
-   <!-- 
+   <!-- Big file with all js code
    <script language="javascript"  src="js/combine.js"></script>
- -->
+	-->
 
     <script language="javascript"  src="js/controllers/MainCtrl.js"></script>
     <script language="javascript"  src="js/controllers/ScheduleFrameCtrl.js"></script>
-    <script language="javascript">
-    if (window.location.href.indexOf('/scheduleframe') == -1){
-        document.write('<script language="javascript"  src="js/controllers/TrainingCtrl.js"><\/script>');
-        document.write('<script language="javascript"  src="js/controllers/AllTrainingsCtrl.js"><\/script>');
-        document.write('<script language="javascript"  src="js/controllers/AllTrainingFeedBacksCtrl.js"><\/script>');
-        document.write('<script language="javascript"  src="js/controllers/CreateTrainingCtrl.js"><\/script>');
-        document.write('<script language="javascript"  src="js/controllers/CreateOrderCtrl.js"><\/script>');
-        document.write('<script language="javascript"  src="js/controllers/OrderNewStudentCtrl.js"><\/script>');
-        document.write('<script language="javascript"  src="js/controllers/AllOrdersCtrl.js"><\/script>');
-        document.write('<script language="javascript"  src="js/controllers/AllCompaniesCtrl.js"><\/script>');
-        document.write('<script language="javascript"  src="js/controllers/CompanyCtrl.js"><\/script>');
-        document.write('<script language="javascript"  src="js/controllers/AllCertificatesCtrl.js"><\/script>');
-        document.write('<script language="javascript"  src="js/controllers/PersonCtrl.js"><\/script>');
-        document.write('<script language="javascript"  src="js/controllers/PersonTeacherCtrl.js"><\/script>');
-        document.write('<script language="javascript"  src="js/controllers/PersonStudentCtrl.js"><\/script>');
-        document.write('<script language="javascript"  src="js/controllers/AllPersonsCtrl.js"><\/script>');
-        document.write('<script language="javascript"  src="js/controllers/AllCoursesCtrl.js"><\/script>');    
-        document.write('<script language="javascript"  src="js/controllers/CourseCtrl.js"><\/script>');
-        document.write('<script language="javascript"  src="js/controllers/TrainingStudentsCtrl.js"><\/script>');
-        document.write('<script language="javascript"  src="js/controllers/FeedBackCtrl.js"><\/script>');
-        document.write('<script language="javascript"  src="js/controllers/DeepSeeCtrl.js"><\/script>');
-        document.write('<script language="javascript"  src="js/controllers/SettingsCtrl.js"><\/script>');
-        document.write('<script language="javascript"  src="js/controllers/AllMailingGroupsCtrl.js"><\/script>');
-        document.write('<script language="javascript"  src="js/controllers/MailingGroupCtrl.js"><\/script>');
-        document.write('<script language="javascript"  src="js/controllers/MailingGroupMailCtrl.js"><\/script>');
-        document.write('<script language="javascript"  src="js/controllers/MailingItemCtrl.js"><\/script>');
-        document.write('<script language="javascript"  src="js/controllers/MailingSubscriptionCtrl.js"><\/script>');
-        document.write('<script language="javascript"  src="js/controllers/AllLogsCtrl.js"><\/script>');
-        document.write('<script language="javascript"  src="js/controllers/MailingJournalCtrl.js"><\/script>');
-    }
-    </script>
+    <script language="javascript"  src="js/controllers/TrainingCtrl.js"></script>
+	<script language="javascript"  src="js/controllers/AllTrainingsCtrl.js"></script>
+	<script language="javascript"  src="js/controllers/AllTrainingFeedBacksCtrl.js"></script>
+	<script language="javascript"  src="js/controllers/CreateTrainingCtrl.js"></script>
+	<script language="javascript"  src="js/controllers/CreateOrderCtrl.js"></script>
+	<script language="javascript"  src="js/controllers/OrderNewStudentCtrl.js"></script>
+	<script language="javascript"  src="js/controllers/AllOrdersCtrl.js"></script>
+	<script language="javascript"  src="js/controllers/AllCompaniesCtrl.js"></script>
+	<script language="javascript"  src="js/controllers/CompanyCtrl.js"></script>
+	<script language="javascript"  src="js/controllers/AllCertificatesCtrl.js"></script>
+	<script language="javascript"  src="js/controllers/PersonCtrl.js"></script>
+	<script language="javascript"  src="js/controllers/PersonTeacherCtrl.js"></script>
+	<script language="javascript"  src="js/controllers/PersonStudentCtrl.js"></script>
+	<script language="javascript"  src="js/controllers/PersonCompanyContactCtrl.js"></script>
+	<script language="javascript"  src="js/controllers/AllPersonsCtrl.js"></script>
+	<script language="javascript"  src="js/controllers/AllCoursesCtrl.js"></script>    
+	<script language="javascript"  src="js/controllers/CourseCtrl.js"></script>
+	<script language="javascript"  src="js/controllers/TrainingStudentsCtrl.js"></script>
+	<script language="javascript"  src="js/controllers/FeedBackCtrl.js"></script>
+	<script language="javascript"  src="js/controllers/DeepSeeCtrl.js"></script>
+	<script language="javascript"  src="js/controllers/SettingsCtrl.js"></script>
+	<script language="javascript"  src="js/controllers/AllMailingGroupsCtrl.js"></script>
+	<script language="javascript"  src="js/controllers/MailingGroupCtrl.js"></script>
+	<script language="javascript"  src="js/controllers/MailingGroupMailCtrl.js"></script>
+	<script language="javascript"  src="js/controllers/MailingItemCtrl.js"></script>
+	<script language="javascript"  src="js/controllers/MailingSubscriptionCtrl.js"></script>
+	<script language="javascript"  src="js/controllers/AllLogsCtrl.js"></script>
+	<script language="javascript"  src="js/controllers/MailingJournalCtrl.js"></script>
 
     <script language="javascript"  src="js/services/DALSrvc.js"></script>
     <script language="javascript"  src="js/services/YandexSrvc.js"></script>

@@ -52,7 +52,7 @@ controllersModule.controller('TrainingStudentsCtrl', function($scope, $location,
                           {name: 'Email', sqlName: 'Student->Email', isSorted: false, isSortable: true, isDown: true,  isSearched: false,  isSearchable: true},
                           {name: 'Телефон', sqlName: 'Student->Phone', isSorted: false, isSortable: true, isDown: true,  isSearched: false,  isSearchable: true},
                           {name: 'Skype', sqlName: 'Student->Skype', isSorted: false, isSortable: true, isDown: true,  isSearched: false,  isSearchable: false},
-                          {name: 'Attendance status', sqlName: '', isSorted: false, isSortable: false, isDown: true,  isSearched: false,  isSearchable: false, captionStyle: {textAlign: 'center', width: '150px'}}];
+                          {name: 'Посещал курсы', sqlName: '', isSorted: false, isSortable: false, isDown: true,  isSearched: false,  isSearchable: false, captionStyle: {textAlign: 'center', width: '150px'}}];
 
         $scope.page.studTable.properties = [
             {name:'fullName', 

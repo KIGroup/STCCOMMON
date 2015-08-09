@@ -406,7 +406,7 @@ Method="POST" Url="/json/training/:id/feedback/:code"</Description>
     try{
         TSTART
         
-        $$$THROWONERROR(status, ##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(%request.Content,,.data, 1))
+        $$$THROWONERROR(status, ##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject($ZCVT(%request.Content.Read(10000000), "I", "UTF8"),,.data, 1))
         
         set tr = ##class(Stc.Data.Training).%OpenId(trId)
         if ($P(tr.AccessCode,"-",1)_"-"_$P(tr.AccessCode,"-",5) '= accessCode){

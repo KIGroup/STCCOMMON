@@ -107,7 +107,7 @@
                         <p ng-hide="training.selectedItems[0].otherInfo==''"><span class="spnTitle" ng-bind="'Примечание'|localize" ></span>: <span ng-bind="training.selectedItems[0].otherInfo"></span></p>
                         <p><span class="label label-success"   ng-bind="'Событие есть в календаре'|localize" ng-hide="training.selectedItems[0].event==''"></span></p>
                         <p><span class="label label-important" ng-bind="'События нет в календаре'|localize"  ng-show="training.selectedItems[0].event==''"></span></span></p>
-                        <p><button ng-show="!menu.readOnlyMode" class="btn btn-small" ng-click="training.clone()" ng-bind="'Create copy'|localize"></button></p>
+                        <p><button ng-show="!menu.readOnlyMode" class="btn btn-small" ng-click="training.clone()" ng-bind="'Создать копию'|localize"></button></p>
                     </div>
                 </div>
                 </br>

@@ -139,6 +139,9 @@
                         
                     forcibly-update="allstud.forciblyUpdate"
                 />
+                <div class="row-fluid" style="text-align: center;">
+                    <i> {{'Символ ? в колонке "Посещал курсы" - статус ещё не был указан. Щелчком мыши измените значение.'|localize}}</i>
+                </div>  
             </tab>
             <!-- ============================================ СЕРТИФИКАТЫ ==================================================-->
             <tab heading="{{('Сертификаты'|localize) + ' (' + training.data.certificates + ')'}}" active="pageStore.training.tabCertsActive" select="cert.selectTab()">
@@ -516,13 +519,13 @@
                     <div class="span6">          
                         <div ng-repeat="item in feedBack.selectedItems[0].items | orderBy: 'typeSeqNumber' | filter: {groupTypeCode: 'Instructor Nonspecific'}">
                             <p ng-show="item.type.isScaleType==1"><span class="spnTitle" ng-bind="item.type.name"></span>: <rating value="item.scaleValue" readonly="true" on-hover="" on-leave=""></rating></p>
-                            <p ng-hide="item.type.isScaleType==1"><span class="spnTitle" ng-bind="item.type.name"></span>: <span ng-bind="item.textValue"></span></p>
+                            <p ng-hide="item.type.isScaleType==1 || item.textValue == ''"><span class="spnTitle" ng-bind="item.type.name"></span>: <span ng-bind="item.textValue"></span></p>
                         </div>
                     </div>
                     <div class="span6">
                         <div ng-repeat="item in feedBack.selectedItems[0].items | orderBy: 'typeSeqNumber' | filter: {groupTypeCode: '!Instructor Nonspecific'}">
                             <p ng-show="item.type.isScaleType==1"><span class="spnTitle" ng-bind="item.type.name"></span>: <rating value="item.scaleValue" readonly="true" on-hover="" on-leave=""></rating></p>
-                            <p ng-hide="item.type.isScaleType==1"><span class="spnTitle" ng-bind="item.type.name"></span>: <span ng-bind="item.textValue"></span></p>
+                            <p ng-hide="item.type.isScaleType==1 || item.textValue == ''"><span class="spnTitle" ng-bind="item.type.name"></span>: <span ng-bind="item.textValue"></span></p>
                         </div>
                     </div>
                 </div>

@@ -11,54 +11,54 @@ controllersModule.controller('FeedBackCtrl', function($scope, $filter, $routePar
     $scope.menu.appTitle = $scope.menu.brandCaption;
     $scope.page = {training:{}, feedBack:{rating:0}};
     
-    $scope.page.init = function(){
-        $scope.page.loadTraining();
-        $scope.page.loadFeedbackTemplate();
+    $scope.init = function(){
+        $scope.loadTraining();
+        $scope.loadFeedbackTemplate();
     };
 
     /* Подгрузить обучение */
-    $scope.page.loadTraining = function(){
+    $scope.loadTraining = function(){
         TrainingSrvc.getForUser($routeParams.id).then(
             function(data){
-                $scope.page.training = data;
+                $scope.training = data;
             },
             function(response){
-                $scope.page.alert = UtilsSrvc.getAlert('Внимание!', response.data, 'error', true);
+                $scope.alert = UtilsSrvc.getAlert('Внимание!', response.data, 'error', true);
             }); 
     };
     
     /* Подгрузить шаблон отзыва */
-    $scope.page.loadFeedbackTemplate = function(){
+    $scope.loadFeedbackTemplate = function(){
         TrainingSrvc.getFeedBackTemplate().then(
             function(data){
-                $scope.page.feedBack = data;
+                $scope.feedBack = data;
             },
             function(response){
-                $scope.page.alert = UtilsSrvc.getAlert('Внимание!', response.data, 'error', true);
+                $scope.alert = UtilsSrvc.getAlert('Внимание!', response.data, 'error', true);
             }); 
     };
 
     // Save feedback
-    $scope.page.submit = function(){
-        if (!$scope.page.allRatingsAreFilled)
+    $scope.submit = function(){
+        if (!$scope.allRatingsAreFilled())
             return;
         
-        TrainingSrvc.saveFeedBack($scope.page.feedBack, $routeParams.id, $routeParams.code).then(
+        TrainingSrvc.saveFeedBack($scope.feedBack, $routeParams.id, $routeParams.code).then(
             function(data){
-                $scope.page.hide = true;
-                $scope.page.alert = UtilsSrvc.getAlert('Готово!', 'Ваш отзыв принят. Спасибо!', 'success', true);
+                $scope.hide = true;
+                $scope.alert = UtilsSrvc.getAlert('Готово!', 'Ваш отзыв принят. Спасибо!', 'success', true);
             },
             function(response){
-                $scope.page.alert = UtilsSrvc.getAlert('Внимание!', response.data, 'error', true);
+                $scope.alert = UtilsSrvc.getAlert('Внимание!', response.data, 'error', true);
             });        
     };
     
-    $scope.page.allRatingsAreFilled = function(){
-        if (!$scope.page.feedBack || !$scope.page.feedBack.items)
+    $scope.allRatingsAreFilled = function(){
+        if (!$scope.feedBack || !$scope.feedBack.items)
             return true;
         
-        for(var i=0; i < $scope.page.feedBack.items.length; i++){
-            var item = $scope.page.feedBack.items[i];
+        for(var i=0; i < $scope.feedBack.items.length; i++){
+            var item = $scope.feedBack.items[i];
             if (item.type.isRequired == 1 && item.type.isScaleType == 1 && item.scaleValue == 0)
                 return false; // не заполнили все рейтинги!
         }
@@ -66,6 +66,6 @@ controllersModule.controller('FeedBackCtrl', function($scope, $filter, $routePar
         return true;
     };
 
-    $scope.page.init();
+    $scope.init();
 });
 

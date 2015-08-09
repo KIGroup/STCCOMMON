@@ -16,18 +16,18 @@ d ##class(Stc.Utils.Init.FeedBackItemType).Init()</Description>
         TSTART
         
         set obj = ##class(Stc.Data.FeedBackItemGroup).%New()
-        set obj.Name = "Instructor Nonspecific"
+        set obj.Name = "Курс"
         set obj.Code = "Instructor Nonspecific"
         $$$THROWONERROR(st, obj.%Save())
         
         set obj = ##class(Stc.Data.FeedBackItemGroup).%New()
-        set obj.Name = "Instructor"
+        set obj.Name = "Преподаватель"
         set obj.Code = "Instructor"
         $$$THROWONERROR(st, obj.%Save())
     
-    
+
         set obj = ##class(Stc.Data.FeedBackItemType).%New()
-        set obj.Name = "How would you rate the course's coverage of the material?"
+        set obj.Name = "Оценка курса"
         set obj.IsRequired = 1
         set obj.IsActive = 1
         set obj.IsScaleType = 1
@@ -36,34 +36,34 @@ d ##class(Stc.Utils.Init.FeedBackItemType).Init()</Description>
         $$$THROWONERROR(st, obj.%Save())
         
         set obj = ##class(Stc.Data.FeedBackItemType).%New()
-        set obj.Name = "To what extent did the course address your needs?"
+        set obj.Name = "Оценка преподавателя"
         set obj.IsRequired = 1
         set obj.IsActive = 1
         set obj.IsScaleType = 1
         set obj.SeqNumber = 2
-        set obj.GroupType = ##class(Stc.Data.FeedBackItemGroup).CodeIndexOpen("Instructor Nonspecific")
+        set obj.GroupType = ##class(Stc.Data.FeedBackItemGroup).CodeIndexOpen("Instructor")
         $$$THROWONERROR(st, obj.%Save())
-        
+            
         set obj = ##class(Stc.Data.FeedBackItemType).%New()
-        set obj.Name = "How appropriate was the level of difficulty for you?"
-        set obj.IsRequired = 1
+        set obj.Name = "Что понравилось?"
+        set obj.IsRequired = 0
         set obj.IsActive = 1
-        set obj.IsScaleType = 1
+        set obj.IsScaleType = 0
         set obj.SeqNumber = 3
         set obj.GroupType = ##class(Stc.Data.FeedBackItemGroup).CodeIndexOpen("Instructor Nonspecific")
         $$$THROWONERROR(st, obj.%Save())
         
         set obj = ##class(Stc.Data.FeedBackItemType).%New()
-        set obj.Name = "Was enough time spent on each topic?"
-        set obj.IsRequired = 1
+        set obj.Name = "Что можно улучшить?"
+        set obj.IsRequired = 0
         set obj.IsActive = 1
-        set obj.IsScaleType = 1
+        set obj.IsScaleType = 0
         set obj.SeqNumber = 4
         set obj.GroupType = ##class(Stc.Data.FeedBackItemGroup).CodeIndexOpen("Instructor Nonspecific")
         $$$THROWONERROR(st, obj.%Save())
         
         set obj = ##class(Stc.Data.FeedBackItemType).%New()
-        set obj.Name = "If not, which topic needed greater emphasis?"
+        set obj.Name = "Что ещё хотелось бы услышать в курсе?"
         set obj.IsRequired = 0
         set obj.IsActive = 1
         set obj.IsScaleType = 0
@@ -72,139 +72,14 @@ d ##class(Stc.Utils.Init.FeedBackItemType).Init()</Description>
         $$$THROWONERROR(st, obj.%Save())
         
         set obj = ##class(Stc.Data.FeedBackItemType).%New()
-        set obj.Name = "How would you rate the quality of the student guide?"
-        set obj.IsRequired = 1
+        set obj.Name = "Комментарии о докладчике?"
+        set obj.IsRequired = 0
         set obj.IsActive = 1
-        set obj.IsScaleType = 1
+        set obj.IsScaleType = 0
         set obj.SeqNumber = 6
-        set obj.GroupType = ##class(Stc.Data.FeedBackItemGroup).CodeIndexOpen("Instructor Nonspecific")
-        $$$THROWONERROR(st, obj.%Save())
-        
-        set obj = ##class(Stc.Data.FeedBackItemType).%New()
-        set obj.Name = "How would you rate the quality and usefulness of the exercises?"
-        set obj.IsRequired = 1
-        set obj.IsActive = 1
-        set obj.IsScaleType = 1
-        set obj.SeqNumber = 7
-        set obj.GroupType = ##class(Stc.Data.FeedBackItemGroup).CodeIndexOpen("Instructor Nonspecific")
-        $$$THROWONERROR(st, obj.%Save())
-        
-        set obj = ##class(Stc.Data.FeedBackItemType).%New()
-        set obj.Name = "Basic Presentation Skills"
-        set obj.IsRequired = 1
-        set obj.IsActive = 1
-        set obj.IsScaleType = 1
-        set obj.SeqNumber = 8
         set obj.GroupType = ##class(Stc.Data.FeedBackItemGroup).CodeIndexOpen("Instructor")
         $$$THROWONERROR(st, obj.%Save())
         
-        set obj = ##class(Stc.Data.FeedBackItemType).%New()
-        set obj.Name = "Organization"
-        set obj.IsRequired = 1
-        set obj.IsActive = 1
-        set obj.IsScaleType = 1
-        set obj.SeqNumber = 9
-        set obj.GroupType = ##class(Stc.Data.FeedBackItemGroup).CodeIndexOpen("Instructor")
-        $$$THROWONERROR(st, obj.%Save())
-        
-        set obj = ##class(Stc.Data.FeedBackItemType).%New()
-        set obj.Name = "Mastery of Content"
-        set obj.IsRequired = 1
-        set obj.IsActive = 1
-        set obj.IsScaleType = 1
-        set obj.SeqNumber = 10
-        set obj.GroupType = ##class(Stc.Data.FeedBackItemGroup).CodeIndexOpen("Instructor")
-        $$$THROWONERROR(st, obj.%Save())
-        
-        set obj = ##class(Stc.Data.FeedBackItemType).%New()
-        set obj.Name = "Maintaining Interest"
-        set obj.IsRequired = 1
-        set obj.IsActive = 1
-        set obj.IsScaleType = 1
-        set obj.SeqNumber = 11
-        set obj.GroupType = ##class(Stc.Data.FeedBackItemGroup).CodeIndexOpen("Instructor")
-        $$$THROWONERROR(st, obj.%Save())
-        
-        set obj = ##class(Stc.Data.FeedBackItemType).%New()
-        set obj.Name = "Handling Questions"
-        set obj.IsRequired = 1
-        set obj.IsActive = 1
-        set obj.IsScaleType = 1
-        set obj.SeqNumber = 12
-        set obj.GroupType = ##class(Stc.Data.FeedBackItemGroup).CodeIndexOpen("Instructor")
-        $$$THROWONERROR(st, obj.%Save())
-        
-        set obj = ##class(Stc.Data.FeedBackItemType).%New()
-        set obj.Name = "Emphasizing Key Points"
-        set obj.IsRequired = 1
-        set obj.IsActive = 1
-        set obj.IsScaleType = 1
-        set obj.SeqNumber = 13
-        set obj.GroupType = ##class(Stc.Data.FeedBackItemGroup).CodeIndexOpen("Instructor")
-        $$$THROWONERROR(st, obj.%Save())
-        
-        set obj = ##class(Stc.Data.FeedBackItemType).%New()
-        set obj.Name = "Responsiveness to Audience"
-        set obj.IsRequired = 1
-        set obj.IsActive = 1
-        set obj.IsScaleType = 1
-        set obj.SeqNumber = 14
-        set obj.GroupType = ##class(Stc.Data.FeedBackItemGroup).CodeIndexOpen("Instructor")
-        $$$THROWONERROR(st, obj.%Save())
-        
-        set obj = ##class(Stc.Data.FeedBackItemType).%New()
-        set obj.Name = "Energy and Enthusiasm"
-        set obj.IsRequired = 1
-        set obj.IsActive = 1
-        set obj.IsScaleType = 1
-        set obj.SeqNumber = 15
-        set obj.GroupType = ##class(Stc.Data.FeedBackItemGroup).CodeIndexOpen("Instructor")
-        $$$THROWONERROR(st, obj.%Save())
-        
-        set obj = ##class(Stc.Data.FeedBackItemType).%New()
-        set obj.Name = "How would you rate this instructor overall?"
-        set obj.IsRequired = 1
-        set obj.IsActive = 1
-        set obj.IsScaleType = 1
-        set obj.SeqNumber = 16
-        set obj.GroupType = ##class(Stc.Data.FeedBackItemGroup).CodeIndexOpen("Instructor")
-        $$$THROWONERROR(st, obj.%Save())
-        
-        set obj = ##class(Stc.Data.FeedBackItemType).%New()
-        set obj.Name = "How would you rate this course overal? "
-        set obj.IsRequired = 1
-        set obj.IsActive = 1
-        set obj.IsScaleType = 1
-        set obj.SeqNumber = 17
-        set obj.GroupType = ##class(Stc.Data.FeedBackItemGroup).CodeIndexOpen("Instructor Nonspecific")
-        $$$THROWONERROR(st, obj.%Save())
-        
-        set obj = ##class(Stc.Data.FeedBackItemType).%New()
-        set obj.Name = "How good of a job did the course do in satisfying your expectations?"
-        set obj.IsRequired = 1
-        set obj.IsActive = 1
-        set obj.IsScaleType = 1
-        set obj.SeqNumber = 18
-        set obj.GroupType = ##class(Stc.Data.FeedBackItemGroup).CodeIndexOpen("Instructor Nonspecific")
-        $$$THROWONERROR(st, obj.%Save())
-        
-        set obj = ##class(Stc.Data.FeedBackItemType).%New()
-        set obj.Name = "To help us plan, what are your reasons for taking this course?"
-        set obj.IsRequired = 1
-        set obj.IsActive = 1
-        set obj.IsScaleType = 0
-        set obj.SeqNumber = 19
-        set obj.GroupType = ##class(Stc.Data.FeedBackItemGroup).CodeIndexOpen("Instructor Nonspecific")
-        $$$THROWONERROR(st, obj.%Save())
-        
-        set obj = ##class(Stc.Data.FeedBackItemType).%New()
-        set obj.Name = "Additional Comments"
-        set obj.IsRequired = 1
-        set obj.IsActive = 1
-        set obj.IsScaleType = 0
-        set obj.SeqNumber = 20
-        set obj.GroupType = ##class(Stc.Data.FeedBackItemGroup).CodeIndexOpen("Instructor Nonspecific")
-        $$$THROWONERROR(st, obj.%Save())
         
         TCOMMIT
     }

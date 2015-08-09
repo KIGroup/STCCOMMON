@@ -2,6 +2,31 @@
 
 localizationModule.constant('StcDictionary', {
   strings: {
+    'Символ ? в колонке "Посещал курсы" - статус ещё не был указан. Щелчком мыши измените значение.':'The question mark in the column "Attendance status" means that the status is not specified.',
+    'Создать копию':'Create copy',
+    'Ср. оценка курса':'Avg. course rating',
+    'Ср. оценка преподавателя':'Avg. instructor rating',
+    'Слушатели. Напоминание о начале занятий' : 'Attendees. A reminder of beginning training',
+    'Слушатель. Подтверждение регистрации' : 'Attendee. Confirmation of registration',
+    'Слушатели. Доступ к анкете после завершения обучения' : 'Attendees. Access to survey after the training',
+    'Преподаватель. Доступ к списку слушателей перед началом обучения' : 'Teacher. Access to the list of attendees before start training',
+    'Преподаватель. Доступ к списку слушателей после завершения обучения, указать посещаемость' : 'Teacher. Access to the list of attendees aftertraining (specify attendance)',
+    'Куратор. Доступ к списку слушателей перед началом обучения' : 'Curator. Access to the list of attendees before start training',
+    'Заявки. Ссылка для регистрации' : 'Requests. Link for registration',
+    'Одобрение заявки, отсылка письма контакту организации' : 'Approval of the request, sending a message to organization contact',
+    'Активация подписки' : 'Activate subscription',
+    'Доступ к отзывам о курсе' : 'Access to the surveys',
+    'Шаблоны для писем' : 'Templates for e-mails',
+    'Отправить сертификаты' : 'Send certificates',
+    'Обновить / пересоздать' : 'Refresh / recreate',
+    'Отправить в офис' : 'Send to the office',
+    'Отправка писем прекращена' : 'Sending messages stopped',
+    'Выполнить рассылку списка сертификатов участникам группы "Офис" ?' : 'Run mailing list of certificates to participants of the "office" group ?',
+    'Рассылка писем' : 'Mailing',
+    'Заполните обязательные поля':'Fill the required fields',
+    'Оценка преподавателя':'Review of the instructor',
+    'Оценка курса':'Review of the course',
+    'Посещал курсы':'Attendance status',
     'Сохранение завершено' : 'Changes have been saved',
     'Ваш отзыв принят. Спасибо!':'Thanks for your feedback!',
     'Создание организации':'Creation of organization',
@@ -621,7 +646,7 @@ localizationModule.constant('StcDictionary', {
   getTranslate: function(word){
       
       if (!this.strings[word]){
-            //console.log("'"+word+"' : '',");
+            console.log("'"+word+"' : '',");
       }
      
       return this.strings[word] ? this.strings[word] : word;

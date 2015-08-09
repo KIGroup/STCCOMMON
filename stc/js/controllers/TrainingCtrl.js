@@ -104,8 +104,8 @@ controllersModule.controller('TrainingCtrl', function($scope, $route, $location,
         //============================== ОТЗЫВЫ =======================================================================================
         $scope.feedBack.columns = [
                           {name: 'Автор', sqlName: 'Author', isSorted: false, isSortable: true, isDown: true, isSearched: true, isSearchable: false, captionStyle: {textAlign: 'center', width: '200px'}},
-                          {name: 'Avg. course rating', sqlName: 'AvgCourseRating', isSorted: false, isSortable: true, isDown: true, isSearched: false, isSearchable: false, captionStyle: {textAlign: 'center'}},
-                          {name: 'Avg. instructor rating', sqlName: 'AvgInstructorRating', isSorted: false, isSortable: true, isDown: true, isSearched: false, isSearchable: true, captionStyle: {textAlign: 'center'}},
+                          {name: 'Ср. оценка курса', sqlName: 'AvgCourseRating', isSorted: false, isSortable: true, isDown: true, isSearched: false, isSearchable: false, captionStyle: {textAlign: 'center'}},
+                          {name: 'Ср. оценка преподавателя', sqlName: 'AvgInstructorRating', isSorted: false, isSortable: true, isDown: true, isSearched: false, isSearchable: true, captionStyle: {textAlign: 'center'}},
                           {name: 'Дата создания', sqlName: 'CreatedTS', isSorted: true, isSortable: true, isDown: false, isSearched: false, isSearchable: false, filter: 'date', captionStyle: {width: '180px'}}];
  
         $scope.feedBack.properties = [
@@ -168,7 +168,7 @@ controllersModule.controller('TrainingCtrl', function($scope, $route, $location,
                           {name: 'Email', sqlName: 'Student->Email', isSorted: false, isSortable: true, isDown: true, isSearched: false, isSearchable: true},
                           {name: 'Телефон', sqlName: 'Student->Phone', isSorted: false, isSortable: true, isDown: true, isSearched: false, isSearchable: true},
                           {name: 'Skype', sqlName: 'Student->Skype', isSorted: false, isSortable: true, isDown: true, isSearched: false, isSearchable: false},
-                          {name: 'Attendance status', sqlName: '', isSorted: false, isSortable: false, isDown: true,  isSearched: false,  isSearchable: false, captionStyle: {textAlign: 'center', width: '150px'}}];
+                          {name: 'Посещал курсы', sqlName: '', isSorted: false, isSortable: false, isDown: true,  isSearched: false,  isSearchable: false, captionStyle: {textAlign: 'center', width: '150px'}}];
 
         $scope.allstud.properties = [
             {name:'lastName',
