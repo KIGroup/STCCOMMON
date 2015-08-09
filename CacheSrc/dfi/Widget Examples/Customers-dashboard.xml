@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Document name="Widget Examples-Customers.dashboard.DFI">
+<dashboard xmlns="http://www.intersystems.com/deepsee/library" name="Customers" folderName="Widget Examples" title="Слушатели" description="" keywords="" owner="" shared="true" public="true" locked="false" resource="" timeCreated="2015-07-28T14:33:30.839Z" createdBy="mobile" category="" bookCover="" scheme="" worklistCount="2" snapTo="true" snapGrid="true" gridRows="10" gridCols="10" canResize="true" canModify="true" showTitleBar="true" companyName="" companyLogo="" companyStyle="">
+  <widget name="Виджет1" type="pivot" subtype="pivot" subtypeClass="lineChart" title="Организации: слушатели, количества обучений и деньги" dataSource="Mobile/Организации деньги и люди.pivot" dataLink="" drillDownDataSource="" width="200" height="200" sidebarContent="" showSidebar="false" sidebarWidth="" maximized="false" homeRowL="0" homeColL="0" colSpanL="6" rowSpanL="5" showToolbar="true" theme="" dataColorList="">
+    <control name="" action="applyFilter" target="*" targetProperty="[Year].[H1].[Year]" location="dashboard" type="auto" controlClass="" label="Год" title="" value="&amp;[2015]" text="" readOnly="false" valueList="" displayList="" activeWhen=""></control>
+    <control name="" action="applyFilter" target="*" targetProperty="[CompanyType].[H1].[Name]" location="dashboard" type="auto" controlClass="" label="Тип организации" title="" value="&amp;[CF9E764F-0F6C-4361-BC14-A695775399AB00]" text="" readOnly="false" valueList="" displayList="" activeWhen=""></control>
+    <control name="" action="applyFilter" target="*" targetProperty="[TrainingCubeRelation].[Course].[H1].[CourseName]" location="dashboard" type="auto" controlClass="" label="TrainingCubeRelation.Курс" title="" value="" text="" readOnly="false" valueList="" displayList="" activeWhen=""></control>
+  </widget>
+  <widget name="Виджет2" type="pivot" subtype="pieChart3D" subtypeClass="pieChart" title="Топ 5 организаций" dataSource="Mobile/Организации и люди Top 5.pivot" dataLink="" drillDownDataSource="" width="200" height="200" sidebarContent="" showSidebar="false" sidebarWidth="" maximized="false" homeRowL="5" homeColL="0" colSpanL="6" rowSpanL="5" showToolbar="true" theme="" dataColorList="">
+  </widget>
+  <widget name="Виджет3" type="pivot" subtype="columnChartStacked" subtypeClass="barChart" title="Организации по курсам" dataSource="Mobile/Организации и люди по курсам.pivot" dataLink="" drillDownDataSource="" width="200" height="200" sidebarContent="" showSidebar="false" sidebarWidth="" maximized="false" homeRowL="0" homeColL="6" colSpanL="4" rowSpanL="5" showToolbar="true" theme="" dataColorList="">
+  </widget>
+  <widget name="W4" type="meter" subtype="textMeter" subtypeClass="" title="" dataSource="ThisYear/AllStudents.pivot" dataLink="" drillDownDataSource="" width="200" height="200" sidebarContent="" showSidebar="false" sidebarWidth="" maximized="false" homeRowL="5" homeColL="6" colSpanL="4" rowSpanL="4" showToolbar="true" theme="" dataColorList="">
+    <dataProperty name="" label="" width="" align="" subtype="textMeter" style="" display="" format="" showAs="" valueColumn="false" summary="" summaryValue="" dataValue="Слушатели" targetValue="" thresholdLower="" thresholdUpper="" rangeLower="" rangeUpper="" baseValue="" override="{height:100,width:403,dataBinding:&apos;Слушатели&apos;,value:63,_type:&apos;textMeter&apos;}"></dataProperty>
+  </widget>
+</dashboard>
+</Document></Export>

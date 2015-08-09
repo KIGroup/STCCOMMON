@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Document name="Mobile-By Years.dashboard.DFI">
+<dashboard xmlns="http://www.intersystems.com/deepsee/library" name="By Years" folderName="Mobile" title="By Years" description="" keywords="" owner="" shared="true" public="true" locked="false" resource="" timeCreated="2015-03-06T13:37:06.681Z" createdBy="_SYSTEM" category="" bookCover="" scheme="" worklistCount="0" snapTo="true" snapGrid="true" gridRows="10" gridCols="10" canResize="true" canModify="true" showTitleBar="true" companyName="" companyLogo="" companyStyle="">
+  <widget name="Виджет1" type="pivot" subtype="columnChart" subtypeClass="barChart" title="Attendies by Years" dataSource="StudentsByYears.pivot" dataLink="" drillDownDataSource="" width="200" height="200" sidebarContent="" showSidebar="false" sidebarWidth="" maximized="false" homeRowL="0" homeColL="0" colSpanL="5" rowSpanL="6" showToolbar="true" theme="" dataColorList="">
+    <control name="" action="applyFilter" target="" targetProperty="[Year].[H1].[Year]" location="widget" type="auto" controlClass="" label="Год" title="" value="" text="" readOnly="false" valueList="" displayList="" activeWhen=""></control>
+    <property name="legendPos">none</property>
+    <override name="barChart">{legendVisible:'false',valueLabelStyle:'font-size:14px;',valueLabelsVisible:true,xAxis:{_type:'axis'},yAxisList:[{_type:'axis'}],_type:'barChart'}</override>
+    <override name="legend">{hidden:true,legendLabels:'Слушатели',legendPosition:'right',_type:'chartLegend'}</override>
+  </widget>
+</dashboard>
+</Document></Export>

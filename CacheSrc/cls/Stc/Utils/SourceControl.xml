@@ -17,7 +17,7 @@
 
 <Method name="SetUp">
 <Description>
-setup control version for namespace and export all classes </Description>
+setup control version for namespace and export all classes  do ##class(Stc.Utils.SourceControl).SetUp()</Description>
 <ClassMethod>1</ClassMethod>
 <ReturnType>%Status</ReturnType>
 <Implementation><![CDATA[
