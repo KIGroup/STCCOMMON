@@ -226,7 +226,10 @@ Get special group for main company office ##class(Stc.Data.MailingGroup).GetOffi
     set mail.message = $REPLACE(mail.message, "%JoinUrl", "http://"_##class(Stc.Data.Settings).GetWebAppDomainNamespace()_"/stc/index.csp#/training/"_tr.%Id()_"/order")
     set mail.message = $REPLACE(mail.message, "%UnsubscribeUrl", "http://"_##class(Stc.Data.Settings).GetWebAppDomainNamespace()_"/stc/index.csp#/mailing/subscription/%AccessCode")
     set mail.message = $REPLACE(mail.message, "%ListOfAttendeesUrl", "http://"_##class(Stc.Data.Settings).GetWebAppDomainNamespace()_"/stc/index.csp#/training/"_tr.%Id()_"/students/"_tr.AccessCode)
-    set mail.message = $REPLACE(mail.message, "%DownloadCertificatesUrl", "http://"_##class(Stc.Data.Settings).GetWebAppDomain()_##class(Stc.Data.Settings).GetWebAppUser()_"/text/en/certificates/"_tr.AccessCode)
+    
+    set lang = $e($$$SessionLanguage,1,2)
+    set mail.message = $REPLACE(mail.message, "%DownloadCertificatesUrl", "http://"_##class(Stc.Data.Settings).GetWebAppDomain()_##class(Stc.Data.Settings).GetWebAppUser()_"/text/"_lang_"/certificates/"_tr.AccessCode)
+    
     quit mail
 ]]></Implementation>
 </Method>

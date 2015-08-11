@@ -500,9 +500,7 @@ Method="GET" Url="/json/company/:id" </Description>
 <ClassMethod>1</ClassMethod>
 <FormalSpec>id:%String</FormalSpec>
 <ReturnType>%Status</ReturnType>
-<Implementation><![CDATA[
-    do ..GetProxyObject("Stc.Data.Company", id).%ToJSON()
-    quit $$$OK
+<Implementation><![CDATA[    quit ..GetProxyObject("Stc.Data.Company", id).%ToJSON()
 ]]></Implementation>
 </Method>
 
@@ -922,9 +920,7 @@ Method="GET" Url="/json/training/:id"</Description>
 <ClassMethod>1</ClassMethod>
 <FormalSpec>id:%String</FormalSpec>
 <ReturnType>%Status</ReturnType>
-<Implementation><![CDATA[
-    do ..GetProxyObject("Stc.Data.Training", id).%ToJSON()
-    quit $$$OK
+<Implementation><![CDATA[    quit ..GetProxyObject("Stc.Data.Training", id).%ToJSON()
 ]]></Implementation>
 </Method>
 
@@ -2013,9 +2009,7 @@ Get person by id
 Method="GET" Url="/json/person/:id"</Description>
 <ClassMethod>1</ClassMethod>
 <FormalSpec>id:%String</FormalSpec>
-<Implementation><![CDATA[
-    do ..GetProxyObject("Stc.Data.Person", id).%ToJSON()
-    quit $$$OK
+<Implementation><![CDATA[    quit ..GetProxyObject("Stc.Data.Person", id).%ToJSON()
 ]]></Implementation>
 </Method>
 

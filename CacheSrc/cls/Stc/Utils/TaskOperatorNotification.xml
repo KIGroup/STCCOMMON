@@ -25,13 +25,13 @@ In order to execute a real task, override this method in a subclass.]]></Descrip
     try{
         TSTART
         
-        set subject = "STC. Краткая сводка за последние "_(60*24/$GET(^Stc.Data.OrderNotification("maxCount"), 48))_" мин."
+        set subject = ##class(Msg).GetMsg("STCSummaryOfThePeriod")_" "_(60*24/$GET(^Stc.Data.OrderNotification("maxCount"), 48))_" "_##class(Msg).GetMsg("Minute")
          
         if ($GET(^Stc.Data.OrderNotification("count"), 0) >= $GET(^Stc.Data.OrderNotification("maxCount"), 48)){
             set ^Stc.Data.OrderNotification("orders") = ""
             set ^Stc.Data.OrderNotification("students") = ""
             set ^Stc.Data.OrderNotification("count") = 0
-            set subject = "STC. Краткая сводка за день."
+            set subject = ##class(Msg).GetMsg("STCSummaryOfTheDay")
         } 
         
         set ^Stc.Data.OrderNotification("count") = $GET(^Stc.Data.OrderNotification("count"), 0) + 1
@@ -52,7 +52,7 @@ In order to execute a real task, override this method in a subclass.]]></Descrip
                         set companyName = orders.GetAt(i).Company.ShortName.Value
                     }
                     
-                    set msg = msg_i_". От организации """_companyName_""" на курс """_orders.GetAt(i).Course.Name.Value_"""<br>"
+                    set msg = msg_i_". "_$REPLACE($REPLACE(##class(Msg).GetMsg("FromOrganization"), "%Company.ShortName", companyName), "%Course.Name", orders.GetAt(i).Course.Name.Value)_"<br>"
                     set ^Stc.Data.OrderNotification("orders") = $GET(^Stc.Data.OrderNotification("orders"))_","_orders.GetAt(i).%Id()
                 }
                 
@@ -62,7 +62,8 @@ In order to execute a real task, override this method in a subclass.]]></Descrip
             if (students.Count() > 0){
                 set msg = msg_##class(Msg).GetMsg("NewOrdersToJoin")_" ("_students.Count()_"):<br>"
                 for i=1:1:students.Count(){
-                    set msg = msg_i_". От слушателя """_students.GetAt(i).LastName.Value_""" на курс """_students.GetAt(i).Training.Course.Name.Value_""" в городе """_students.GetAt(i).Training.City.Name.Value_""""
+                    
+                    set msg = msg_i_". "_ $REPLACE($REPLACE($REPLACE(##class(Msg).GetMsg("FromStudent"), "%Student.FullName", students.GetAt(i).LastName.Value), "%Course.Name", students.GetAt(i).Training.Course.Name.Value), "%City.Name", students.GetAt(i).Training.City.Name.Value)
                     set msg = msg_". <a href='http://"_##class(Stc.Data.Settings).GetWebAppDomainNamespace()_"/stc/index.csp#/training/"_students.GetAt(i).Training.%Id()_"' target='_blank'>"_##class(Msg).GetMsg("GoToTrainingPage")_"</a><br>"
                     set ^Stc.Data.OrderNotification("students") = $GET(^Stc.Data.OrderNotification("students"))_","_students.GetAt(i).%Id()
                 }

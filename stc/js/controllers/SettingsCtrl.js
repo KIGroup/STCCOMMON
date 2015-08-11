@@ -190,6 +190,7 @@ controllersModule.controller('SettingsCtrl', function($scope, $filter, SettingsS
                     '%SurveyUrl - ' + getLocValue('ссылка на страницу для анкетирования') + '.';
               break;
             }
+            case 'teacherSetAttendeeStatus':
             case 'teacher':{
               msg += trainingVariables + '<br>' +
                     '%ListOfAttendeesUrl - ' + getLocValue('ссылка на страницу со списком слушателей') + '.';

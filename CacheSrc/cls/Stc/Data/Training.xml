@@ -325,6 +325,7 @@ Convert to proxyObject (for JSON)</Description>
     set proxy.timeStartType = "24"
     set proxy.timeFinish = $e(##class(%Library.Time).LogicalToDisplay(..TimeFinish), 1, 5)
     set proxy.timeFinishType = "24"
+    set proxy.timeStartFinish = proxy.timeStart_" - "_proxy.timeFinish
     
     if ($FIND($$$SessionLanguage, "ru") = 0){
         if (..TimeStart > ##class(%Library.Time).DisplayToLogical("12:00")){

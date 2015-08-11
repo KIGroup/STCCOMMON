@@ -98,8 +98,8 @@ directivesModule.directive('stctraining', function(){
                 }
             };
             
-            $scope.$watch('training.startTimeType', function(){
-                if ($scope.training.startTimeType != '24')
+            $scope.$watch('training.timeStartType', function(){
+                if ($scope.training.timeStartType != '24')
                     $scope.training.timePattern = '([0-9]|0[0-9]|1[0-2]|2[0-2]):[0-5][0-9]';
                 else
                     $scope.training.timePattern = '([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]';

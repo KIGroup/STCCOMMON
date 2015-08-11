@@ -45,9 +45,24 @@ Write all messages into global do ##class(Stc.Utils.Msg).Init()</Description>
 <ClassMethod>1</ClassMethod>
 <ReturnType>%Status</ReturnType>
 <Implementation><![CDATA[
+    set ^CacheMsg("Stc", "ru", "STCSummaryOfTheDay") = "STC. Краткая сводка за день."
+    set ^CacheMsg("Stc", "en", "STCSummaryOfTheDay") = "STC. Summary of the day."
+
+    set ^CacheMsg("Stc", "ru", "STCSummaryOfThePeriod") = "STC. Краткая сводка за период."
+    set ^CacheMsg("Stc", "en", "STCSummaryOfThePeriod") = "STC. Summary for the period."
+
+    set ^CacheMsg("Stc", "ru", "Minute") = "мин."
+    set ^CacheMsg("Stc", "en", "Minute") = "min."
+
+    set ^CacheMsg("Stc", "ru", "FromOrganization") = "От организации %Company.ShortName на курс %Course.Name"
+    set ^CacheMsg("Stc", "en", "FromOrganization") = "From %Company.ShortName organization on course %Course.Name"
+
+    set ^CacheMsg("Stc", "ru", "FromStudent") = "От слушателя %Student.FullName на курс %Course.Name в городе %City.Name"
+    set ^CacheMsg("Stc", "en", "FromStudent") = "From %Student.FullName attendee on course %Course.Name in %City.Name"
+
     set ^CacheMsg("Stc", "ru", "StudentsRemainder") = "Слушатели, напоминание"
     set ^CacheMsg("Stc", "en", "StudentsRemainder") = "Reminder for attendees"
-    
+
     set ^CacheMsg("Stc", "ru", "TeacherAccessToStudentsList") = "Преподаватель, доступ к списку слушателей"
     set ^CacheMsg("Stc", "en", "TeacherAccessToStudentsList") = "Teacher. Access to the list of attendees"
     
@@ -90,10 +105,7 @@ Write all messages into global do ##class(Stc.Utils.Msg).Init()</Description>
     
     set ^CacheMsg("Stc", "ru", "NewOrder") = "Новых заявок"
     set ^CacheMsg("Stc", "en", "NewOrder") = "New requests"
-    
-    set ^CacheMsg("Stc", "ru", "") = ""
-    set ^CacheMsg("Stc", "en", "") = ""
-    
+
     
     
     set ^CacheMsg("Stc", "ru", "MailingFromTraining") = "Рассылка из обучения"
@@ -478,6 +490,8 @@ Write all messages into global do ##class(Stc.Utils.Msg).Init()</Description>
     
     set ^CacheMsg("Stc", "ru", "createOrderNewStudent") = "Ошибка при создании заявки!"
     set ^CacheMsg("Stc", "en", "createOrderNewStudent") = "Error creating request!"
+    
+    q $$$OK
 ]]></Implementation>
 </Method>
 

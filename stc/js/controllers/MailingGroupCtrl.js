@@ -90,8 +90,10 @@ controllersModule.controller('MailingGroupCtrl', function($scope, $filter, $rout
               '%Curator.FullName - '+ getLocValue('фамилия и имя куратора') + ';<br>' + 
               '%Curator.Email, %Curator.PhoneSecret, %Curator.PhonePublic - '+ getLocValue('email, личный | публичный телефон') + ';<br>' +
               '%OtherInfo - '+ getLocValue('дополнительная информация об обучении') + ';<br>' + 
+              '%ListOfCertificates - '+ getLocValue('список сертификатов') + ';<br>' + 
               '%JoinUrl - '+ getLocValue('ссылка на страницу регистрации') + ';<br>'+
               '%ListOfAttendeesUrl - '+ getLocValue('ссылка на страницу со списком слушателей') + ';<br>' +
+              '%DownloadCertificatesUrl - '+ getLocValue('ссылка для загрузки сертификатов') + ';<br>' +
               '%UnsubscribeUrl - '+ getLocValue('ссылка на отмену подписки') + '.<br>';
          
         UtilsSrvc.openCustomMessageBox('Справка', msg, [{result: '1', label: $filter('localize')('Закрыть'),  cssClass: 'btn-small', func: null}]);    

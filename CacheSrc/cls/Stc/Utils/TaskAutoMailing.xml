@@ -33,12 +33,12 @@ In order to execute a real task, override this method in a subclass.]]></Descrip
     do ..OrdersAutoMailing()
     
     do ..MailingGroupsAutoMailing()
-    
-    //job ##class(Stc.Data.MailingJournal).StartSending()
-    
+   
     do ..TeacherAccessToListOfFeedbacks()
     
     do ..CityStudentMailing()
+   
+    job ##class(Stc.Data.MailingJournal).StartSending()
     
     Quit $$$OK
 ]]></Implementation>
@@ -122,9 +122,7 @@ Send notification to training teacher</Description>
             set mail = ##class(Stc.Utils.Email).GetMailForTrainingTeacher(tr)
                 
             do ##class(Stc.Data.MailingJournal).Create(tr.Teacher.Email, tr.Teacher.FullName, mail.subject, mail.message, ##class(Msg).GetMsg("TeacherAccessToStudentsList"), grNumber)
-            
-            set tr.IsTeacherAutoMailing = 0
-            do tr.%Save()                       
+                                  
         }
             
         &sql(CLOSE Tr2Cur)

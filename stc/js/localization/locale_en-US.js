@@ -2,6 +2,8 @@
 
 localizationModule.constant('StcDictionary', {
   strings: {
+    'список сертификатов':'list of certificates',
+    'ссылка для загрузки сертификатов': 'link to download certificates',
     'Символ ? в колонке "Посещал курсы" - статус ещё не был указан. Щелчком мыши измените значение.':'The question mark in the column "Attendance status" means that the status is not specified.',
     'Создать копию':'Create copy',
     'Ср. оценка курса':'Avg. course rating',
