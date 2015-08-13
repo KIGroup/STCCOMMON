@@ -4229,6 +4229,13 @@ Web                                                                             
 ]]></Implementation>
 </Method>
 
+<Method name="GetDefaultLang">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[    quit $GET(^Settings("Stc", "DefaultLang"), "en-US")
+]]></Implementation>
+</Method>
+
 <Method name="GetEmailData">
 <Description>
 

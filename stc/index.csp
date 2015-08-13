@@ -24,16 +24,16 @@
     
     <script language="javascript"  src="js/app.js"></script>    
     <script language="javascript">          
-        // На случай технических работ n
+        /*/ На случай технических работ n
         if (window.location.port != "57772"){
             window.location = "tech.csp";
-        }
+        }*/
         
         // Настройки приложения. Имена веб-приложений для REST, google календарь, язык
-        StcAppSetting.defaultApp = '#(##class(Stc.Data.Settings).GetWebAppNamespace())#',
-        StcAppSetting.admin = '#(##class(Stc.Data.Settings).GetWebAppAdmin())#',
-        StcAppSetting.user = '#(##class(Stc.Data.Settings).GetWebAppUser())#',
-        StcAppSetting.lang = StcAppSetting.getLang();
+        StcAppSetting.defaultApp = '#(##class(Stc.Data.Settings).GetWebAppNamespace())#';
+        StcAppSetting.admin = '#(##class(Stc.Data.Settings).GetWebAppAdmin())#';
+        StcAppSetting.user = '#(##class(Stc.Data.Settings).GetWebAppUser())#';
+        StcAppSetting.lang = '#(##class(Stc.Data.Settings).GetDefaultLang())#';
 
         document.write('<script language="javascript" src="js/localization/locale_' + StcAppSetting.lang + '.js"><\/script>'); 
     </script>
