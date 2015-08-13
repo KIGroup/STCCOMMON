@@ -15,7 +15,7 @@
     <script language="javascript" src="lib/angular/angular.min.js"></script>
    
     <!-- Settings --> 
-    <script language="javascript">          
+    <script language="javascript">                  
         // Настройки приложения. Имена веб-приложений для REST, google календарь, язык
         var StcAppSetting = {};
         StcAppSetting.defaultApp = '#(##class(Stc.Data.Settings).GetWebAppNamespace())#';
@@ -24,7 +24,7 @@
         StcAppSetting.domain = '#(##class(Stc.Data.Settings).GetWebAppDomain())#';
         
         
-        StcAppSetting.lang = 'en-US';
+        StcAppSetting.lang = 'ru-RU';
         
         /// Get parameter from url
         StcAppSetting.getParameterByName = function(name) {

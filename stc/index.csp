@@ -24,6 +24,11 @@
     
     <script language="javascript"  src="js/app.js"></script>    
     <script language="javascript">          
+        // На случай технических работ n
+        if (window.location.port != "57772"){
+            window.location = "tech.csp";
+        }
+        
         // Настройки приложения. Имена веб-приложений для REST, google календарь, язык
         StcAppSetting.defaultApp = '#(##class(Stc.Data.Settings).GetWebAppNamespace())#',
         StcAppSetting.admin = '#(##class(Stc.Data.Settings).GetWebAppAdmin())#',
@@ -114,40 +119,40 @@
        </div>
 
     </div>
-   <!-- Big file with all js code
+   <!-- Big file with all js code-->
    <script language="javascript"  src="js/combine.js"></script>
-	-->
+    <!--
 
     <script language="javascript"  src="js/controllers/MainCtrl.js"></script>
     <script language="javascript"  src="js/controllers/ScheduleFrameCtrl.js"></script>
     <script language="javascript"  src="js/controllers/TrainingCtrl.js"></script>
-	<script language="javascript"  src="js/controllers/AllTrainingsCtrl.js"></script>
-	<script language="javascript"  src="js/controllers/AllTrainingFeedBacksCtrl.js"></script>
-	<script language="javascript"  src="js/controllers/CreateTrainingCtrl.js"></script>
-	<script language="javascript"  src="js/controllers/CreateOrderCtrl.js"></script>
-	<script language="javascript"  src="js/controllers/OrderNewStudentCtrl.js"></script>
-	<script language="javascript"  src="js/controllers/AllOrdersCtrl.js"></script>
-	<script language="javascript"  src="js/controllers/AllCompaniesCtrl.js"></script>
-	<script language="javascript"  src="js/controllers/CompanyCtrl.js"></script>
-	<script language="javascript"  src="js/controllers/AllCertificatesCtrl.js"></script>
-	<script language="javascript"  src="js/controllers/PersonCtrl.js"></script>
-	<script language="javascript"  src="js/controllers/PersonTeacherCtrl.js"></script>
-	<script language="javascript"  src="js/controllers/PersonStudentCtrl.js"></script>
-	<script language="javascript"  src="js/controllers/PersonCompanyContactCtrl.js"></script>
-	<script language="javascript"  src="js/controllers/AllPersonsCtrl.js"></script>
-	<script language="javascript"  src="js/controllers/AllCoursesCtrl.js"></script>    
-	<script language="javascript"  src="js/controllers/CourseCtrl.js"></script>
-	<script language="javascript"  src="js/controllers/TrainingStudentsCtrl.js"></script>
-	<script language="javascript"  src="js/controllers/FeedBackCtrl.js"></script>
-	<script language="javascript"  src="js/controllers/DeepSeeCtrl.js"></script>
-	<script language="javascript"  src="js/controllers/SettingsCtrl.js"></script>
-	<script language="javascript"  src="js/controllers/AllMailingGroupsCtrl.js"></script>
-	<script language="javascript"  src="js/controllers/MailingGroupCtrl.js"></script>
-	<script language="javascript"  src="js/controllers/MailingGroupMailCtrl.js"></script>
-	<script language="javascript"  src="js/controllers/MailingItemCtrl.js"></script>
-	<script language="javascript"  src="js/controllers/MailingSubscriptionCtrl.js"></script>
-	<script language="javascript"  src="js/controllers/AllLogsCtrl.js"></script>
-	<script language="javascript"  src="js/controllers/MailingJournalCtrl.js"></script>
+    <script language="javascript"  src="js/controllers/AllTrainingsCtrl.js"></script>
+    <script language="javascript"  src="js/controllers/AllTrainingFeedBacksCtrl.js"></script>
+    <script language="javascript"  src="js/controllers/CreateTrainingCtrl.js"></script>
+    <script language="javascript"  src="js/controllers/CreateOrderCtrl.js"></script>
+    <script language="javascript"  src="js/controllers/OrderNewStudentCtrl.js"></script>
+    <script language="javascript"  src="js/controllers/AllOrdersCtrl.js"></script>
+    <script language="javascript"  src="js/controllers/AllCompaniesCtrl.js"></script>
+    <script language="javascript"  src="js/controllers/CompanyCtrl.js"></script>
+    <script language="javascript"  src="js/controllers/AllCertificatesCtrl.js"></script>
+    <script language="javascript"  src="js/controllers/PersonCtrl.js"></script>
+    <script language="javascript"  src="js/controllers/PersonTeacherCtrl.js"></script>
+    <script language="javascript"  src="js/controllers/PersonStudentCtrl.js"></script>
+    <script language="javascript"  src="js/controllers/PersonCompanyContactCtrl.js"></script>
+    <script language="javascript"  src="js/controllers/AllPersonsCtrl.js"></script>
+    <script language="javascript"  src="js/controllers/AllCoursesCtrl.js"></script>    
+    <script language="javascript"  src="js/controllers/CourseCtrl.js"></script>
+    <script language="javascript"  src="js/controllers/TrainingStudentsCtrl.js"></script>
+    <script language="javascript"  src="js/controllers/FeedBackCtrl.js"></script>
+    <script language="javascript"  src="js/controllers/DeepSeeCtrl.js"></script>
+    <script language="javascript"  src="js/controllers/SettingsCtrl.js"></script>
+    <script language="javascript"  src="js/controllers/AllMailingGroupsCtrl.js"></script>
+    <script language="javascript"  src="js/controllers/MailingGroupCtrl.js"></script>
+    <script language="javascript"  src="js/controllers/MailingGroupMailCtrl.js"></script>
+    <script language="javascript"  src="js/controllers/MailingItemCtrl.js"></script>
+    <script language="javascript"  src="js/controllers/MailingSubscriptionCtrl.js"></script>
+    <script language="javascript"  src="js/controllers/AllLogsCtrl.js"></script>
+    <script language="javascript"  src="js/controllers/MailingJournalCtrl.js"></script>
 
     <script language="javascript"  src="js/services/DALSrvc.js"></script>
     <script language="javascript"  src="js/services/YandexSrvc.js"></script>
@@ -177,7 +182,7 @@
     <script language="javascript"  src="js/filters/cacheDate.js"></script>
 
 
- <!---->
+ -->
     <script language="javascript"  src="lib/ui-bootstrap-tpls-0.5.0.js"></script>
     <script language="javascript"  src="lib/bootstrap-modal.js"></script>
     

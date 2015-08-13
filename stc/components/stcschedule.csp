@@ -43,7 +43,7 @@
                         <i class="fnt-plus courseCityIcon" ng-hide="tr.detailsVisible"></i>
                         <i class="fnt-minus courseCityIcon" ng-show="tr.detailsVisible"></i>
                     </td>
-                    <td ng-bind="tr.city.name" style="width: 30%;"></td>
+                    <td ng-bind="tr.city.name" style="width: 25%;"></td>
                     <td ng-bind="tr.dates" style="text-align: center;" colspan="2"></td>
                     <td style="width: 115px; text-align: right;">
                         <a ng-hide="tr.detailsVisible" href="" class="scheduleDetails" ng-bind="'Регистрация'|localize" title="{{'Показать дополнительную информацию'|localize}}"></a>
