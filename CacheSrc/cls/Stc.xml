@@ -7015,7 +7015,7 @@ Cube definition from Architect.</Description>
 
 <Class name="Stc.DeepSee.KPI.TrainingPoints">
 <Description>
-Stc.DeepSee.KPI.TrainingPoints</Description>
+Stc.DeepSee.KPI.TrainingPoints.</Description>
 <Super>%DeepSee.KPI</Super>
 <TimeCreated>63246,4017.552393</TimeCreated>
 
@@ -7164,7 +7164,7 @@ tr.Room As Room,
 TO_CHAR(tr.DateStart,'DD-MM-YYYY'),
 TO_CHAR(tr.DateFinish,'DD-MM-YYYY'),
 tr.Teacher->FullName ||', '|| tr.Teacher->Email As Teacher,
-(SELECT COUNT(Students) FROM Stc_Data.SubGroup_Students WHERE SubGroup IN (SELECT SubGroups FROM Stc_Data.Training_SubGroups WHERE Training = tr.ID)) As StudentsCount,
+(SELECT COUNT(Student) FROM Stc_Data.SubGroupStudent WHERE SubGroup IN (SELECT SubGroups FROM Stc_Data.Training_SubGroups WHERE Training = tr.ID)) As StudentsCount,
 (SELECT COUNT(SubGroups) FROM Stc_Data.Training_SubGroups WHERE Training = tr.ID) As SubGroupsCount,
 tr.Latitude,
 tr.Longitude,
@@ -7253,11 +7253,11 @@ Return an SQL statement to execute.</Description>
 <Data><![CDATA[
 <xml><![CDATA[
 SELECT 
-Students->LastName->Value || ' ' || SUBSTRING(Students->FirstName->Value,1,1) || '. ' || SUBSTRING(ISNULL(Students->MiddleName->Value,''),1,1) || '. ' As FullName,
-Students->Company->ShortName->Value As Company,
-Students->Email,
-Students->Phone
-FROM Stc_Data.SubGroup_Students
+Student->LastName->Value || ' ' || SUBSTRING(Student->FirstName->Value,1,1) || '. ' || SUBSTRING(ISNULL(Student->MiddleName->Value,''),1,1) || '. ' As FullName,
+Student->Company->ShortName->Value As Company,
+Student->Email,
+Student->Phone
+FROM Stc_Data.SubGroupStudent
 WHERE SubGroup IN (SELECT SubGroups FROM Stc_Data.Training_SubGroups WHERE Training = :trainingId)
 ORDER BY Company, FullName
 ]]]]><![CDATA[></xml>
@@ -12497,12 +12497,10 @@ Get email pattern from ^CacheMsg</Description>
 <FormalSpec>email:%String,subject:%String,msg:%String,recipientName:%String=""</FormalSpec>
 <ReturnType>%Status</ReturnType>
 <Implementation><![CDATA[
-    q $$$OK
-    if ($FIND(email, "ilson") = 0){
-      set email = "stc_testmail2@mail.ru"
-    }
-    
     set st = $$$OK
+ 
+    // Чтобы при тестах не заспамить народ
+    if ($NAMESPACE = "STCUNION") quit $$$OK
     
     try
     {

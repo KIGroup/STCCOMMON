@@ -2,7 +2,7 @@
 <Export generator="Cache" version="25">
 <Class name="Stc.DeepSee.KPI.TrainingPoints">
 <Description>
-Stc.DeepSee.KPI.TrainingPoints</Description>
+Stc.DeepSee.KPI.TrainingPoints.</Description>
 <Super>%DeepSee.KPI</Super>
 <TimeCreated>63246,4017.552393</TimeCreated>
 

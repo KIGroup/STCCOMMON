@@ -58,7 +58,7 @@
         </div>
         <div class="row-fluid">
             <div class="control-group">
-                <label class="control-label" ng-bind="('Start / end time'|localize) + '*'"></label>
+                <label class="control-label" ng-bind="('Время начала / окончания обучения'|localize) + '*'"></label>
                 <div class="controls">
                     <div class="input-append">
                         <input class="input" style="width: 50px;" type="text" placeholder="{{'ЧЧ:MM'|localize}}" title="{{'Время начала'|localize}}" pattern="{{training.timePattern}}" ng-model="training.timeStart" required></input>

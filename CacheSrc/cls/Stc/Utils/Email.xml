@@ -323,12 +323,10 @@ Get email pattern from ^CacheMsg</Description>
 <FormalSpec>email:%String,subject:%String,msg:%String,recipientName:%String=""</FormalSpec>
 <ReturnType>%Status</ReturnType>
 <Implementation><![CDATA[
-    q $$$OK
-    if ($FIND(email, "ilson") = 0){
-      set email = "stc_testmail2@mail.ru"
-    }
-    
     set st = $$$OK
+ 
+    // Чтобы при тестах не заспамить народ
+    if ($NAMESPACE = "STCUNION") quit $$$OK
     
     try
     {
