@@ -17,24 +17,18 @@ controllersModule.controller('AllTrainingFeedBacksCtrl', function($scope, $filte
     
     $scope.init = function(){
         $scope.fbTable.columns = [
-                          {name: 'Оценка', sqlName: 'Rating', isSorted: false, isSortable: true, isDown: true, isSearched: false, isSearchable: false, captionStyle: {textAlign: 'center', width: '50px'}},
-                          {name: 'Автор', sqlName: 'Author', isSorted: false, isSortable: true, isDown: true, isSearched: true, isSearchable: true},
-                          {name: 'Понравилось', sqlName: 'WhatLiked', isSorted: false, isSortable: true, isDown: true, isSearched: false, isSearchable: false},
-                          {name: 'Улучшения', sqlName: 'WhatImprovements', isSorted: false, isSortable: true, isDown: true, isSearched: false, isSearchable: false},
-                          {name: 'Дополнение', sqlName: 'WhatHear', isSorted: false, isSortable: true, isDown: true, isSearched: false, isSearchable: false},
-                          {name: 'О докладчике', sqlName: 'AboutTeacher', isSorted: false, isSortable: true, isDown: true, isSearched: false, isSearchable: true},
-                          {name: 'Дата создания', sqlName: 'CreatedTS', isSorted: true, isSortable: true, isDown: false, isSearched: false, isSearchable: false, filter: 'date', captionStyle: {width: '220px'}}];
- 
-        $scope.fbTable.properties = [{name:'rating', cellStyle: {textAlign: 'center'}}, 
-                                     {name:'author'},
-                                     {name:'whatLikedStatus',        calculate: function(item){ item.whatLikedStatus       = item.whatLiked       =='' ? '' : $filter('localize')('Есть отзыв')}},
-                                     {name:'whatImprovementsStatus', calculate: function(item){ item.whatImprovementsStatus= item.whatImprovements=='' ? '' : $filter('localize')('Есть отзыв')}},
-                                     {name:'whatHearStatus',         calculate: function(item){ item.whatHearStatus        = item.whatHear        =='' ? '' : $filter('localize')('Есть отзыв')}},
-                                     {name:'aboutTeacherStatus',     calculate: function(item){ item.aboutTeacherStatus    = item.aboutTeacher    =='' ? '' : $filter('localize')('Есть отзыв')}},
-                                     {name:'createdTS', filter: 'date', filterParam: $filter('localize')('d MMMM y, HH:mm:ss')}];
+						  {name: 'Автор', sqlName: 'Author', isSorted: false, isSortable: true, isDown: true, isSearched: true, isSearchable: false, captionStyle: {textAlign: 'center', width: '200px'}},
+                          {name: 'Ср. оценка курса', sqlName: 'AvgCourseRating', isSorted: false, isSortable: true, isDown: true, isSearched: false, isSearchable: false, captionStyle: {textAlign: 'center'}},
+                          {name: 'Ср. оценка преподавателя', sqlName: 'AvgInstructorRating', isSorted: false, isSortable: true, isDown: true, isSearched: false, isSearchable: true, captionStyle: {textAlign: 'center'}},
+                          {name: 'Дата создания', sqlName: 'CreatedTS', isSorted: true, isSortable: true, isDown: false, isSearched: false, isSearchable: false, filter: 'date', captionStyle: {width: '180px'}}];
+  
+        $scope.fbTable.properties = [{name: 'author'},
+                                     {name: 'avgCourseRating', cellStyle: {textAlign: 'center'}}, 
+                                     {name: 'avgInstructorRating', cellStyle: {textAlign: 'center'}},
+                                     {name: 'createdTS', filter: 'date', filterParam: $filter('localize')('d MMMM y, HH:mm:ss')}];
 
-        $scope.fbTable.pageSize = 15;
-        $scope.fbTable.pageCurr = 1;
+		$scope.fbTable.pageSize = 10;
+		$scope.fbTable.pageCurr = 1;
         $scope.fbTable.itemsTotal = 0;
         $scope.fbTable.selectedItems = [];
         $scope.fbTable.multiSelectMode = false;

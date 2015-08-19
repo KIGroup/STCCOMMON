@@ -21,8 +21,10 @@
         StcAppSetting.defaultApp = '#(##class(Stc.Data.Settings).GetWebAppNamespace())#';
         StcAppSetting.admin = '#(##class(Stc.Data.Settings).GetWebAppAdmin())#';
         StcAppSetting.user = '#(##class(Stc.Data.Settings).GetWebAppUser())#';
-        StcAppSetting.domain = '#(##class(Stc.Data.Settings).GetWebAppDomain())#';
-        StcAppSetting.lang = '#(##class(Stc.Data.Settings).GetDefaultLang())#';
+        StcAppSetting.domain = '#(##class(Stc.Data.Settings).GetWebAppDomainNamespace())#';
+        
+        
+        StcAppSetting.lang = 'ru-RU';
         
         /// Get parameter from url
         StcAppSetting.getParameterByName = function(name) {

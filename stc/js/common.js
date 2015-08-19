@@ -59,7 +59,7 @@ StcAppSetting.setCookie = function(name, value, options) {
 
 StcAppSetting.getLang = function(){
     var lang = StcAppSetting.getCookie('lang');
-    
+
     if (lang) 
       return lang;
 
@@ -71,5 +71,5 @@ StcAppSetting.getLang = function(){
     }
     */
     
-    return 'ru-RU';
+    return '';
 }  

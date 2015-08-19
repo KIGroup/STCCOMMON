@@ -33,7 +33,10 @@
         StcAppSetting.defaultApp = '#(##class(Stc.Data.Settings).GetWebAppNamespace())#';
         StcAppSetting.admin = '#(##class(Stc.Data.Settings).GetWebAppAdmin())#';
         StcAppSetting.user = '#(##class(Stc.Data.Settings).GetWebAppUser())#';
-        StcAppSetting.lang = '#(##class(Stc.Data.Settings).GetDefaultLang())#';
+        StcAppSetting.lang = StcAppSetting.getLang();
+
+        if (!StcAppSetting.lang)
+            StcAppSetting.lang = '#(##class(Stc.Data.Settings).GetDefaultLang())#';
 
         document.write('<script language="javascript" src="js/localization/locale_' + StcAppSetting.lang + '.js"><\/script>'); 
     </script>
@@ -119,8 +122,8 @@
        </div>
 
     </div>
-   <!-- Big file with all js code-->
-   <script language="javascript"  src="js/combine.js"></script>
+   <!-- Big file with all js code -->
+   <script language="javascript"  src="js/combine.js"></script>-->
     <!--
 
     <script language="javascript"  src="js/controllers/MainCtrl.js"></script>

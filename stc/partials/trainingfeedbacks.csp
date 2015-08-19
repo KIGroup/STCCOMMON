@@ -42,24 +42,22 @@
 				</div>
 
 				<div class="row-fluid" ng-show="fbTable.items.length!=0 && fbTable.selectedItems.length!=0">
-						<p>
-							<span class="spnTitle" ng-bind="'Оценка'|localize"></span>: <rating value="fbTable.selectedItems[0].rating" readonly="true" on-hover="" on-leave="" required></rating>
-						</p>
-						<p ng-hide="fbTable.selectedItems[0].author==''">
-							<span class="spnTitle" ng-bind="'Автор'|localize"></span>: <span ng-bind="fbTable.selectedItems[0].author"></span>
-						</p>
-						<p ng-hide="fbTable.selectedItems[0].whatLiked==''" style="text-align: justify;">
-							<span class="spnTitle" ng-bind="'Что понравилось'|localize"></span>: <span ng-bind="fbTable.selectedItems[0].whatLiked"></span>
-						</p>
-						<p ng-hide="fbTable.selectedItems[0].whatImprovements==''" style="text-align: justify;">
-							<span class="spnTitle" ng-bind="'Что можно улучшить'|localize"></span>: <span ng-bind="fbTable.selectedItems[0].whatImprovements"></span>
-						</p>
-						<p ng-hide="fbTable.selectedItems[0].whatHear==''" style="text-align: justify;">
-							<span class="spnTitle" ng-bind="'Что ещё хотелось бы услышать в курсе'|localize"></span>: <span ng-bind="fbTable.selectedItems[0].whatHear"></span>
-						</p>
-						<p ng-hide="fbTable.selectedItems[0].aboutTeacher==''" style="text-align: justify;">
-							<span class="spnTitle" ng-bind="'Комментарии о докладчике'|localize"></span>: <span ng-bind="fbTable.selectedItems[0].aboutTeacher"></span>
-						</p>
+					<p ng-hide="fbTable.selectedItems[0].author==''"><span class="spnTitle" ng-bind="'Автор'|localize"></span>: <span ng-bind="fbTable.selectedItems[0].author"></span></p>
+					
+					<div class="row-fluid">
+						<div class="span6">          
+							<div ng-repeat="item in fbTable.selectedItems[0].items | orderBy: 'typeSeqNumber' | filter: {groupTypeCode: 'Instructor Nonspecific'}">
+								<p ng-show="item.type.isScaleType==1"><span class="spnTitle" ng-bind="item.type.name"></span>: <rating value="item.scaleValue" readonly="true" on-hover="" on-leave=""></rating></p>
+								<p ng-hide="item.type.isScaleType==1 || item.textValue == ''"><span class="spnTitle" ng-bind="item.type.name"></span>: <span ng-bind="item.textValue"></span></p>
+							</div>
+						</div>
+						<div class="span6">
+							<div ng-repeat="item in fbTable.selectedItems[0].items | orderBy: 'typeSeqNumber' | filter: {groupTypeCode: '!Instructor Nonspecific'}">
+								<p ng-show="item.type.isScaleType==1"><span class="spnTitle" ng-bind="item.type.name"></span>: <rating value="item.scaleValue" readonly="true" on-hover="" on-leave=""></rating></p>
+								<p ng-hide="item.type.isScaleType==1 || item.textValue == ''"><span class="spnTitle" ng-bind="item.type.name"></span>: <span ng-bind="item.textValue"></span></p>
+							</div>
+						</div>
+					</div>
 				</div>
 
 			</accordion-group>
