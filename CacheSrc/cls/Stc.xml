@@ -2965,21 +2965,21 @@ MailingItem. Dirty, for spam</Description>
 <FormalSpec><![CDATA[tr:Training,gr:MailingGroup,isAutoMailing:%Boolean=1,&st]]></FormalSpec>
 <ReturnType>MailingTrainingGroup</ReturnType>
 <Implementation><![CDATA[
-	set st = $$$OK
-	
-	set obj = ""
-	
-	if (..CommonIdxExists(tr.%Id(), gr.%Id()) = $$$YES){
-		quit ..CommonIdxOpen(tr.%Id(), gr.%Id())	
-	}
-	
-	set obj = ..%New()
-	set obj.Training = tr
-	set obj.MGroup = gr
-	set obj.IsAutoMailing = isAutoMailing
-	set st = obj.%Save()
-	
-	quit obj
+    set st = $$$OK
+    
+    set obj = ""
+    
+    if (..CommonIdxExists(tr.%Id(), gr.%Id()) = $$$YES){
+        quit ..CommonIdxOpen(tr.%Id(), gr.%Id())    
+    }
+    
+    set obj = ..%New()
+    set obj.Training = tr
+    set obj.MGroup = gr
+    set obj.IsAutoMailing = isAutoMailing
+    set st = obj.%Save()
+    
+    quit obj
 ]]></Implementation>
 </Method>
 
@@ -2988,27 +2988,27 @@ MailingItem. Dirty, for spam</Description>
 <FormalSpec>tr:Training,isAutoMailing:%Boolean=1</FormalSpec>
 <ReturnType>%Status</ReturnType>
 <Implementation><![CDATA[
-	set st = $$$OK
-	
-	&sql(DECLARE MGCur CURSOR FOR
-			SELECT ID
-			FROM Stc_Data.MailingGroup
-			WHERE AccessCode <> 'Students')	
-		
-	&sql(OPEN MGCur)
-	for  
-	{	
-		&sql(FETCH MGCur INTO :id) 
-		quit:(SQLCODE '= 0)
-		
-		do ..Create(tr, ##class(Stc.Data.MailingGroup).%OpenId(id), isAutoMailing, .st)
-		
-		$$$THROWONERROR(st, st)	
-	}
-	
-	&sql(CLOSE MGCur)
-	
-	quit st
+    set st = $$$OK
+    
+    &sql(DECLARE MGCur CURSOR FOR
+            SELECT ID
+            FROM Stc_Data.MailingGroup
+            WHERE AccessCode NOT IN ('Students', 'Office')) 
+        
+    &sql(OPEN MGCur)
+    for  
+    {   
+        &sql(FETCH MGCur INTO :id) 
+        quit:(SQLCODE '= 0)
+        
+        do ..Create(tr, ##class(Stc.Data.MailingGroup).%OpenId(id), isAutoMailing, .st)
+        
+        $$$THROWONERROR(st, st) 
+    }
+    
+    &sql(CLOSE MGCur)
+    
+    quit st
 ]]></Implementation>
 </Method>
 
@@ -6212,11 +6212,15 @@ Access code to training for teacher</Description>
 </Property>
 
 <Property name="CreatedTS">
+<Description>
+Time of creation</Description>
 <Type>%TimeStamp</Type>
 <Required>1</Required>
 </Property>
 
 <Property name="IsCertificatesDone">
+<Description>
+Certificates printed and dilivered</Description>
 <Type>%Boolean</Type>
 <InitialExpression>0</InitialExpression>
 </Property>
@@ -6235,15 +6239,26 @@ Is public training or not (shows in calendar)</Description>
 </Property>
 
 <Property name="GeoLocationAddress">
+<Description>
+GeoLocationAddress</Description>
 <Type>%String</Type>
 <Parameter name="MAXLEN" value="500"/>
 </Property>
 
 <Property name="StudentsCount">
+<Description>
+Students Count</Description>
 <Type>%Integer</Type>
 <Calculated>1</Calculated>
 <SqlComputeCode>set {StudentsCount} = ##class({%%CLASSNAME}).GetStudentsCount({%%ID})</SqlComputeCode>
 <SqlComputed>1</SqlComputed>
+</Property>
+
+<Property name="DeliveryAddressOfCertificates">
+<Description>
+Delivery address of certificates</Description>
+<Type>%String</Type>
+<Parameter name="MAXLEN" value="400"/>
 </Property>
 
 <Index name="AccessCodeIdx">
@@ -6333,6 +6348,7 @@ Convert to proxyObject (for JSON)</Description>
     set proxy.isCompleted = ..IsCompleted   
     set proxy.isCertificatesDone = ..IsCertificatesDone
     set proxy.isPublic = ..IsPublic
+    set proxy.deliveryAddressOfCertificates = ..DeliveryAddressOfCertificates
     
     set proxy.timeStart = $e(##class(%Library.Time).LogicalToDisplay(..TimeStart), 1, 5)
     set proxy.timeStartType = "24"
@@ -6450,6 +6466,7 @@ Create or save modified training</Description>
     set tr.CuratorPhoneSecret = data.curator.phoneSecret
     set tr.IsCertificatesDone = data.isCertificatesDone = $$$YES
     set tr.IsPublic = data.isPublic = $$$YES    
+    set tr.DeliveryAddressOfCertificates = $ZCONVERT(data.deliveryAddressOfCertificates, "I","UTF8")
         
     set tr.DateFinish = $ZDATEH(data.dateFinish, 15)
     set tr.DateStart = $ZDATEH(data.dateStart, 15)
@@ -6606,7 +6623,7 @@ Add person to training, subgroup is detirmining automatically</Description>
         set sgroup = ##class(Stc.Data.SubGroup).Create(person.Company, ..Course, .status)
         if $$$ISERR(status) quit status
         
-        do ##class(SubGroupStudent).Create(person.%Id(), sgroup.%Id(), .status)
+        do ##class(SubGroupStudent).Save(person.%Id(), sgroup.%Id(), ..%Id(), .status)
         if $$$ISERR(status) quit status
         
         do ..SubGroups.SetAt(sgroup, sgroup.%Id())
@@ -6973,6 +6990,9 @@ Get teacher payout for training</Description>
 </Value>
 <Value name="33">
 <Value>GeoLocationAddress</Value>
+</Value>
+<Value name="34">
+<Value>DeliveryAddressOfCertificates</Value>
 </Value>
 </Data>
 </Storage>
@@ -12191,8 +12211,8 @@ Working with email</Description>
 <FormalSpec>patternMsg:%Text,tr:Stc.Data.Training</FormalSpec>
 <ReturnType>%Text</ReturnType>
 <Implementation><![CDATA[
-    set patternMsg = $REPLACE(patternMsg, "%DateStart", $ZDATE(tr.DateStart, 3))
-    set patternMsg = $REPLACE(patternMsg, "%DateEnd", $ZDATE(tr.DateFinish, 3))
+    set patternMsg = $REPLACE(patternMsg, "%DateStart", ##class(Stc.Utils.Utils).GetLocalizeTextFromDate(tr.DateStart))
+    set patternMsg = $REPLACE(patternMsg, "%DateEnd", ##class(Stc.Utils.Utils).GetLocalizeTextFromDate(tr.DateFinish))
     set patternMsg = $REPLACE(patternMsg, "%TimeStart", $e(##class(%Library.Time).LogicalToDisplay(tr.TimeStart), 1, 5))
     set patternMsg = $REPLACE(patternMsg, "%TimeEnd", $e(##class(%Library.Time).LogicalToDisplay(tr.TimeFinish), 1, 5))
     set patternMsg = $REPLACE(patternMsg, "%Course.Name", tr.Course.Name.Value)
@@ -12210,6 +12230,7 @@ Working with email</Description>
     set patternMsg = $REPLACE(patternMsg, "%Curator.PhoneSecret", $SELECT(tr.CuratorPhoneSecret="":"-", tr.CuratorPhoneSecret'="":tr.CuratorPhoneSecret))
     set patternMsg = $REPLACE(patternMsg, "%Curator.PhonePublic", $SELECT(tr.CuratorPhone="":"-", tr.CuratorPhone'="":tr.CuratorPhone))
     set patternMsg = $REPLACE(patternMsg, "%OtherInfo", tr.OtherInfo.Value)
+    set patternMsg = $REPLACE(patternMsg, "%DeliveryAddressOfCertificates", tr.DeliveryAddressOfCertificates)
     
     if ($FIND(patternMsg, "%ListOfCertificates") '= 0){
         set certData = ""
@@ -12228,7 +12249,7 @@ Working with email</Description>
             &sql(FETCH CertCur INTO :number, :fullName) 
             quit:(SQLCODE '= 0)
             
-            set certData = certData_number_", "_fullName_"<br>"
+            set certData = certData_number_" "_fullName_"<br>"
         }
         &sql(CLOSE CertCur)
         
@@ -13359,6 +13380,47 @@ Write all messages into global do ##class(Stc.Utils.Msg).Init()</Description>
 <ClassMethod>1</ClassMethod>
 <ReturnType>%Status</ReturnType>
 <Implementation><![CDATA[
+    set ^CacheMsg("Stc", "ru", "yearShort") = "г."
+    set ^CacheMsg("Stc", "en", "yearShort") = "y."
+    
+    set ^CacheMsg("Stc", "ru", "Month#1") = "января"
+    set ^CacheMsg("Stc", "en", "Month#1") = "January"
+    
+    set ^CacheMsg("Stc", "ru", "Month#2") = "февраля"
+    set ^CacheMsg("Stc", "en", "Month#2") = "February"
+    
+    set ^CacheMsg("Stc", "ru", "Month#3") = "марта"
+    set ^CacheMsg("Stc", "en", "Month#3") = "March"
+    
+    set ^CacheMsg("Stc", "ru", "Month#4") = "апреля"
+    set ^CacheMsg("Stc", "en", "Month#4") = "April"
+    
+    set ^CacheMsg("Stc", "ru", "Month#5") = "мая"
+    set ^CacheMsg("Stc", "en", "Month#5") = "May"
+    
+    set ^CacheMsg("Stc", "ru", "Month#6") = "июня"
+    set ^CacheMsg("Stc", "en", "Month#6") = "June"
+    
+    set ^CacheMsg("Stc", "ru", "Month#7") = "июля"
+    set ^CacheMsg("Stc", "en", "Month#7") = "July"
+    
+    set ^CacheMsg("Stc", "ru", "Month#8") = "августа"
+    set ^CacheMsg("Stc", "en", "Month#8") = "August"
+    
+    set ^CacheMsg("Stc", "ru", "Month#9") = "сентября"
+    set ^CacheMsg("Stc", "en", "Month#9") = "September"
+    
+    set ^CacheMsg("Stc", "ru", "Month#10") = "октября"
+    set ^CacheMsg("Stc", "en", "Month#10") = "October"
+    
+    set ^CacheMsg("Stc", "ru", "Month#11") = "ноября"
+    set ^CacheMsg("Stc", "en", "Month#11") = "November"
+    
+    set ^CacheMsg("Stc", "ru", "Month#12") = "декабря"
+    set ^CacheMsg("Stc", "en", "Month#12") = "December"
+    
+    
+    
     set ^CacheMsg("Stc", "ru", "STCSummaryOfTheDay") = "STC. Краткая сводка за день."
     set ^CacheMsg("Stc", "en", "STCSummaryOfTheDay") = "STC. Summary of the day."
 
@@ -14686,6 +14748,55 @@ In order to execute a real task, override this method in a subclass.]]></Descrip
     &sql(CLOSE Cur2)
     
     quit list
+]]></Implementation>
+</Method>
+</Class>
+
+
+<Class name="Stc.Utils.Utils">
+<Abstract>1</Abstract>
+<TimeCreated>63787,39933.86662</TimeCreated>
+
+<Method name="GetLocalizeTextFromDate">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>date:%Date</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[    quit ..GetLocalizeTextFromTimeStamp($ZDT(date, 3))
+]]></Implementation>
+</Method>
+
+<Method name="GetLocalizeTextFromTimeStamp">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>ts:%TimeStamp,withQuotes=0</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+    set year = $E(ts, 1, 4)
+    set month = +$E(ts, 6, 7)
+    set day = $E(ts, 9, 10)
+    
+    set monthStr = ##class(Msg).GetMsg("Month#"_month)
+    
+    set curLang = $E($$$SessionLanguage, 1, 2)
+    set result = ""
+    if (curLang = "ru"){
+        if (withQuotes){
+            set day = "«"_day_"»"
+            set year = year_" "_##class(Msg).GetMsg("yearShort")
+        }
+        
+        set result = day_" "_monthStr_" "_year
+    }
+    else{
+        set result = monthStr_" "_day_", "_year
+    }
+    
+    set timePart = $P(ts, " ", 2)
+    if (timePart '= ""){
+        set result = result_" "_timePart
+    }
+    
+    
+    quit result
 ]]></Implementation>
 </Method>
 </Class>

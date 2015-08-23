@@ -2,6 +2,8 @@
 
 localizationModule.constant('StcDictionary', {
   strings: {
+    'Адрес доставки сертификатов' : 'Delivery address of certificates',
+    'aдр. дост. сертификатов' : 'delivery address of certificates',
     'Ближайшие обучения':'Upcoming trainings',
     'список сертификатов':'list of certificates',
     'ссылка для загрузки сертификатов': 'link to download certificates',

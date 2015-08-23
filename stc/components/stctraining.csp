@@ -32,6 +32,72 @@
         </div>
 
         <div class="row-fluid">
+            <div class="span12">
+                <div class="control-group">
+                    <label class="control-label" ng-bind="('Куратор: ФИО'|localize)"></label>
+                    <div class="controls">
+                        <div class="row-fluid">
+                            <input class="span12" type="text"  ng-model="training.curator.fullName"></input>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row-fluid">
+            <div class="span4">
+                <div class="control-group">
+                    <label class="control-label" ng-bind="('Email'|localize)"></label>
+                    <div class="controls">
+                        <input class="span12" type="email"  ng-model="training.curator.email"></input>
+                    </div>
+                </div>
+            </div>
+            <div class="span4">
+                <div class="control-group">
+                    <label class="control-label" ng-bind="('Публичный телефон'|localize) + ''"></label>
+                    <div class="controls">
+                        <input class="span12" type="text"  ng-model="training.curator.phone"></input>
+                    </div>
+                </div>
+            </div>
+            <div class="span4">
+                <div class="control-group">
+                    <label class="control-label" ng-bind="('Непубличный телефон'|localize) + ''"></label>
+                    <div class="controls">
+                        <input class="span12" type="text"  ng-model="training.curator.phoneSecret"></input>
+                    </div>
+                </div>
+            </div>
+        </div>
+		
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="control-group">
+                    <label class="control-label" ng-bind="('Адрес доставки сертификатов'|localize)"></label>
+                    <div class="controls">
+                        <div class="row-fluid">
+                            <input class="span12" type="text"  ng-model="training.deliveryAddressOfCertificates"></input>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn btn-success btn-small" type="submit" ng-show="!$parent.menu.readOnlyMode" ng-bind="btnSubmitName|localize" ng-click="formatDate()" ng-disabled="formName.$pristine"></button>
+        <button class="btn btn-small btn-primary" type="button" ng-show="btnAdditionVisible && !$parent.menu.readOnlyMode" ng-click="btnAdditionAction()" ng-bind="btnAdditionName|localize"></button>
+        <div style="display: inline-flex;">
+            <label class="checkbox" style="margin-top: 6px; margin-left: 6px; margin-left: 20px;">
+                <input type="checkbox" ng-init="training.isPublic=true" ng-model="training.isPublic" ng-disabled="menu.readOnlyMode">{{'Публичный курс'|localize}}
+            </label> 
+            <label ng-show="training.id" class="checkbox" style="margin-top: 6px; margin-left: 20px;">
+                <input type="checkbox" ng-model="training.isCertificatesDone" ng-disabled="menu.readOnlyMode">{{'Сертификаты выданы'|localize}}
+            </label> 
+        </div>
+    </div>
+    <div class="span6">
+	
+        <div class="row-fluid">
             <div class="span6">
                 <div class="control-group">
                     <label class="control-label" ng-bind="('Дата начала / окончания'|localize) + '*'"></label>
@@ -73,59 +139,6 @@
                 </div>
             </div>
         </div>
-        <div class="row-fluid">
-            <div class="span12">
-                <div class="control-group">
-                    <label class="control-label" ng-bind="('Куратор: ФИО'|localize)"></label>
-                    <div class="controls">
-                        <div class="row-fluid">
-                            <input class="span12" type="text"  ng-model="training.curator.fullName"></input>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row-fluid">
-            <div class="span4">
-                <div class="control-group">
-                    <label class="control-label" ng-bind="('Email'|localize)"></label>
-                    <div class="controls">
-                        <input class="span12" type="email"  ng-model="training.curator.email"></input>
-                    </div>
-                </div>
-            </div>
-            <div class="span4">
-                <div class="control-group">
-                    <label class="control-label" ng-bind="('Публичный телефон'|localize) + ''"></label>
-                    <div class="controls">
-                        <input class="span12" type="text"  ng-model="training.curator.phone"></input>
-                    </div>
-                </div>
-            </div>
-            <div class="span4">
-                <div class="control-group">
-                    <label class="control-label" ng-bind="('Непубличный телефон'|localize) + ''"></label>
-                    <div class="controls">
-                        <input class="span12" type="text"  ng-model="training.curator.phoneSecret"></input>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-        <button class="btn btn-success btn-small" type="submit" ng-show="!$parent.menu.readOnlyMode" ng-bind="btnSubmitName|localize" ng-click="formatDate()" ng-disabled="formName.$pristine"></button>
-        <button class="btn btn-small btn-primary" type="button" ng-show="btnAdditionVisible && !$parent.menu.readOnlyMode" ng-click="btnAdditionAction()" ng-bind="btnAdditionName|localize"></button>
-        <div style="display: inline-flex;">
-            <label class="checkbox" style="margin-top: 6px; margin-left: 6px; margin-left: 20px;">
-                <input type="checkbox" ng-init="training.isPublic=true" ng-model="training.isPublic" ng-disabled="menu.readOnlyMode">{{'Публичный курс'|localize}}
-            </label> 
-            <label ng-show="training.id" class="checkbox" style="margin-top: 6px; margin-left: 20px;">
-                <input type="checkbox" ng-model="training.isCertificatesDone" ng-disabled="menu.readOnlyMode">{{'Сертификаты выданы'|localize}}
-            </label> 
-        </div>
-    </div>
-    <div class="span6">
         <div class="control-group">
             <label class="control-label" title="{{'Город, Регион, Страна'|localize}}" ng-bind="('Место обучения'|localize) + '*'"></label>
             <div class="controls">
@@ -152,7 +165,7 @@
         <div class="control-group">
             <label class="control-label" ng-bind="'Примечание'|localize"></label>
             <div class="controls">
-                <textarea class="span12" rows="5" ng-model="training.otherInfo"></textarea>
+                <textarea class="span12" rows="3" ng-model="training.otherInfo"></textarea>
             </div>
         </div> 
     </div>

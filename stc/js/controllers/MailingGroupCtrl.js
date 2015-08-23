@@ -94,6 +94,7 @@ controllersModule.controller('MailingGroupCtrl', function($scope, $filter, $rout
               '%JoinUrl - '+ getLocValue('ссылка на страницу регистрации') + ';<br>'+
               '%ListOfAttendeesUrl - '+ getLocValue('ссылка на страницу со списком слушателей') + ';<br>' +
               '%DownloadCertificatesUrl - '+ getLocValue('ссылка для загрузки сертификатов') + ';<br>' +
+              '%DeliveryAddressOfCertificates - ' + getLocValue('aдр. дост. сертификатов') + ';<br>' +
               '%UnsubscribeUrl - '+ getLocValue('ссылка на отмену подписки') + '.<br>';
          
         UtilsSrvc.openCustomMessageBox('Справка', msg, [{result: '1', label: $filter('localize')('Закрыть'),  cssClass: 'btn-small', func: null}]);    

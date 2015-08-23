@@ -34,21 +34,21 @@
 <FormalSpec><![CDATA[tr:Training,gr:MailingGroup,isAutoMailing:%Boolean=1,&st]]></FormalSpec>
 <ReturnType>MailingTrainingGroup</ReturnType>
 <Implementation><![CDATA[
-	set st = $$$OK
-	
-	set obj = ""
-	
-	if (..CommonIdxExists(tr.%Id(), gr.%Id()) = $$$YES){
-		quit ..CommonIdxOpen(tr.%Id(), gr.%Id())	
-	}
-	
-	set obj = ..%New()
-	set obj.Training = tr
-	set obj.MGroup = gr
-	set obj.IsAutoMailing = isAutoMailing
-	set st = obj.%Save()
-	
-	quit obj
+    set st = $$$OK
+    
+    set obj = ""
+    
+    if (..CommonIdxExists(tr.%Id(), gr.%Id()) = $$$YES){
+        quit ..CommonIdxOpen(tr.%Id(), gr.%Id())    
+    }
+    
+    set obj = ..%New()
+    set obj.Training = tr
+    set obj.MGroup = gr
+    set obj.IsAutoMailing = isAutoMailing
+    set st = obj.%Save()
+    
+    quit obj
 ]]></Implementation>
 </Method>
 
@@ -57,27 +57,27 @@
 <FormalSpec>tr:Training,isAutoMailing:%Boolean=1</FormalSpec>
 <ReturnType>%Status</ReturnType>
 <Implementation><![CDATA[
-	set st = $$$OK
-	
-	&sql(DECLARE MGCur CURSOR FOR
-			SELECT ID
-			FROM Stc_Data.MailingGroup
-			WHERE AccessCode <> 'Students')	
-		
-	&sql(OPEN MGCur)
-	for  
-	{	
-		&sql(FETCH MGCur INTO :id) 
-		quit:(SQLCODE '= 0)
-		
-		do ..Create(tr, ##class(Stc.Data.MailingGroup).%OpenId(id), isAutoMailing, .st)
-		
-		$$$THROWONERROR(st, st)	
-	}
-	
-	&sql(CLOSE MGCur)
-	
-	quit st
+    set st = $$$OK
+    
+    &sql(DECLARE MGCur CURSOR FOR
+            SELECT ID
+            FROM Stc_Data.MailingGroup
+            WHERE AccessCode NOT IN ('Students', 'Office')) 
+        
+    &sql(OPEN MGCur)
+    for  
+    {   
+        &sql(FETCH MGCur INTO :id) 
+        quit:(SQLCODE '= 0)
+        
+        do ..Create(tr, ##class(Stc.Data.MailingGroup).%OpenId(id), isAutoMailing, .st)
+        
+        $$$THROWONERROR(st, st) 
+    }
+    
+    &sql(CLOSE MGCur)
+    
+    quit st
 ]]></Implementation>
 </Method>
 

@@ -10,8 +10,8 @@ Working with email</Description>
 <FormalSpec>patternMsg:%Text,tr:Stc.Data.Training</FormalSpec>
 <ReturnType>%Text</ReturnType>
 <Implementation><![CDATA[
-    set patternMsg = $REPLACE(patternMsg, "%DateStart", $ZDATE(tr.DateStart, 3))
-    set patternMsg = $REPLACE(patternMsg, "%DateEnd", $ZDATE(tr.DateFinish, 3))
+    set patternMsg = $REPLACE(patternMsg, "%DateStart", ##class(Stc.Utils.Utils).GetLocalizeTextFromDate(tr.DateStart))
+    set patternMsg = $REPLACE(patternMsg, "%DateEnd", ##class(Stc.Utils.Utils).GetLocalizeTextFromDate(tr.DateFinish))
     set patternMsg = $REPLACE(patternMsg, "%TimeStart", $e(##class(%Library.Time).LogicalToDisplay(tr.TimeStart), 1, 5))
     set patternMsg = $REPLACE(patternMsg, "%TimeEnd", $e(##class(%Library.Time).LogicalToDisplay(tr.TimeFinish), 1, 5))
     set patternMsg = $REPLACE(patternMsg, "%Course.Name", tr.Course.Name.Value)
@@ -29,6 +29,7 @@ Working with email</Description>
     set patternMsg = $REPLACE(patternMsg, "%Curator.PhoneSecret", $SELECT(tr.CuratorPhoneSecret="":"-", tr.CuratorPhoneSecret'="":tr.CuratorPhoneSecret))
     set patternMsg = $REPLACE(patternMsg, "%Curator.PhonePublic", $SELECT(tr.CuratorPhone="":"-", tr.CuratorPhone'="":tr.CuratorPhone))
     set patternMsg = $REPLACE(patternMsg, "%OtherInfo", tr.OtherInfo.Value)
+    set patternMsg = $REPLACE(patternMsg, "%DeliveryAddressOfCertificates", tr.DeliveryAddressOfCertificates)
     
     if ($FIND(patternMsg, "%ListOfCertificates") '= 0){
         set certData = ""
@@ -47,7 +48,7 @@ Working with email</Description>
             &sql(FETCH CertCur INTO :number, :fullName) 
             quit:(SQLCODE '= 0)
             
-            set certData = certData_number_", "_fullName_"<br>"
+            set certData = certData_number_" "_fullName_"<br>"
         }
         &sql(CLOSE CertCur)
         

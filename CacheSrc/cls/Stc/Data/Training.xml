@@ -199,11 +199,15 @@ Access code to training for teacher</Description>
 </Property>
 
 <Property name="CreatedTS">
+<Description>
+Time of creation</Description>
 <Type>%TimeStamp</Type>
 <Required>1</Required>
 </Property>
 
 <Property name="IsCertificatesDone">
+<Description>
+Certificates printed and dilivered</Description>
 <Type>%Boolean</Type>
 <InitialExpression>0</InitialExpression>
 </Property>
@@ -222,15 +226,26 @@ Is public training or not (shows in calendar)</Description>
 </Property>
 
 <Property name="GeoLocationAddress">
+<Description>
+GeoLocationAddress</Description>
 <Type>%String</Type>
 <Parameter name="MAXLEN" value="500"/>
 </Property>
 
 <Property name="StudentsCount">
+<Description>
+Students Count</Description>
 <Type>%Integer</Type>
 <Calculated>1</Calculated>
 <SqlComputeCode>set {StudentsCount} = ##class({%%CLASSNAME}).GetStudentsCount({%%ID})</SqlComputeCode>
 <SqlComputed>1</SqlComputed>
+</Property>
+
+<Property name="DeliveryAddressOfCertificates">
+<Description>
+Delivery address of certificates</Description>
+<Type>%String</Type>
+<Parameter name="MAXLEN" value="400"/>
 </Property>
 
 <Index name="AccessCodeIdx">
@@ -320,6 +335,7 @@ Convert to proxyObject (for JSON)</Description>
     set proxy.isCompleted = ..IsCompleted   
     set proxy.isCertificatesDone = ..IsCertificatesDone
     set proxy.isPublic = ..IsPublic
+    set proxy.deliveryAddressOfCertificates = ..DeliveryAddressOfCertificates
     
     set proxy.timeStart = $e(##class(%Library.Time).LogicalToDisplay(..TimeStart), 1, 5)
     set proxy.timeStartType = "24"
@@ -437,6 +453,7 @@ Create or save modified training</Description>
     set tr.CuratorPhoneSecret = data.curator.phoneSecret
     set tr.IsCertificatesDone = data.isCertificatesDone = $$$YES
     set tr.IsPublic = data.isPublic = $$$YES    
+    set tr.DeliveryAddressOfCertificates = $ZCONVERT(data.deliveryAddressOfCertificates, "I","UTF8")
         
     set tr.DateFinish = $ZDATEH(data.dateFinish, 15)
     set tr.DateStart = $ZDATEH(data.dateStart, 15)
@@ -593,7 +610,7 @@ Add person to training, subgroup is detirmining automatically</Description>
         set sgroup = ##class(Stc.Data.SubGroup).Create(person.Company, ..Course, .status)
         if $$$ISERR(status) quit status
         
-        do ##class(SubGroupStudent).Create(person.%Id(), sgroup.%Id(), .status)
+        do ##class(SubGroupStudent).Save(person.%Id(), sgroup.%Id(), ..%Id(), .status)
         if $$$ISERR(status) quit status
         
         do ..SubGroups.SetAt(sgroup, sgroup.%Id())
@@ -960,6 +977,9 @@ Get teacher payout for training</Description>
 </Value>
 <Value name="33">
 <Value>GeoLocationAddress</Value>
+</Value>
+<Value name="34">
+<Value>DeliveryAddressOfCertificates</Value>
 </Value>
 </Data>
 </Storage>

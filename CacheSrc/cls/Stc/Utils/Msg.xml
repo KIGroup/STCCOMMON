@@ -45,6 +45,47 @@ Write all messages into global do ##class(Stc.Utils.Msg).Init()</Description>
 <ClassMethod>1</ClassMethod>
 <ReturnType>%Status</ReturnType>
 <Implementation><![CDATA[
+    set ^CacheMsg("Stc", "ru", "yearShort") = "г."
+    set ^CacheMsg("Stc", "en", "yearShort") = "y."
+    
+    set ^CacheMsg("Stc", "ru", "Month#1") = "января"
+    set ^CacheMsg("Stc", "en", "Month#1") = "January"
+    
+    set ^CacheMsg("Stc", "ru", "Month#2") = "февраля"
+    set ^CacheMsg("Stc", "en", "Month#2") = "February"
+    
+    set ^CacheMsg("Stc", "ru", "Month#3") = "марта"
+    set ^CacheMsg("Stc", "en", "Month#3") = "March"
+    
+    set ^CacheMsg("Stc", "ru", "Month#4") = "апреля"
+    set ^CacheMsg("Stc", "en", "Month#4") = "April"
+    
+    set ^CacheMsg("Stc", "ru", "Month#5") = "мая"
+    set ^CacheMsg("Stc", "en", "Month#5") = "May"
+    
+    set ^CacheMsg("Stc", "ru", "Month#6") = "июня"
+    set ^CacheMsg("Stc", "en", "Month#6") = "June"
+    
+    set ^CacheMsg("Stc", "ru", "Month#7") = "июля"
+    set ^CacheMsg("Stc", "en", "Month#7") = "July"
+    
+    set ^CacheMsg("Stc", "ru", "Month#8") = "августа"
+    set ^CacheMsg("Stc", "en", "Month#8") = "August"
+    
+    set ^CacheMsg("Stc", "ru", "Month#9") = "сентября"
+    set ^CacheMsg("Stc", "en", "Month#9") = "September"
+    
+    set ^CacheMsg("Stc", "ru", "Month#10") = "октября"
+    set ^CacheMsg("Stc", "en", "Month#10") = "October"
+    
+    set ^CacheMsg("Stc", "ru", "Month#11") = "ноября"
+    set ^CacheMsg("Stc", "en", "Month#11") = "November"
+    
+    set ^CacheMsg("Stc", "ru", "Month#12") = "декабря"
+    set ^CacheMsg("Stc", "en", "Month#12") = "December"
+    
+    
+    
     set ^CacheMsg("Stc", "ru", "STCSummaryOfTheDay") = "STC. Краткая сводка за день."
     set ^CacheMsg("Stc", "en", "STCSummaryOfTheDay") = "STC. Summary of the day."
 

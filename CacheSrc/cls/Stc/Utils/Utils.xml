@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="Stc.Utils.Utils">
+<Abstract>1</Abstract>
+<TimeCreated>63787,39933.86662</TimeCreated>
+
+<Method name="GetLocalizeTextFromDate">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>date:%Date</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[    quit ..GetLocalizeTextFromTimeStamp($ZDT(date, 3))
+]]></Implementation>
+</Method>
+
+<Method name="GetLocalizeTextFromTimeStamp">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>ts:%TimeStamp,withQuotes=0</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+    set year = $E(ts, 1, 4)
+    set month = +$E(ts, 6, 7)
+    set day = $E(ts, 9, 10)
+    
+    set monthStr = ##class(Msg).GetMsg("Month#"_month)
+    
+    set curLang = $E($$$SessionLanguage, 1, 2)
+    set result = ""
+    if (curLang = "ru"){
+        if (withQuotes){
+            set day = "«"_day_"»"
+            set year = year_" "_##class(Msg).GetMsg("yearShort")
+        }
+        
+        set result = day_" "_monthStr_" "_year
+    }
+    else{
+        set result = monthStr_" "_day_", "_year
+    }
+    
+    set timePart = $P(ts, " ", 2)
+    if (timePart '= ""){
+        set result = result_" "_timePart
+    }
+    
+    
+    quit result
+]]></Implementation>
+</Method>
+</Class>
+</Export>
